@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:today_safety/const/value/router.dart';
 
 import '../../firebase_options.dart';
+import '../../my_app.dart';
 
 
 class RouteInit extends StatefulWidget {
@@ -35,8 +36,14 @@ class _RouteInitState extends State<RouteInit> {
       options: DefaultFirebaseOptions.currentPlatform,
     );
 
-    await Future.delayed(const Duration(seconds: 2));
+    initLogin();
+
+    await Future.delayed(const Duration(seconds: 1));
     Get.offAllNamed(keyRouteMain);
+  }
+
+  initLogin(){
+    MyApp.providerUser.loginAuto();
   }
 
   @override

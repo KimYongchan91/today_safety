@@ -8,20 +8,31 @@
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
-            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/app_settings-4.2.0/android" />
-            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/device_info-2.0.3/android" />
-            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/firebase_core-2.13.1/android" />
-            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_local_notifications-14.0.0+1/android" />
-            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_native_image-0.0.6+1/android" />
-            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.13/android" />
-            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/geolocator_android-4.1.7/android" />
-            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/image_cropper-3.0.3/android" />
-            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/image_picker_android-0.8.6+11/android" />
-            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/path_provider_android-2.0.27/android" />
-            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/permission_handler_android-10.2.0/android" />
-            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/shared_preferences_android-2.1.4/android" />
-            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/sqflite-2.2.8/android" />
-            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/url_launcher_android-6.0.31/android" />
+            <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/app_settings-4.2.0/android" />
+            <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/cloud_firestore-4.8.0/android" />
+            <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/cloud_functions-4.3.2/android" />
+            <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/device_info-2.0.3/android" />
+            <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_analytics-10.4.2/android" />
+            <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_auth-4.6.2/android" />
+            <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_core-2.13.1/android" />
+            <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_crashlytics-3.3.2/android" />
+            <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_dynamic_links-5.3.2/android" />
+            <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_messaging-14.6.2/android" />
+            <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_remote_config-3.0.15/android" />
+            <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_storage-11.2.2/android" />
+            <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_local_notifications-14.1.1/android" />
+            <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_native_image-0.0.6+1/android" />
+            <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.15/android" />
+            <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/geolocator_android-4.1.8/android" />
+            <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/image_cropper-4.0.1/android" />
+            <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/image_picker_android-0.8.6+17/android" />
+            <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/kakao_flutter_sdk_common-1.4.3/android" />
+            <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider_android-2.0.27/android" />
+            <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/permission_handler_android-10.2.1/android" />
+            <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_android-2.1.4/android" />
+            <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/sqflite-2.2.8+4/android" />
+            <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/url_launcher_android-6.0.35/android" />
+            <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/webview_flutter_android-3.7.1/android" />
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
           </set>

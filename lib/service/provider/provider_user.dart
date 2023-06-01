@@ -1,50 +1,193 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
+import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart' as ks;
 import 'package:today_safety/const/model/model_user.dart';
 import 'package:today_safety/const/model/model_user_easy_login.dart';
+import 'package:today_safety/service/util/util_login.dart';
 
 import '../../const/value/key.dart';
 import '../../my_app.dart';
 import '../util/util_snackbar.dart';
 
+typedef GetUserDataFromEasyLogin = Future<ModelUserEasyLogin?> Function();
+
+enum LoginType {
+  kakao,
+  naver,
+  google,
+  apple,
+}
+
 class ProviderUser extends ChangeNotifier {
   ModelUser? modelUser;
 
-  loginEasy() {}
+  ProviderUser() {
+    ks.KakaoSdk.init(nativeAppKey: 'f77b6bf70c14c1698265fd3a1d965768');
+  }
 
-  loginWithKakao() async {
-    ModelUserEasyLogin? modelUserEasyLogin;
-    try {
-      modelUserEasyLogin = await getUserDataFromKakao();
+  ///자동 로그인 시작
+  loginAuto() async {
+    if (FirebaseAuth.instance.currentUser != null) {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection(keyUsers)
+          .where(keyId, isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+          .limit(1)
+          .get(const GetOptions(source: Source.server));
 
-      if (modelUserEasyLogin != null) {}
-    } catch (e) {
-      MyApp.logger.wtf(e.toString());
+      if (querySnapshot.docs.isNotEmpty) {
+        //유저 문서가 존재함
+        ModelUser modelUser = ModelUser.fromJson(
+            querySnapshot.docs.first.data() as Map<dynamic, dynamic>, querySnapshot.docs.first.id);
+        if (modelUser.state == keyOn) {
+          MyApp.logger.d("유저 문서가 존재함");
+          this.modelUser = modelUser;
+          notifyListeners();
+        } else {
+          //state가 on이 아님
+          MyApp.logger.d("유저 state가 on이 아님");
+          clearProvider(isNotify: false);
+        }
+      } else {
+        //유저 문서가 존재 하지 않음
+        MyApp.logger.d("유저 문서가 존재 하지 않음");
+        clearProvider(isNotify: false);
+      }
     }
   }
 
-  loginWithNaver() {}
+  ///간편 로그인 시작
+  loginEasy(LoginType loginType) async {
+    //로그아웃부터
+    await clearProvider();
 
-  clearProvider() {
-    modelUser = null;
-    notifyListeners();
+    GetUserDataFromEasyLogin getUserDataFromEasyLogin;
+    switch (loginType) {
+      case LoginType.kakao:
+        getUserDataFromEasyLogin = getUserDataFromKakao;
+        break;
+      case LoginType.naver:
+        getUserDataFromEasyLogin = getUserDataFromKakao;
+        break;
+      case LoginType.google:
+        getUserDataFromEasyLogin = getUserDataFromKakao;
+        break;
+      case LoginType.apple:
+        getUserDataFromEasyLogin = getUserDataFromKakao;
+        break;
+    }
+
+    ModelUserEasyLogin? modelUserEasyLogin = await getUserDataFromEasyLogin();
+    if (modelUserEasyLogin == null) {
+      return;
+    }
+
+    HttpsCallableResult<dynamic> result = await FirebaseFunctions.instanceFor(region: "asia-northeast3")
+        .httpsCallable('loginEasy')
+        .call(<String, dynamic>{
+      keyEmail: modelUserEasyLogin.email,
+      'login_type': loginType.toString().split(".").last,
+    });
+    MyApp.logger.d("응답 결과 : ${result.data}");
+
+    if (result.data[keyAuthenticated] == true) {
+      //로그인 성공
+
+      //FirebaseAuth 로그인 적용
+      loginWithToken(
+          result.data['data'][keyToken], ModelUser.fromJson(result.data['data']['doc_data'], result.data['data']['doc_id']));
+    } else {
+      //로그인 실패
+
+      if (result.data[keyMessage] == keyUserNotFound) {
+        //유저가 존재 하지 않음.
+        //회원 가입 진행
+
+        ModelUser modelUserNew = ModelUser(
+          id: getIdWithLoginType(modelUserEasyLogin),
+          idExceptLT: modelUserEasyLogin.email,
+          loginType: modelUserEasyLogin.loginType,
+          state: keyOn,
+          dateJoin: Timestamp.now(),
+        );
+
+        //회원 가입 시작
+        try {
+          Map<String, dynamic> resultJoin = await joinEasy(modelUserNew);
+
+          //회원가입 성공
+
+          //FirebaseAuth 로그인 적용
+          loginWithToken(
+              resultJoin[keyToken], ModelUser.fromJson(modelUserNew.toJson(), resultJoin[keyDocId]));
+
+          notifyListeners();
+        } on Exception catch (e) {
+          MyApp.logger.wtf("회원 가입 중에 에러 발생 : ${e.toString()}");
+          showSnackBarOnRoute(messageJoinFail);
+          await clearProvider();
+          return;
+        }
+      } else if (result.data[keyMessage] == '') {
+        //유저가 강제 탈퇴된 상태
+      } else if (result.data[keyMessage] == '') {
+        //유저가 스스로 탈퇴한 상태
+      } else {
+        //알 수 없는 로그인 실패
+      }
+    }
   }
 
-  Future<ModelUserEasyLogin?> getUserDataFromKakao() async {
-    KakaoSdk.init(nativeAppKey: 'f77b6bf70c14c1698265fd3a1d965768');
+  loginWithToken(String token, ModelUser modelUser) async {
+    try {
+      await FirebaseAuth.instance.signInWithCustomToken(token);
+      this.modelUser = modelUser;
+      notifyListeners();
+    } on Exception catch (e) {
+      rethrow;
+    }
+  }
 
+  Future<Map<String, dynamic>> joinEasy(ModelUser modelUser) async {
+    try {
+      HttpsCallableResult<dynamic> result = await FirebaseFunctions.instanceFor(region: "asia-northeast3")
+          .httpsCallable('join')
+          .call(modelUser.toJson(isForServerForm: true));
+      MyApp.logger.d("응답 결과 : ${result.data}");
+
+      if (result.data[keyResult] == true) {
+        return {
+          keyDocId: result.data[keyDocId2],
+          keyToken: result.data[keyToken],
+        };
+      } else {
+        throw Exception();
+      }
+    } on Exception catch (_) {
+      rethrow;
+    }
+  }
+
+/*  loginWithKakao() async {
+    ModelUserEasyLogin? modelUserEasyLogin = await getUserDataFromKakao();
+  }
+
+  loginWithNaver() {}*/
+
+  Future<ModelUserEasyLogin?> getUserDataFromKakao() async {
     bool isLoginAlready = false;
 
     try {
-      isLoginAlready = await AuthApi.instance.hasToken();
+      isLoginAlready = await ks.AuthApi.instance.hasToken();
     } on Exception catch (e) {
       MyApp.logger.d('로그인 되어있는지 확인 실패 : ${e.toString()}');
     }
 
     try {
       if (isLoginAlready) {
-        User user = await UserApi.instance.me();
+        ks.User user = await ks.UserApi.instance.me();
         MyApp.logger.d('현재 로그인 되어있는 계정 : ${user.kakaoAccount?.email}');
       } else {
         MyApp.logger.d('현재 로그인 되어있지 않음');
@@ -57,7 +200,7 @@ class ProviderUser extends ChangeNotifier {
     //로그인 되어있다면 로그아웃
     if (isLoginAlready) {
       try {
-        await UserApi.instance.logout();
+        await ks.UserApi.instance.logout();
       } on Exception catch (e) {
         MyApp.logger.wtf('로그아웃하는데 실패 : ${e.toString()}');
         //return null;
@@ -65,7 +208,7 @@ class ProviderUser extends ChangeNotifier {
     }
     bool isInstalled;
     try {
-      isInstalled = await isKakaoTalkInstalled();
+      isInstalled = await ks.isKakaoTalkInstalled();
     } catch (e) {
       isInstalled = false;
       MyApp.logger.wtf(e.toString());
@@ -73,7 +216,7 @@ class ProviderUser extends ChangeNotifier {
 
     if (isInstalled) {
       try {
-        await UserApi.instance.loginWithKakaoTalk();
+        await ks.UserApi.instance.loginWithKakaoTalk();
         MyApp.logger.d('카카오톡으로 로그인 성공');
       } catch (error) {
         MyApp.logger.wtf('카카오톡으로 로그인 실패 $error');
@@ -89,7 +232,7 @@ class ProviderUser extends ChangeNotifier {
       }
     } else {
       try {
-        await UserApi.instance.loginWithKakaoAccount();
+        await ks.UserApi.instance.loginWithKakaoAccount();
         MyApp.logger.d('카카오계정으로 로그인 성공');
       } catch (error) {
         MyApp.logger.wtf('카카오계정으로 로그인 실패 $error');
@@ -99,7 +242,7 @@ class ProviderUser extends ChangeNotifier {
     }
 
     try {
-      User user = await UserApi.instance.me();
+      ks.User user = await ks.UserApi.instance.me();
       MyApp.logger.d('사용자 정보 요청 성공'
           '\n회원번호: ${user.id}' //필요 없음
           '\n성별: ${user.kakaoAccount?.gender}'
@@ -120,20 +263,18 @@ class ProviderUser extends ChangeNotifier {
         //이메일 정상
 
         //성별
-        String sexForJoin;
+        String? sexForJoin;
         bool isAgreeGender = user.kakaoAccount?.genderNeedsAgreement ?? false;
-        Gender? gender = user.kakaoAccount?.gender;
+        ks.Gender? gender = user.kakaoAccount?.gender;
 
         MyApp.logger.d(''
             '\nisAgreeGender : $isAgreeGender'
             '\ngender : ${gender.toString()}');
 
-        if (gender == Gender.male) {
+        if (gender == ks.Gender.male) {
           sexForJoin = keySexMale;
-        } else if (gender == Gender.female) {
+        } else if (gender == ks.Gender.female) {
           sexForJoin = keySexFemale;
-        } else {
-          sexForJoin = '';
         }
 
         //바로 로그아웃
@@ -154,6 +295,38 @@ class ProviderUser extends ChangeNotifier {
       MyApp.logger.wtf('사용자 정보 요청 실패 $error');
       showSnackBarOnRoute(messageKakaoLoginInvalidEmail);
       return null;
+    }
+  }
+
+  clearProvider({bool isNotify = true}) async {
+    modelUser = null;
+    if (isNotify) notifyListeners();
+
+    logoutFromAll();
+
+    /*List<Future> listFutureLogOut = [];
+    listFutureLogOut.add(FirebaseAuth.instance.signOut());
+    listFutureLogOut.add(ks.UserApi.instance.me().then((value) {
+      if (value.kakaoAccount != null) {
+
+      }
+    }));
+    await Future.wait(listFutureLogOut);*/
+  }
+
+  logoutFromAll() async {
+    //구글 로그아웃
+    try {
+      FirebaseAuth.instance.signOut();
+    } on Exception catch (e) {
+      // TODO
+    }
+
+    //카카오 로그아웃
+    try {
+      ks.UserApi.instance.logout();
+    } on Exception catch (e) {
+      MyApp.logger.wtf("카카오 로그아웃 실패 : ${e.toString()}");
     }
   }
 }

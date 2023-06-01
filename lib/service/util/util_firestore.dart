@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../my_app.dart';
+
 Timestamp? getTimestampFromData(dynamic data) {
   if (data == null) {
     return null;
@@ -20,4 +22,17 @@ Timestamp? getTimestampFromData(dynamic data) {
   } else {
     return null;
   }
+}
+
+Map<String, dynamic> transformForServerDataType(Map<String, dynamic> mapOld) {
+  Map<String, dynamic> mapNew = {...mapOld};
+  for (var element in mapNew.keys) {
+    if (mapNew[element] is Timestamp) {
+      mapNew[element] = (mapNew[element] as Timestamp).millisecondsSinceEpoch;
+    }
+  }
+
+  MyApp.logger.d("변경된 맵 : ${mapNew.toString()}");
+
+  return mapNew;
 }
