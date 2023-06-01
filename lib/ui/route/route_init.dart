@@ -1,6 +1,10 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:today_safety/const/router.dart';
+import 'package:today_safety/const/value/router.dart';
+
+import '../../firebase_options.dart';
+
 
 class RouteInit extends StatefulWidget {
   const RouteInit({Key? key}) : super(key: key);
@@ -26,6 +30,10 @@ class _RouteInitState extends State<RouteInit> {
     //딥 링크로 들어 왔다면
     //먼저 딥링크 URI를 로컬 캐쉬 히트 여부 검사
     //없으면 api에서
+
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
 
     await Future.delayed(const Duration(seconds: 2));
     Get.offAllNamed(keyRouteMain);

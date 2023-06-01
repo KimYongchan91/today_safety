@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
-import 'package:today_safety/const/router.dart';
-import 'package:today_safety/route/route_init.dart';
+import 'package:today_safety/const/value/router.dart';
+import 'package:today_safety/ui/route/route_init.dart';
+import 'package:today_safety/ui/route/route_login.dart';
+import 'package:today_safety/ui/route/route_verify.dart';
 
 import 'route_main.dart';
 
 class RouteRouter extends StatelessWidget {
   const RouteRouter({Key? key}) : super(key: key);
-
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +37,14 @@ class RouteRouter extends StatelessWidget {
         GetPage(
           name: keyRouteMain,
           page: () => const RouteMain(),
+        ),
+        GetPage(
+          name: keyRouteLogin,
+          page: () => const RouteLogin(),
+        ),
+        GetPage(
+          name: keyRouteVerify,
+          page: () => const RouteVerify(),
         ),
 
         /*  GetPage(

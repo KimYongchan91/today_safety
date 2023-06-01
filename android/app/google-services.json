@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "843327665364",
+    "project_id": "today-safety",
+    "storage_bucket": "today-safety.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:843327665364:android:6f522b70dbce4b412d7741",
+        "android_client_info": {
+          "package_name": "kr.co.todaysafety.today_safety"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "843327665364-250tgdc4phr93tnm0d5k1qvhn4d76ime.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0VhFOYt5AcQUaJjObpqL6IDbGzqkijHw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "843327665364-250tgdc4phr93tnm0d5k1qvhn4d76ime.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
