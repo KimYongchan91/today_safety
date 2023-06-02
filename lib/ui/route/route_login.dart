@@ -21,27 +21,39 @@ class _RouteLoginState extends State<RouteLogin> {
           providers: [
             ChangeNotifierProvider.value(value: MyApp.providerUser),
           ],
-          builder: (context, child) =>
-              Column(
-                children: [
-                  Consumer<ProviderUser>(builder: (context, value, child) =>
-                    Row(
-                      children: [
-                        Text('로그인되어 있는 계정 : ${value.modelUser?.id ?? '로그인 안 되어 있음'}'),
-                      ],
-                    )
-                    ,)
-                  ,
-                  ElevatedButton(
-                    onPressed: () async {
-                      print("요청 보냄");
-
-                      MyApp.providerUser.loginEasy(LoginType.kakao);
-                    },
-                    child: Text('카카오 로그인'),
-                  ),
-                ],
+          builder: (context, child) => Column(
+            children: [
+              Consumer<ProviderUser>(
+                builder: (context, value, child) => Row(
+                  children: [
+                    Text('로그인되어 있는 계정 : ${value.modelUser?.id ?? '로그인 안 되어 있음'}'),
+                  ],
+                ),
               ),
+              ElevatedButton(
+                onPressed: () async {
+                  print("요청 보냄");
+
+                  MyApp.providerUser.loginEasy(LoginType.kakao);
+                },
+                child: Text('카카오 로그인'),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  print("요청 보냄");
+
+                  MyApp.providerUser.loginEasy(LoginType.google);
+                },
+                child: Text('구글 로그인'),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  MyApp.providerUser.clearProvider();
+                },
+                child: Text('로그아웃'),
+              ),
+            ],
+          ),
         ),
       ),
     );

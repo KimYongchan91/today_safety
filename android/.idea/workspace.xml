@@ -8,30 +8,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e2751cb7-cc64-43cb-8cca-a2374ddb7a44" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/kr/co/todaysafety/today_safety/MainActivity.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/libraries/Dart_Packages.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Dart_SDK.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/libraries/Dart_SDK.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Flutter_Plugins.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/libraries/Flutter_Plugins.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/kr/co/todaysafety/today_safety/MainActivity.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/const/model/model_user.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/const/model/model_user.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/const/model/model_user_easy_login.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/const/model/model_user_easy_login.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/const/value/key.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/const/value/key.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/service/provider/provider_user.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/service/provider/provider_user.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/service/util/util_firestore.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/service/util/util_firestore.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/service/util/util_snackbar.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/service/util/util_snackbar.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/ui/route/route_init.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/ui/route/route_init.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/ui/route/route_login.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/ui/route/route_login.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/kr/co/todaysafety/today_safety/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/kr/co/todaysafety/today_safety/MainActivity.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[R3CW209JRDT]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[C:\Users\yczin\.android\avd\S23_API_31.avd]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -51,17 +36,17 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.cidr.known.project.marker": "true",
-    "cidr.known.project.marker": "true",
-    "dart.analysis.tool.window.visible": "false",
-    "memory.settings.postsync.last.time.stamp": "1685634322145",
-    "show.migrate.to.gradle.popup": "false"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
+    &quot;memory.settings.postsync.last.time.stamp&quot;: &quot;1685634322145&quot;,
+    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App">
       <module name="android.app.main" />

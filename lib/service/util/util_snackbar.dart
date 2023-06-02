@@ -28,9 +28,10 @@ String messageCantVoteOnPreviewMode = '미리보기에서는 투표할 수 없�
 String messageNeedVote = '먼저 투표를 해주세요.';*/
 
 String messageKakaoLoginFail  = '카카로 로그인에 실패했어요.\n다른 로그인 방법을 이용해주세요.';
-String messageJoinFail  = '회원 가입에 실패했어요.\n잠시 후에 다시 시도해 주세요.';
 String messageKakaoLoginInvalidEmail  = '카카오 계정에 e메일 정보가 없어요.\n다른 로그인 방법을 이용해주세요.';
 
+String messageJoinFail  = '회원 가입에 실패했어요.\n잠시 후에 다시 시도해 주세요.';
+String messageLoginFail  = '로그인에 실패했어요.\n다른 로그인 방법을 이용해주세요.';
 
 
 void showSnackBarOnRoute(
