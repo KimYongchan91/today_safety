@@ -34,9 +34,10 @@ class RouteMain extends StatelessWidget {
                 AlgoliaQuery algoliaQuery = MyApp.algolia.instance.index('fts_site').query("현대 건설");
                 AlgoliaQuerySnapshot snap = await algoliaQuery.getObjects();
                 MyApp.logger.d("알고리아 결과 hit 갯수 : ${snap.hits.length}");
-                snap.hits.forEach((element) {
+
+                for (var element in snap.hits) {
                   print("문서 id : ${element.objectID}");
-                });
+                }
               },
               child: Text('풀텍스트 검색 테스트'),
             ),
