@@ -15,7 +15,7 @@ class MainActivity : FlutterActivity() {
         super.onCreate(savedInstanceState)
 
 
-/*        try {
+        try {
             val packageInfo = packageManager.getPackageInfo(
                 packageName, PackageManager.GET_SIGNING_CERTIFICATES
             )
@@ -30,6 +30,6 @@ class MainActivity : FlutterActivity() {
 
         } catch (e: Exception) {
             Log.e("Exception", e.toString())
-        }*/
+        }
     }
 }

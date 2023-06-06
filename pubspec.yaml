@@ -59,6 +59,7 @@ dependencies:
   sqflite: ^2.2.8+4
   quiver: ^3.2.1
   logger: ^1.3.0
+  easy_debounce: ^2.0.3
 
   kakao_flutter_sdk: ^1.4.3
   google_sign_in: ^6.1.3

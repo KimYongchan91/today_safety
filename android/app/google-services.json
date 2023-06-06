@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "843327665364-j0p8oon7neq5eu44qalpr23oj01e6s2h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "kr.co.todaysafety.today_safety",
+            "certificate_hash": "7961c245ab8f71c89d33451949f586dc949411df"
+          }
+        },
+        {
           "client_id": "843327665364-250tgdc4phr93tnm0d5k1qvhn4d76ime.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,6 +37,13 @@
             {
               "client_id": "843327665364-250tgdc4phr93tnm0d5k1qvhn4d76ime.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "843327665364-fsd9mue9j9uje56n63bqrbb642opo1pm.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "kr.co.todaysafety.todaySafety"
+              }
             }
           ]
         }

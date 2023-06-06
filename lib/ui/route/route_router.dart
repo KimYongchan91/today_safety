@@ -4,6 +4,8 @@ import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:today_safety/const/value/router.dart';
 import 'package:today_safety/ui/route/route_init.dart';
 import 'package:today_safety/ui/route/route_login.dart';
+import 'package:today_safety/ui/route/route_site_new.dart';
+import 'package:today_safety/ui/route/route_site_search.dart';
 import 'package:today_safety/ui/route/route_verify.dart';
 
 import 'route_main.dart';
@@ -45,6 +47,14 @@ class RouteRouter extends StatelessWidget {
         GetPage(
           name: keyRouteVerify,
           page: () => const RouteVerify(),
+        ),
+        GetPage(
+          name: keyRouteSiteNew,
+          page: () => const RouteSiteNew(),
+        ),
+        GetPage(
+          name: keyRouteSiteSearch,
+          page: () => const RouteSiteSearch(),
         ),
 
         /*  GetPage(

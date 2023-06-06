@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart' as ks;
+import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:today_safety/const/model/model_user.dart';
 import 'package:today_safety/const/model/model_user_easy_login.dart';
 import 'package:today_safety/service/util/util_login.dart';
@@ -40,8 +41,8 @@ class ProviderUser extends ChangeNotifier {
 
       if (querySnapshot.docs.isNotEmpty) {
         //유저 문서가 존재함
-        ModelUser modelUser = ModelUser.fromJson(
-            querySnapshot.docs.first.data() as Map<dynamic, dynamic>, querySnapshot.docs.first.id);
+        ModelUser modelUser =
+            ModelUser.fromJson(querySnapshot.docs.first.data() as Map<dynamic, dynamic>, querySnapshot.docs.first.id);
         if (modelUser.state == keyOn) {
           MyApp.logger.d("유저 문서가 존재함");
           this.modelUser = modelUser;
@@ -121,8 +122,7 @@ class ProviderUser extends ChangeNotifier {
           //회원가입 성공
 
           //FirebaseAuth 로그인 적용
-          loginWithToken(
-              resultJoin[keyToken], ModelUser.fromJson(modelUserNew.toJson(), resultJoin[keyDocId]));
+          loginWithToken(resultJoin[keyToken], ModelUser.fromJson(modelUserNew.toJson(), resultJoin[keyDocId]));
 
           notifyListeners();
         } on Exception catch (e) {
@@ -160,7 +160,7 @@ class ProviderUser extends ChangeNotifier {
 
       if (result.data[keyResult] == true) {
         return {
-          keyDocId: result.data[keyDocId2],
+          keyDocId: result.data[keyDocId],
           keyToken: result.data[keyToken],
         };
       } else {
@@ -300,7 +300,10 @@ class ProviderUser extends ChangeNotifier {
   }
 
   Future<ModelUserEasyLogin?> getUserDataFromGoogle() async {
-    GoogleSignIn googleSignIn = GoogleSignIn();
+    GoogleSignIn googleSignIn = GoogleSignIn(
+      hostedDomain: "kayple.com",
+      serverClientId: "843327665364-j0p8oon7neq5eu44qalpr23oj01e6s2h.apps.googleusercontent.com",
+    );
     GoogleSignInAccount? googleSignInAccount;
     try {
       googleSignInAccount = await googleSignIn.signIn();
@@ -463,7 +466,10 @@ class ProviderUser extends ChangeNotifier {
 
     //카카오 로그아웃
     try {
-      ks.UserApi.instance.logout();
+      OAuthToken? oAuthToken = await ks.TokenManagerProvider.instance.manager.getToken();
+      if (oAuthToken != null) {
+        ks.UserApi.instance.logout();
+      }
     } on Exception catch (e) {
       MyApp.logger.wtf("카카오 로그아웃 실패 : ${e.toString()}");
     }
