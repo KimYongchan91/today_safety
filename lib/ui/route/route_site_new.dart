@@ -161,6 +161,8 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
                                   onMapCreated: ((controller) {
                                     completer.complete();
                                     kakaoMapController = controller;
+
+                                    _moveKaKaoMapToCenterAndAddMarker();
                                   }),
                                   markers: value.toList(),
                                 ),
@@ -331,6 +333,14 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
     if (completer.isCompleted == false) {
       await completer.future;
       await Future.delayed(const Duration(microseconds: 50));
+    }
+    _moveKaKaoMapToCenterAndAddMarker();
+  }
+
+  _moveKaKaoMapToCenterAndAddMarker() {
+    if (modelSiteNew.modelLocation.lat == null) {
+      MyApp.logger.wtf("modelSiteNew.modelLocation.lat ==null 이라 중단함");
+      return;
     }
     kakaoMapController?.panTo(LatLng(modelSiteNew.modelLocation.lat!, modelSiteNew.modelLocation.lng!));
     kakaoMapController?.setLevel(3);
