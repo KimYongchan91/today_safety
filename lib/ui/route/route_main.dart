@@ -37,7 +37,7 @@ class RouteMain extends StatelessWidget {
                           children: [
                             Text(
                               '현재 근무지',
-                              style: CustomTextStyle.titleBlack(),
+                              style: CustomTextStyle.bigBlack(),
                             ),
                           ],
                         ),

@@ -39,6 +39,9 @@ const String keyGh7 = 'gh7';
 const String keySi = 'si';
 const String keyGu = 'gu';
 const String keyDong = 'dong';
+const String keyAddressLoad = 'address_load';
+const String keyAddressJibun = 'address_Jibun';
+const String keyAddressBuildingName = 'address_building_name';
 
 const String keyCompany= 'company';
 const String keyDate= 'date';

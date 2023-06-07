@@ -3,24 +3,25 @@ import 'package:quiver/core.dart';
 import 'package:today_safety/const/model/model_company.dart';
 import 'package:today_safety/const/model/model_location.dart';
 import 'package:today_safety/const/value/key.dart';
+import 'package:today_safety/my_app.dart';
 
 import '../../service/util/util_firestore.dart';
 
 class ModelSite {
   final String docId;
-  final String name;
-  final Timestamp date;
-  final ModelLocation modelLocation;
-  final int userCount;
-  final String urlLogoImage;
+  String name;
+  Timestamp date;
+  ModelLocation modelLocation;
+  int userCount;
+  String urlLogoImage;
 
   ModelSite.fromJson(Map map, this.docId)
 
       ///유저 13
       : name = map[keyName] ?? '',
         date = getTimestampFromData(map[keyDate]) ?? Timestamp.now(),
-        modelLocation = ModelLocation.fromJson(map[keyLocation]),
-        userCount = map[keyUserCount] ?? 0,
+        modelLocation = ModelLocation.fromJson(map[keyLocation] ?? {}),
+        userCount = map[keyUserCount] ?? 1,
         urlLogoImage = map[keyUrlLogoImage] ?? '';
 
   Map<String, dynamic> toJson({bool isForServerForm = false}) {
@@ -34,6 +35,15 @@ class ModelSite {
     };
 
     return isForServerForm ? transformForServerDataType(result) : result;
+  }
+
+  bool getIsEmpty() {
+    MyApp.logger.d(""
+        "name.isNotEmpty : ${name.isNotEmpty}"
+        "modelLocation.lat != null : ${modelLocation.lat != null}"
+        "modelLocation.lat != 0 : ${modelLocation.lat != 0}"
+        "urlLogoImage.isNotEmpty : ${urlLogoImage.isNotEmpty}");
+    return name.isEmpty && modelLocation.lat == null && urlLogoImage.isEmpty;
   }
 
   @override

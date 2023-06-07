@@ -1,17 +1,20 @@
 import 'package:today_safety/const/value/key.dart';
 
 class ModelLocation {
-  final double? lat;
-  final double? lng;
+  double? lat;
+  double? lng;
 
-  final String? gh4;
-  final String? gh5;
-  final String? gh6;
-  final String? gh7;
+  String? gh4;
+  String? gh5;
+  String? gh6;
+  String? gh7;
 
-  final String? si;
-  final String? gu;
-  final String? dong;
+  String? si;
+  String? gu;
+  String? dong;
+  String? addressLoad;
+  String? addressJibun;
+  String? addressBuildingName;
 
   ModelLocation.fromJson(Map json)
       : lat = json[keyLat],
@@ -20,6 +23,9 @@ class ModelLocation {
         gh5 = json[keyGh5],
         gh6 = json[keyGh6],
         gh7 = json[keyGh7],
+        addressLoad = json[keyAddressLoad],
+        addressJibun = json[keyAddressJibun],
+        addressBuildingName = json[keyAddressBuildingName],
         si = json[keySi],
         gu = json[keyGu],
         dong = json[keyDong];
@@ -33,6 +39,9 @@ class ModelLocation {
     result[keyGh5] = gh5;
     result[keyGh6] = gh6;
     result[keyGh7] = gh7;
+    result[keyAddressLoad] = addressLoad;
+    result[keyAddressJibun] = addressJibun;
+    result[keyAddressBuildingName] = addressBuildingName;
     result[keySi] = si;
     result[keyGu] = gu;
     result[keyDong] = dong;

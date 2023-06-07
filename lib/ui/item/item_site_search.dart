@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:today_safety/const/model/model_site.dart';
+
+import '../../const/value/label.dart';
 
 const double _sizeLogoImage = 120;
 
@@ -19,19 +23,39 @@ class ItemSiteSearch extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.zero,
-            child: CachedNetworkImage(
+            child: SizedBox(
               width: _sizeLogoImage * 0.8,
               height: _sizeLogoImage * 0.8,
-              imageUrl: modelSite.urlLogoImage,
+              child: modelSite.urlLogoImage.isNotEmpty
+                  ? (modelSite.urlLogoImage.startsWith('/data')
+                      //로컬
+                      ? Image.file(
+                          File(
+                            modelSite.urlLogoImage,
+                          ),
+                          width: _sizeLogoImage * 0.8,
+                          height: _sizeLogoImage * 0.8,
+                        )
+
+                      //네트워크
+                      : CachedNetworkImage(
+                          width: _sizeLogoImage * 0.8,
+                          height: _sizeLogoImage * 0.8,
+                          imageUrl: modelSite.urlLogoImage,
+                        ))
+                  : const Center(
+                      child: Icon(Icons.photo),
+                    ),
             ),
           ),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(modelSite.name),
-                Text(
-                    '${modelSite.modelLocation.si} ${modelSite.modelLocation.gu} ${modelSite.modelLocation.dong}'),
+                Text(modelSite.name.isNotEmpty ? modelSite.name : labelSiteName),
+                Text(modelSite.modelLocation.si != null
+                    ? '${modelSite.modelLocation.si} ${modelSite.modelLocation.gu} ${modelSite.modelLocation.dong}'
+                    : labelSiteLocation),
                 Text('${modelSite.userCount}명 가입'),
               ],
             ),

@@ -1,6 +1,22 @@
 import 'package:flutter/material.dart';
 
-import '../const/value/color.dart';
+
+//폰트 사이즈
+const double _fsSmall = 13;
+const double _fsNormal = 16;
+const double _fsBig = 20;
+const double _fsLarge = 40;
+const double _fsExtraLarge = 48;
+
+const FontWeight _fwNormal = FontWeight.w400;
+const FontWeight _fwBold = FontWeight.w700;
+
+const Color _fcWhite = Colors.white;
+const Color _fcBlack = Colors.black;
+const Color _fcGrey = Colors.grey;
+const Color _fcDisabled = Color(0xffD3D3D3);
+const Color _fcRed = Colors.red;
+const Color _fcBlue = Colors.blue;
 
 class CustomTextStyle extends TextStyle {
   const CustomTextStyle({
@@ -8,70 +24,57 @@ class CustomTextStyle extends TextStyle {
     required double fontSize,
     required FontWeight fontWeight,
     String fontFamily = 'Pretendard',
-    FontStyle fontStyle = FontStyle.normal,
     double? height = 1.1,
   }) : super(
-          color: color,
-          fontSize: fontSize,
-          fontWeight: fontWeight,
-          fontFamily: fontFamily,
-          fontStyle: fontStyle,
-          height: height,
-        );
-
-  ///큰 텍스크
-  const CustomTextStyle.bigBlack() : this(color: Colors.black, fontSize: 40, fontWeight: FontWeight.w700);
-
-  const CustomTextStyle.bigGrey() : this(color: Colors.grey, fontSize: 40, fontWeight: FontWeight.w700);
-
-  ///타이틀 텍스트
-  const CustomTextStyle.titleBlack() : this(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w700);
-
-  const CustomTextStyle.titleWhite() : this(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w700);
-
-  ///라벨 텍스트(text field 위에)
-  const CustomTextStyle.labelGrey()
-      : this(color: colorGreyTextSub, fontSize: 15, fontWeight: FontWeight.w500);
-
-  const CustomTextStyle.labelTransparent()
-      : this(color: Colors.transparent, fontSize: 15, fontWeight: FontWeight.w600);
+    color: color,
+    fontSize: fontSize,
+    fontWeight: fontWeight,
+    fontFamily: fontFamily,
+    height: height,
+  );
 
   ///일반 텍스트
-  const CustomTextStyle.contentBlack() : this(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w500);
+  const CustomTextStyle.normalBlack() : this(color: _fcBlack, fontSize: _fsNormal, fontWeight: _fwNormal);
 
-  const CustomTextStyle.contentBlue() : this(color: Colors.blue, fontSize: 15, fontWeight: FontWeight.w500);
+  const CustomTextStyle.normalBlue() : this(color: _fcBlue, fontSize: _fsNormal, fontWeight: _fwNormal);
 
-  const CustomTextStyle.contentWhite() : this(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w500);
+  const CustomTextStyle.normalWhite() : this(color: _fcWhite, fontSize: _fsNormal, fontWeight: _fwNormal);
 
-  const CustomTextStyle.contentGrey()
-      : this(color: colorGreyTextSub, fontSize: 15, fontWeight: FontWeight.w500);
+  const CustomTextStyle.normalGrey() : this(color: _fcGrey, fontSize: _fsNormal, fontWeight: _fwNormal);
 
-  const CustomTextStyle.contentRed() : this(color: Colors.red, fontSize: 15, fontWeight: FontWeight.w500);
+  const CustomTextStyle.normalRedErrorMessage()
+      : this(color: _fcRed, fontSize: _fsNormal, fontWeight: _fwNormal, height: null);
 
-  const CustomTextStyle.contentRedForErrorMessage()
-      : this(color: Colors.red, fontSize: 15, fontWeight: FontWeight.w500, height: null);
+  const CustomTextStyle.normalWhiteBold() : this(color: _fcWhite, fontSize: _fsNormal, fontWeight: _fwBold);
 
-  ///버튼에 들어가는 텍스트
-  const CustomTextStyle.buttonWhite() : this(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w700);
+  const CustomTextStyle.normalGreyBold() : this(color: _fcGrey, fontSize: _fsNormal, fontWeight: _fwBold);
 
-  const CustomTextStyle.buttonGrey()
-      : this(color: const Color(0xff454c53), fontSize: 16, fontWeight: FontWeight.w700);
+  const CustomTextStyle.normalDisabledBold()
+      : this(color: _fcDisabled, fontSize: _fsNormal, fontWeight: _fwBold);
 
-  const CustomTextStyle.buttonGreyDisable()
-      : this(color: const Color(0xffD3D3D3), fontSize: 16, fontWeight: FontWeight.w700);
+  const CustomTextStyle.normalRedBold() : this(color: _fcRed, fontSize: _fsNormal, fontWeight: _fwBold);
 
-  const CustomTextStyle.buttonRed() : this(color: Colors.red, fontSize: 16, fontWeight: FontWeight.w700);
+  const CustomTextStyle.normalBlackBold() : this(color: _fcBlack, fontSize: _fsNormal, fontWeight: _fwBold);
 
-  const CustomTextStyle.buttonBlack() : this(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w700);
+  const CustomTextStyle.normalBlueBold() : this(color: _fcBlue, fontSize: _fsNormal, fontWeight: _fwBold);
 
-  const CustomTextStyle.buttonBlue() : this(color: Colors.blue, fontSize: 16, fontWeight: FontWeight.w700);
+  ///라벨 텍스트(text field 위에)
+  const CustomTextStyle.normalGreyTextFieldLabel()
+      : this(color: _fcGrey, fontSize: _fsNormal, fontWeight: _fwNormal);
 
-  //차트에 들어가는 텍스트
-  const CustomTextStyle.chartValueBlack()
-      : this(color: Colors.black, fontSize: 13, fontWeight: FontWeight.bold);
+  ///큰 텍스트
+  const CustomTextStyle.bigBlack() : this(color: _fcBlack, fontSize: _fsBig, fontWeight: _fwNormal);
 
-  const CustomTextStyle.chartSingleTextBlack()
-      : this(color: Colors.black, fontSize: 48, fontWeight: FontWeight.bold);
+  const CustomTextStyle.bigBlackBold() : this(color: _fcBlack, fontSize: _fsBig, fontWeight: _fwBold);
+
+  ///엄청 큰 텍스크
+  const CustomTextStyle.largeBlackBold() : this(color: _fcBlack, fontSize: _fsLarge, fontWeight: _fwBold);
+
+  ///차트에 들어가는 텍스트
+  const CustomTextStyle.smallBlackBold() : this(color: _fcBlack, fontSize: _fsSmall, fontWeight: _fwBold);
+
+  const CustomTextStyle.extraLargeBlackBold()
+      : this(color: _fcBlack, fontSize: _fsExtraLarge, fontWeight: _fwBold);
 
 //
 }
