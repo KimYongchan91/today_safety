@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
+import 'package:kakao_map_plugin/kakao_map_plugin.dart';
 import 'package:today_safety/const/value/router.dart';
 
 import '../../firebase_options.dart';
@@ -37,6 +39,7 @@ class _RouteInitState extends State<RouteInit> {
     );
 
     initLogin();
+    initKaKaoSdk();
 
     await Future.delayed(const Duration(seconds: 1));
     Get.offAllNamed(keyRouteMain);
@@ -44,6 +47,12 @@ class _RouteInitState extends State<RouteInit> {
 
   initLogin(){
     MyApp.providerUser.loginAuto();
+  }
+
+
+  initKaKaoSdk(){
+    KakaoSdk.init(nativeAppKey: 'f77b6bf70c14c1698265fd3a1d965768');
+    AuthRepository.initialize(appKey: '440a470432ea1e6ff3a460609d715301');
   }
 
   @override

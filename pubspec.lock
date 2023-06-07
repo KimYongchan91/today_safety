@@ -848,6 +848,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.3"
+  kakao_map_plugin:
+    dependency: "direct main"
+    description:
+      name: kakao_map_plugin
+      sha256: "4e3596f8f6ab7bf376b8592d9b37670903317061b5ff1683be9d251200902848"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.4"
   kpostal:
     dependency: "direct main"
     description:

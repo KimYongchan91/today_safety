@@ -26,9 +26,6 @@ enum LoginType {
 class ProviderUser extends ChangeNotifier {
   ModelUser? modelUser;
 
-  ProviderUser() {
-    ks.KakaoSdk.init(nativeAppKey: 'f77b6bf70c14c1698265fd3a1d965768');
-  }
 
   ///자동 로그인 시작
   loginAuto() async {
@@ -41,8 +38,8 @@ class ProviderUser extends ChangeNotifier {
 
       if (querySnapshot.docs.isNotEmpty) {
         //유저 문서가 존재함
-        ModelUser modelUser =
-            ModelUser.fromJson(querySnapshot.docs.first.data() as Map<dynamic, dynamic>, querySnapshot.docs.first.id);
+        ModelUser modelUser = ModelUser.fromJson(
+            querySnapshot.docs.first.data() as Map<dynamic, dynamic>, querySnapshot.docs.first.id);
         if (modelUser.state == keyOn) {
           MyApp.logger.d("유저 문서가 존재함");
           this.modelUser = modelUser;
@@ -122,7 +119,8 @@ class ProviderUser extends ChangeNotifier {
           //회원가입 성공
 
           //FirebaseAuth 로그인 적용
-          loginWithToken(resultJoin[keyToken], ModelUser.fromJson(modelUserNew.toJson(), resultJoin[keyDocId]));
+          loginWithToken(
+              resultJoin[keyToken], ModelUser.fromJson(modelUserNew.toJson(), resultJoin[keyDocId]));
 
           notifyListeners();
         } on Exception catch (e) {

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -8,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:kakao_map_plugin/kakao_map_plugin.dart';
 import 'package:kpostal/kpostal.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:today_safety/const/model/model_location.dart';
@@ -18,6 +20,7 @@ import 'package:today_safety/ui/item/item_site_search.dart';
 import 'package:http/http.dart' as http;
 
 import '../../const/value/label.dart';
+import '../../custom/custom_text_field.dart';
 import '../../my_app.dart';
 import '../../service/util/util_permission.dart';
 
@@ -36,6 +39,9 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
   late ModelSite modelSiteNew;
 
   final ImagePicker imagePicker = ImagePicker();
+  Completer completer = Completer();
+  KakaoMapController? kakaoMapController;
+  ValueNotifier<Set<Marker>> valueNotifierMarkers = ValueNotifier({});
 
   @override
   void initState() {
@@ -57,103 +63,123 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
           child: SafeArea(
             child: Scaffold(
               body: SafeArea(
-                  child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    //
-                    const Text('이름'),
-                    TextField(
-                      onChanged: (value) {
-                        setState(() {
-                          modelSiteNew.name = value;
-                        });
-                      },
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-
-                    //
-                    const Text('로고 이미지'),
-                    Container(
-                      width: _sizeLogoImage,
-                      height: _sizeLogoImage,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          width: 1,
-                          color: Colors.grey,
-                        ),
+                  child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      //
+                      const Text('이름'),
+                      CustomTextField(
+                        onChanged: (value) {
+                          setState(() {
+                            modelSiteNew.name = value;
+                          });
+                        },
                       ),
-                      child: modelSiteNew.urlLogoImage.isNotEmpty
-                          ? Stack(
-                              children: [
-                                //로고 이미지
-                                Positioned.fill(
-                                  child: (modelSiteNew.urlLogoImage.startsWith('/data')
-                                      ? Image.file(
-                                          File(modelSiteNew.urlLogoImage),
-                                          width: _sizeLogoImage,
-                                          height: _sizeLogoImage,
-                                        )
-                                      : CachedNetworkImage(
-                                          width: _sizeLogoImage,
-                                          height: _sizeLogoImage,
-                                          imageUrl: modelSiteNew.urlLogoImage,
-                                        )),
-                                ),
+                      const SizedBox(
+                        height: 20,
+                      ),
 
-                                //로고 이미지 제거 버튼
-                                Positioned(
-                                  top: 5,
-                                  right: 5,
-                                  child: InkWell(
-                                    onTap: deleteImage,
-                                    child:
-                                        const Padding(padding: EdgeInsets.all(5), child: Icon(Icons.close)),
+                      //
+                      const Text('로고 이미지'),
+                      Container(
+                        width: _sizeLogoImage,
+                        height: _sizeLogoImage,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            width: 1,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        child: modelSiteNew.urlLogoImage.isNotEmpty
+                            ? Stack(
+                                children: [
+                                  //로고 이미지
+                                  Positioned.fill(
+                                    child: (modelSiteNew.urlLogoImage.startsWith('/data')
+                                        ? Image.file(
+                                            File(modelSiteNew.urlLogoImage),
+                                            width: _sizeLogoImage,
+                                            height: _sizeLogoImage,
+                                          )
+                                        : CachedNetworkImage(
+                                            width: _sizeLogoImage,
+                                            height: _sizeLogoImage,
+                                            imageUrl: modelSiteNew.urlLogoImage,
+                                          )),
                                   ),
-                                )
-                              ],
-                            )
-                          : Center(
-                              child: InkWell(
-                                onTap: pickImage,
-                                child: const Padding(
-                                  padding: EdgeInsets.all(20),
-                                  child: Icon(
-                                    Icons.photo,
-                                    size: _sizeLogoImage * 0.25,
+
+                                  //로고 이미지 제거 버튼
+                                  Positioned(
+                                    top: 5,
+                                    right: 5,
+                                    child: InkWell(
+                                      onTap: deleteImage,
+                                      child:
+                                          const Padding(padding: EdgeInsets.all(5), child: Icon(Icons.close)),
+                                    ),
+                                  )
+                                ],
+                              )
+                            : Center(
+                                child: InkWell(
+                                  onTap: pickImage,
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(20),
+                                    child: Icon(
+                                      Icons.photo,
+                                      size: _sizeLogoImage * 0.25,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
 
-                    //
-                    const Text('주소'),
-                    Row(
-                      children: [
-                        Expanded(child: Text('${modelSiteNew.modelLocation.addressLoad}')),
-                        InkWell(
-                          onTap: searchLocation,
-                          child: const Padding(padding: EdgeInsets.all(10), child: Icon(Icons.search)),
-                        )
-                      ],
-                    ),
+                      //
+                      const Text('주소'),
+                      Row(
+                        children: [
+                          Expanded(child: Text('${modelSiteNew.modelLocation.addressLoad}')),
+                          InkWell(
+                            onTap: searchLocation,
+                            child: const Padding(padding: EdgeInsets.all(10), child: Icon(Icons.search)),
+                          )
+                        ],
+                      ),
 
-                    /*  TextField(),
-                   //
+                      modelSiteNew.modelLocation.lat != null
+                          ? SizedBox(
+                              width: Get.width,
+                              height: 200,
+                              child: ValueListenableBuilder(
+                                valueListenable: valueNotifierMarkers,
+                                builder: (context, value, child) => KakaoMap(
+                                  onMapCreated: ((controller) {
+                                    completer.complete();
+                                    kakaoMapController = controller;
+                                  }),
+                                  markers: value.toList(),
+                                ),
+                              ),
+                            )
+                          : Container(),
+
+                      /*  TextField(),
+                     //
 */
-                    //
-                    const SizedBox(
-                      height: 120,
-                    ),
+                      //
+                      const SizedBox(
+                        height: 120,
+                      ),
 
-                    const Text('미리보기'),
-                    ItemSiteSearch(modelSiteNew),
-                  ],
+                      const Text('미리보기'),
+                      ItemSiteSearch(modelSiteNew),
+                    ],
+                  ),
                 ),
               )),
             ),
@@ -269,6 +295,7 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
         return;
       }
     } else {
+      MyApp.logger.d("lat, lng kpostal에서 받아옴 ${result.latitude}, ${result.latitude}");
       modelLocationNew.lat = result.latitude;
       modelLocationNew.lng = result.longitude;
     }
@@ -289,9 +316,7 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
     // widget.routeSaleNewState.jibunAddress = kpostal.jibunAddress;
     // widget.routeSaleNewState.buildingName = kpostal.buildingName;
 
-    GeoHash geoHash7 = GeoHash.fromDecimalDegrees(
-        modelSiteNew.modelLocation.lng!, modelSiteNew.modelLocation.lat!,
-        precision: 7);
+    GeoHash geoHash7 = GeoHash.fromDecimalDegrees(modelLocationNew.lng!, modelLocationNew.lat!, precision: 7);
 
     modelLocationNew.gh7 = geoHash7.geohash;
     modelLocationNew.gh6 = geoHash7.geohash.substring(0, 6);
@@ -302,5 +327,17 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
     setState(() {
       modelSiteNew.modelLocation = modelLocationNew;
     });
+
+    if (completer.isCompleted == false) {
+      await completer.future;
+      await Future.delayed(const Duration(microseconds: 50));
+    }
+    kakaoMapController?.panTo(LatLng(modelSiteNew.modelLocation.lat!, modelSiteNew.modelLocation.lng!));
+    kakaoMapController?.setLevel(3);
+    valueNotifierMarkers.value = {
+      Marker(
+          markerId: 'MARKER_${modelSiteNew.modelLocation.lat}, ${modelSiteNew.modelLocation.lat}',
+          latLng: LatLng(modelSiteNew.modelLocation.lat!, modelSiteNew.modelLocation.lng!))
+    };
   }
 }

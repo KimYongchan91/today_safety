@@ -751,6 +751,13 @@
             </list>
           </value>
         </entry>
+        <entry key="kakao_map_plugin">
+          <value>
+            <list>
+              <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/kakao_map_plugin-0.1.4/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="kpostal">
           <value>
             <list>
@@ -1327,6 +1334,7 @@
       <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/kakao_flutter_sdk_talk-1.4.3/lib" />
       <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/kakao_flutter_sdk_template-1.4.3/lib" />
       <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/kakao_flutter_sdk_user-1.4.3/lib" />
+      <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/kakao_map_plugin-0.1.4/lib" />
       <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/kpostal-0.5.1/lib" />
       <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/lints-2.1.1/lib" />
       <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/logger-1.3.0/lib" />
