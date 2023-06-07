@@ -68,7 +68,24 @@ class RouteMain extends StatelessWidget {
                                             },
                                           );
                                         },
-                                      )
+                                      ),
+                                      InkWell(
+                                        child: const Padding(
+                                          padding: EdgeInsets.all(20),
+                                          child: Icon(
+                                            Icons.add,
+                                            size: 48,
+                                          ),
+                                        ),
+                                        onTap: () {
+                                          Get.toNamed(
+                                            keyRouteSiteNew,
+                                            arguments: {
+                                              //'keyword': 'sex',
+                                            },
+                                          );
+                                        },
+                                      ),
                                     ],
                                   ),
                           ),
@@ -89,18 +106,6 @@ class RouteMain extends StatelessWidget {
                   Get.toNamed(keyRouteLogin);
                 },
                 child: const Text('로그인 페이지로'),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  AlgoliaQuery algoliaQuery = MyApp.algolia.instance.index('fts_site').query("현대 건설");
-                  AlgoliaQuerySnapshot snap = await algoliaQuery.getObjects();
-                  MyApp.logger.d("알고리아 결과 hit 갯수 : ${snap.hits.length}");
-
-                  for (var element in snap.hits) {
-                    print("문서 id : ${element.objectID}");
-                  }
-                },
-                child: const Text('풀텍스트 검색 테스트'),
               ),
             ],
           ),

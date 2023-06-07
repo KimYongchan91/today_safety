@@ -12,7 +12,7 @@ class ModelSite {
   final Timestamp date;
   final ModelLocation modelLocation;
   final int userCount;
-  final ModelCompany modelCompany;
+  final String urlLogoImage;
 
   ModelSite.fromJson(Map map, this.docId)
 
@@ -21,7 +21,7 @@ class ModelSite {
         date = getTimestampFromData(map[keyDate]) ?? Timestamp.now(),
         modelLocation = ModelLocation.fromJson(map[keyLocation]),
         userCount = map[keyUserCount] ?? 0,
-        modelCompany = ModelCompany.fromJson(map[keyCompany]);
+        urlLogoImage = map[keyUrlLogoImage] ?? '';
 
   Map<String, dynamic> toJson({bool isForServerForm = false}) {
     Map<String, dynamic> result = {
@@ -30,7 +30,7 @@ class ModelSite {
       keyDate: date,
       keyLocation: modelLocation.toJson(),
       keyUserCount: userCount,
-      keyCompany: modelCompany.toJson(),
+      keyUrlLogoImage: urlLogoImage,
     };
 
     return isForServerForm ? transformForServerDataType(result) : result;

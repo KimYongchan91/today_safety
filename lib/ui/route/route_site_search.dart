@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:today_safety/my_app.dart';
 import 'package:today_safety/service/provider/provider_site_search.dart';
+import 'package:today_safety/ui/item/item_site_search.dart';
 
 class RouteSiteSearch extends StatefulWidget {
   const RouteSiteSearch({Key? key}) : super(key: key);
@@ -65,7 +66,12 @@ class _RouteSiteSearchState extends State<RouteSiteSearch> {
                           ),
                   ],
                 ),
-                //Expanded(child: ListView.builder(itemBuilder: itemBuilder))
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: value.listModelSite.length,
+                    itemBuilder: (context, index) => ItemSiteSearch(value.listModelSite[index]),
+                  ),
+                )
               ],
             ),
           ),
