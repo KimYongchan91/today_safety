@@ -31,7 +31,9 @@ String messageKakaoLoginFail  = '카카로 로그인에 실패했어요.\n다른
 String messageKakaoLoginInvalidEmail  = '카카오 계정에 e메일 정보가 없어요.\n다른 로그인 방법을 이용해주세요.';
 
 String messageJoinFail  = '회원 가입에 실패했어요.\n잠시 후에 다시 시도해 주세요.';
-String messageLoginFail  = '로그인에 실패했어요.\n다른 로그인 방법을 이용해주세요.';
+String messageLoginFail  = '로그인에 실패했어요.\n다른 로그인 방법을 이용해주세요.'
+
+;
 
 String messagePermissionImageDenied = '이미지를 불러올 권한이 없어요.';
 String messagePermissionImageDeniedPermanently = '권한이 완전히 거부되었어요.\n설정으로 이동해 직접 허용해 주세요.';

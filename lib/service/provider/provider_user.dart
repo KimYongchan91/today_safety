@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -6,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart' as ks;
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
+import 'package:today_safety/const/model/model_site.dart';
 import 'package:today_safety/const/model/model_user.dart';
 import 'package:today_safety/const/model/model_user_easy_login.dart';
 import 'package:today_safety/service/util/util_login.dart';
@@ -25,7 +28,8 @@ enum LoginType {
 
 class ProviderUser extends ChangeNotifier {
   ModelUser? modelUser;
-
+  ModelSite? modelSiteMy;
+  StreamSubscription? subscriptionSiteMy;
 
   ///자동 로그인 시작
   loginAuto() async {
@@ -43,6 +47,7 @@ class ProviderUser extends ChangeNotifier {
         if (modelUser.state == keyOn) {
           MyApp.logger.d("유저 문서가 존재함");
           this.modelUser = modelUser;
+          jobAfterLoginSuccess();
           notifyListeners();
         } else {
           //state가 on이 아님
@@ -143,6 +148,9 @@ class ProviderUser extends ChangeNotifier {
     try {
       await FirebaseAuth.instance.signInWithCustomToken(token);
       this.modelUser = modelUser;
+
+      jobAfterLoginSuccess();
+
       notifyListeners();
     } on Exception catch (e) {
       rethrow;
@@ -175,6 +183,7 @@ class ProviderUser extends ChangeNotifier {
 
   loginWithNaver() {}*/
 
+  ///카카로오부터 정보 받아오기
   Future<ModelUserEasyLogin?> getUserDataFromKakao() async {
     bool isLoginAlready = false;
 
@@ -297,6 +306,7 @@ class ProviderUser extends ChangeNotifier {
     }
   }
 
+  ///구글로부터 정보 받아오기
   Future<ModelUserEasyLogin?> getUserDataFromGoogle() async {
     GoogleSignIn googleSignIn = GoogleSignIn(
       hostedDomain: "kayple.com",
@@ -438,6 +448,31 @@ class ProviderUser extends ChangeNotifier {
     }*/
   }
 
+  ///로그인 성공 후의 작업
+  jobAfterLoginSuccess() async {
+    subscriptionSiteMy = FirebaseFirestore.instance
+        .collection(keySites)
+        .where(keyMaster, isEqualTo: modelUser?.id ?? '')
+        .snapshots()
+        .listen((event) {
+      for (var element in event.docChanges) {
+        switch (element.type) {
+          case DocumentChangeType.added:
+          case DocumentChangeType.modified:
+            ModelSite modelSite = ModelSite.fromJson(element.doc.data() as Map, element.doc.id);
+            modelSiteMy = modelSite;
+            notifyListeners();
+            break;
+          case DocumentChangeType.removed:
+            modelSiteMy == null;
+            notifyListeners();
+            break;
+        }
+
+      }
+    });
+  }
+
   clearProvider({bool isNotify = true}) async {
     modelUser = null;
     if (isNotify) notifyListeners();
@@ -471,5 +506,7 @@ class ProviderUser extends ChangeNotifier {
     } on Exception catch (e) {
       MyApp.logger.wtf("카카오 로그아웃 실패 : ${e.toString()}");
     }
+
+    subscriptionSiteMy?.cancel();
   }
 }

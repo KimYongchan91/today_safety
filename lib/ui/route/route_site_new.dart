@@ -3,24 +3,29 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dart_geohash/dart_geohash.dart';
 import 'package:device_info/device_info.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kakao_map_plugin/kakao_map_plugin.dart';
 import 'package:kpostal/kpostal.dart';
+import 'package:path/path.dart' as pt;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:today_safety/const/model/model_location.dart';
 import 'package:today_safety/const/model/model_site.dart';
+import 'package:today_safety/const/value/router.dart';
 import 'package:today_safety/service/util/util_snackbar.dart';
 import 'package:today_safety/ui/dialog/dialog_close_route.dart';
 import 'package:today_safety/ui/item/item_site_search.dart';
 import 'package:http/http.dart' as http;
 
-import '../../const/value/label.dart';
+import '../../const/value/key.dart';
 import '../../custom/custom_text_field.dart';
+import '../../custom/custom_text_style.dart';
 import '../../my_app.dart';
 import '../../service/util/util_permission.dart';
 
@@ -39,16 +44,21 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
   late ModelSite modelSiteNew;
 
   final ImagePicker imagePicker = ImagePicker();
+  ImageCropper imageCropper = ImageCropper();
   Completer completer = Completer();
   KakaoMapController? kakaoMapController;
   ValueNotifier<Set<Marker>> valueNotifierMarkers = ValueNotifier({});
+
+  ValueNotifier<bool> valueNotifierUpload = ValueNotifier(false);
 
   @override
   void initState() {
     if (widget.modelSiteOld != null) {
       modelSiteNew = ModelSite.fromJson(widget.modelSiteOld!.toJson(), widget.modelSiteOld!.docId);
     } else {
-      modelSiteNew = ModelSite.fromJson({}, '');
+      modelSiteNew = ModelSite.fromJson({
+        keyMaster: MyApp.providerUser.modelUser?.id,
+      }, '');
     }
     super.initState();
   }
@@ -102,11 +112,13 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
                                             File(modelSiteNew.urlLogoImage),
                                             width: _sizeLogoImage,
                                             height: _sizeLogoImage,
+                                            fit: BoxFit.cover,
                                           )
                                         : CachedNetworkImage(
                                             width: _sizeLogoImage,
                                             height: _sizeLogoImage,
                                             imageUrl: modelSiteNew.urlLogoImage,
+                                            fit: BoxFit.cover,
                                           )),
                                   ),
 
@@ -180,6 +192,37 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
 
                       const Text('미리보기'),
                       ItemSiteSearch(modelSiteNew),
+
+                      ///전송 버튼
+                      InkWell(
+                        onTap: complete,
+                        child: Container(
+                          width: Get.width,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            color: const Color(0xfff84343),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Center(
+                            child: ValueListenableBuilder(
+                              valueListenable: valueNotifierUpload,
+                              builder: (context, value, child) => value
+                                  ? CircularProgressIndicator()
+                                  : Padding(
+                                      padding: EdgeInsets.only(top: 2),
+                                      child: Text(
+                                        '만들기',
+                                        style: CustomTextStyle.normalWhiteBold(),
+                                      ),
+                                    ),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(
+                        height: 24,
+                      ),
                     ],
                   ),
                 ),
@@ -211,10 +254,39 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
       return;
     }
 
+    CroppedFile? croppedFile;
+
+    try {
+      croppedFile = await imageCropper.cropImage(
+        sourcePath: xfile.path,
+        aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+        uiSettings: [
+          AndroidUiSettings(
+            toolbarTitle: '로고 이미지 자르기',
+            toolbarColor: Colors.deepOrange,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.square,
+            lockAspectRatio: true,
+            hideBottomControls: true,
+          ),
+          IOSUiSettings(
+            title: '로고 이미지 자르기',
+          ),
+        ],
+      );
+    } on Exception catch (e) {
+      MyApp.logger.d("이미지 자르는데 실패 ${e.toString()}");
+    }
+
+    if (croppedFile == null) {
+      showSnackBarOnRoute(messageEmptySelectedImage);
+      return;
+    }
+
     MyApp.logger.d("이미지파일 주소 : ${xfile.path}");
 
     setState(() {
-      modelSiteNew.urlLogoImage = xfile.path;
+      modelSiteNew.urlLogoImage = croppedFile!.path;
     });
   }
 
@@ -350,4 +422,77 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
           latLng: LatLng(modelSiteNew.modelLocation.lat!, modelSiteNew.modelLocation.lng!))
     };
   }
+
+  complete() async {
+    if (modelSiteNew.name.isEmpty) {
+      showSnackBarOnRoute('근무지의 이름을 입력해 주세요.');
+      return;
+    }
+
+    if (modelSiteNew.name.length < lengthSiteNameMin) {
+      showSnackBarOnRoute('근무지의 이름은 최소 $lengthSiteNameMin글자예요.');
+      return;
+    }
+
+    if (modelSiteNew.name.length > lengthSiteNameMax) {
+      showSnackBarOnRoute('근무지의 이름은 최대 $lengthSiteNameMax글자예요.');
+      return;
+    }
+
+    if (modelSiteNew.urlLogoImage.isEmpty) {
+      showSnackBarOnRoute('근무지의 로고 이미지를 추가해 주세요.');
+      return;
+    }
+
+    if (modelSiteNew.modelLocation.lat == null) {
+      showSnackBarOnRoute('근무지의 주소를 입력해 주세요.');
+      return;
+    }
+
+    if (widget.modelSiteOld == null) {
+      //신규 모드
+
+      valueNotifierUpload.value = true;
+
+      DocumentReference? documentReference;
+      try {
+        documentReference = await FirebaseFirestore.instance.collection(keySites).add(modelSiteNew.toJson());
+
+        //이미지 전송
+        TaskSnapshot uploadTask = await FirebaseStorage.instance
+            .ref(
+                "$keyImages/$keySites/${documentReference.id}/${pt.basename(File(modelSiteNew.urlLogoImage).path)}")
+            .putFile(File(modelSiteNew.urlLogoImage));
+
+        String downloadURL = await uploadTask.ref.getDownloadURL();
+
+        await documentReference.update({
+          keyUrlLogoImage: downloadURL,
+        });
+
+        valueNotifierUpload.value = false;
+
+        Get.back();
+        showSnackBarOnRoute('근무지를 만들었어요');
+        return;
+      } catch (e) {
+        MyApp.logger.wtf("서버에 전송 실패 : ${e.toString()}");
+        showSnackBarOnRoute(messageServerError);
+        if (documentReference != null) {
+          documentReference.delete();
+        }
+
+        valueNotifierUpload.value = false;
+        return;
+      }
+    } else {
+      //수정 모드
+
+      showSnackBarOnRoute('근무지를 수정했어요.');
+      Get.back();
+    }
+  }
 }
+
+const int lengthSiteNameMin = 5;
+const int lengthSiteNameMax = 20;

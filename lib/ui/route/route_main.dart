@@ -36,7 +36,7 @@ class RouteMain extends StatelessWidget {
                         const Row(
                           children: [
                             Text(
-                              '현재 근무지',
+                              '내가 관리하는 근무지',
                               style: CustomTextStyle.bigBlack(),
                             ),
                           ],
@@ -48,46 +48,48 @@ class RouteMain extends StatelessWidget {
                                     '로그인을 해주세요.',
                                     style: CustomTextStyle.bigBlack(),
                                   )
-                                : Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      const Text('아직 가입하기 전'),
-                                      InkWell(
-                                        child: const Padding(
-                                          padding: EdgeInsets.all(20),
-                                          child: Icon(
-                                            Icons.search,
-                                            size: 48,
-                                          ),
-                                        ),
-                                        onTap: () {
-                                          Get.toNamed(
-                                            keyRouteSiteSearch,
-                                            arguments: {
-                                              //'keyword': 'sex',
+                                : value.modelSiteMy == null
+                                    ? (Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          const Text('아직 가입하기 전'),
+                                          InkWell(
+                                            child: const Padding(
+                                              padding: EdgeInsets.all(20),
+                                              child: Icon(
+                                                Icons.search,
+                                                size: 48,
+                                              ),
+                                            ),
+                                            onTap: () {
+                                              Get.toNamed(
+                                                keyRouteSiteSearch,
+                                                arguments: {
+                                                  //'keyword': 'sex',
+                                                },
+                                              );
                                             },
-                                          );
-                                        },
-                                      ),
-                                      InkWell(
-                                        child: const Padding(
-                                          padding: EdgeInsets.all(20),
-                                          child: Icon(
-                                            Icons.add,
-                                            size: 48,
                                           ),
-                                        ),
-                                        onTap: () {
-                                          Get.toNamed(
-                                            keyRouteSiteNew,
-                                            arguments: {
-                                              //'keyword': 'sex',
+                                          InkWell(
+                                            child: const Padding(
+                                              padding: EdgeInsets.all(20),
+                                              child: Icon(
+                                                Icons.add,
+                                                size: 48,
+                                              ),
+                                            ),
+                                            onTap: () {
+                                              Get.toNamed(
+                                                keyRouteSiteNew,
+                                                arguments: {
+                                                  //'keyword': 'sex',
+                                                },
+                                              );
                                             },
-                                          );
-                                        },
-                                      ),
-                                    ],
-                                  ),
+                                          ),
+                                        ],
+                                      ))
+                                    : Text(value.modelSiteMy!.name),
                           ),
                         ),
                       ],

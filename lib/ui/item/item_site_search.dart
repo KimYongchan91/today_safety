@@ -35,6 +35,7 @@ class ItemSiteSearch extends StatelessWidget {
                           ),
                           width: _sizeLogoImage * 0.8,
                           height: _sizeLogoImage * 0.8,
+                          fit: BoxFit.cover,
                         )
 
                       //네트워크
@@ -42,6 +43,7 @@ class ItemSiteSearch extends StatelessWidget {
                           width: _sizeLogoImage * 0.8,
                           height: _sizeLogoImage * 0.8,
                           imageUrl: modelSite.urlLogoImage,
+                          fit: BoxFit.cover,
                         ))
                   : const Center(
                       child: Icon(Icons.photo),

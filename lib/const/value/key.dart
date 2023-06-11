@@ -13,6 +13,8 @@ const String keyOut = 'out';
 
 const String keyResult = 'result';
 const String keyMessage = 'message';
+const String keyMaster = 'master';
+
 const String keyToken = 'token';
 const String keyAuthenticated = 'authenticated';
 const String keyUserNotFound = 'user_not_found';
@@ -42,6 +44,8 @@ const String keyDong = 'dong';
 const String keyAddressLoad = 'address_load';
 const String keyAddressJibun = 'address_Jibun';
 const String keyAddressBuildingName = 'address_building_name';
+const String keySites = 'sites';
+const String keyImages= 'images';
 
 const String keyCompany= 'company';
 const String keyDate= 'date';

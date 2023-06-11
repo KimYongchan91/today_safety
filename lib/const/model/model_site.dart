@@ -11,6 +11,7 @@ class ModelSite {
   final String docId;
   String name;
   Timestamp date;
+  String master;
   ModelLocation modelLocation;
   int userCount;
   String urlLogoImage;
@@ -20,6 +21,7 @@ class ModelSite {
       ///유저 13
       : name = map[keyName] ?? '',
         date = getTimestampFromData(map[keyDate]) ?? Timestamp.now(),
+        master = map[keyMaster] ?? '',
         modelLocation = ModelLocation.fromJson(map[keyLocation] ?? {}),
         userCount = map[keyUserCount] ?? 1,
         urlLogoImage = map[keyUrlLogoImage] ?? '';
@@ -29,6 +31,7 @@ class ModelSite {
       //keyDocId: docId,
       keyName: name,
       keyDate: date,
+      keyMaster: master,
       keyLocation: modelLocation.toJson(),
       keyUserCount: userCount,
       keyUrlLogoImage: urlLogoImage,
