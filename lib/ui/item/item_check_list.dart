@@ -10,17 +10,21 @@ class ItemCheckList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('https://kayple.com/today_safety/check_list/${modelCheckList.docId}');
     return Container(
       width: Get.width,
       height: 150,
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey)
-      ),
+      decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
       child: Row(
         children: [
-          SfBarcodeGenerator(
-            value: '',
-            showValue: false,
+          SizedBox(
+            width: 100,
+            height: 100,
+            child: SfBarcodeGenerator(
+              value: 'https://kayple.com/today_safety/check_list/${modelCheckList.docId}',
+              symbology: QRCode(),
+              showValue: false,
+            ),
           )
         ],
       ),

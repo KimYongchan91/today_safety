@@ -1,13 +1,15 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:kakao_map_plugin/kakao_map_plugin.dart';
 import 'package:today_safety/const/value/router.dart';
+import 'package:today_safety/service/util/util_snackbar.dart';
+import 'package:uni_links/uni_links.dart';
 
 import '../../firebase_options.dart';
 import '../../my_app.dart';
-
 
 class RouteInit extends StatefulWidget {
   const RouteInit({Key? key}) : super(key: key);
@@ -38,6 +40,7 @@ class _RouteInitState extends State<RouteInit> {
       options: DefaultFirebaseOptions.currentPlatform,
     );
 
+    initDeepLink();
     initLogin();
     initKaKaoSdk();
 
@@ -45,12 +48,24 @@ class _RouteInitState extends State<RouteInit> {
     Get.offAllNamed(keyRouteMain);
   }
 
-  initLogin(){
+  initDeepLink() async {
+    try {
+      final initialLink = await getInitialLink();
+      if (initialLink != null) {
+        showSnackBarOnRoute("딥링크 : $initialLink");
+        MyApp.logger.d("딥링크 : $initialLink");
+      }
+    } on PlatformException {
+      // Handle exception by warning the user their action did not succeed
+      // return?
+    }
+  }
+
+  initLogin() {
     MyApp.providerUser.loginAuto();
   }
 
-
-  initKaKaoSdk(){
+  initKaKaoSdk() {
     KakaoSdk.init(nativeAppKey: 'f77b6bf70c14c1698265fd3a1d965768');
     AuthRepository.initialize(appKey: '440a470432ea1e6ff3a460609d715301');
   }

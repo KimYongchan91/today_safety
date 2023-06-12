@@ -9,6 +9,7 @@ import '../../const/value/label.dart';
 import '../../const/value/router.dart';
 import '../../custom/custom_text_style.dart';
 import '../../my_app.dart';
+import '../item/item_check_list.dart';
 
 const double _sizeLogoImage = 120;
 
@@ -85,7 +86,7 @@ class _RouteSiteDetailState extends State<RouteSiteDetail> {
                 Consumer<ProviderCheckList>(
                   builder: (context, value, child) => ListView.builder(
                     itemCount: value.listModelCheckList.length,
-                    itemBuilder: (context, index) => Text(value.listModelCheckList[index].name),
+                    itemBuilder: (context, index) => ItemCheckList(value.listModelCheckList[index]),
                     shrinkWrap: true,
                   ),
                 )
