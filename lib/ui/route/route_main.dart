@@ -31,7 +31,7 @@ class RouteMain extends StatelessWidget {
                   child: SizedBox(
                     width: Get.width * 0.9,
                     height: 300,
-                    child: Stack(
+                    child: Column(
                       children: [
                         const Row(
                           children: [
@@ -43,11 +43,14 @@ class RouteMain extends StatelessWidget {
                         ),
                         Consumer<ProviderUser>(
                           builder: (context, value, child) => Center(
+                            ///로그인 전이라면
                             child: value.modelUser == null
                                 ? const Text(
                                     '로그인을 해주세요.',
                                     style: CustomTextStyle.bigBlack(),
                                   )
+
+                                ///내가 아직 근무지를 만들지 않았다면
                                 : value.modelSiteMy == null
                                     ? (Column(
                                         mainAxisSize: MainAxisSize.min,
@@ -89,7 +92,23 @@ class RouteMain extends StatelessWidget {
                                           ),
                                         ],
                                       ))
-                                    : Text(value.modelSiteMy!.name),
+
+                                    ///내가 근무지를 만들었다면
+                                    : InkWell(
+                                        onTap: goRouteSiteDetail,
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              value.modelSiteMy!.name,
+                                              style: const CustomTextStyle.bigBlack(),
+                                            ),
+                                            const Text(
+                                              '최근 확인 내역',
+                                              style: CustomTextStyle.normalGreyBold(),
+                                            )
+                                          ],
+                                        ),
+                                      ),
                           ),
                         ),
                       ],
@@ -114,5 +133,10 @@ class RouteMain extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  goRouteSiteDetail() {
+    Get.toNamed('$keyRouteSiteDetail/${MyApp.providerUser.modelSiteMy?.docId ?? ''}',
+        arguments: {keyModelSite: MyApp.providerUser.modelSiteMy});
   }
 }
