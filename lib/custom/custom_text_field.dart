@@ -1,22 +1,24 @@
 import 'package:flutter/material.dart';
 
 class CustomTextField extends TextField {
-  const CustomTextField({
+  CustomTextField({
     Key? key,
     void Function(String)? onChanged,
+    String? hintText,
+    TextEditingController? controller,
   }) : super(
           key: key,
           maxLines: 1,
-          decoration: const InputDecoration(
-              border: OutlineInputBorder(
+          controller: controller,
+          decoration: InputDecoration(
+              border: const OutlineInputBorder(
                 borderSide: BorderSide.none,
               ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.blueAccent)
-              ),
-              enabledBorder: OutlineInputBorder(),
+              focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.blueAccent)),
+              enabledBorder: const OutlineInputBorder(),
               isDense: true,
-              contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10)),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              hintText: hintText),
           onChanged: onChanged,
         );
 }

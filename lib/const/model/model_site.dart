@@ -26,7 +26,7 @@ class ModelSite {
         userCount = map[keyUserCount] ?? 1,
         urlLogoImage = map[keyUrlLogoImage] ?? '';
 
-  Map<String, dynamic> toJson({bool isForServerForm = false}) {
+  Map<String, dynamic> toJson({bool isIncludeDocID = false, bool isForServerForm = false}) {
     Map<String, dynamic> result = {
       //keyDocId: docId,
       keyName: name,
@@ -36,6 +36,10 @@ class ModelSite {
       keyUserCount: userCount,
       keyUrlLogoImage: urlLogoImage,
     };
+
+    if (isIncludeDocID) {
+      result[keyDocId] = docId;
+    }
 
     return isForServerForm ? transformForServerDataType(result) : result;
   }

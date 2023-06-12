@@ -31,6 +31,9 @@ import '../../service/util/util_permission.dart';
 
 const double _sizeLogoImage = 240;
 
+const int lengthSiteNameMin = 5;
+const int lengthSiteNameMax = 20;
+
 class RouteSiteNew extends StatefulWidget {
   final ModelSite? modelSiteOld;
 
@@ -207,8 +210,8 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
                             child: ValueListenableBuilder(
                               valueListenable: valueNotifierUpload,
                               builder: (context, value, child) => value
-                                  ? CircularProgressIndicator()
-                                  : Padding(
+                                  ? const CircularProgressIndicator()
+                                  : const Padding(
                                       padding: EdgeInsets.only(top: 2),
                                       child: Text(
                                         '만들기',
@@ -424,6 +427,11 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
   }
 
   complete() async {
+
+    if(valueNotifierUpload.value == true){
+      return;
+    }
+
     if (modelSiteNew.name.isEmpty) {
       showSnackBarOnRoute('근무지의 이름을 입력해 주세요.');
       return;
@@ -493,6 +501,3 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
     }
   }
 }
-
-const int lengthSiteNameMin = 5;
-const int lengthSiteNameMax = 20;

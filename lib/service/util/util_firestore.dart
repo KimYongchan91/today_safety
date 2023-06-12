@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../const/model/model_check.dart';
 import '../../my_app.dart';
 
 Timestamp? getTimestampFromData(dynamic data) {
@@ -35,4 +36,27 @@ Map<String, dynamic> transformForServerDataType(Map<String, dynamic> mapOld) {
   MyApp.logger.d("변경된 맵 : ${mapNew.toString()}");
 
   return mapNew;
+}
+
+List<ModelCheck> getListModelCheckFromServer(dynamic list) {
+  List<ModelCheck> result = [];
+
+  if (list is List) {
+    for (var element in list) {
+      result.add(ModelCheck.fromJson(element));
+    }
+  }
+
+  return result;
+}
+
+dynamic getListModelCheckFromLocal(List<ModelCheck> list){
+  List<dynamic> result = [];
+
+  for (var element in list) {
+    result.add(element.toJson());
+  }
+
+
+  return result;
 }

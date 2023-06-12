@@ -66,6 +66,7 @@ dependencies:
   google_sign_in: ^6.1.4
   algolia: ^1.1.2
   kpostal: ^0.5.1
+  syncfusion_flutter_barcodes: ^21.2.9
 
   firebase_analytics: ^10.4.2
   firebase_auth: ^4.6.2

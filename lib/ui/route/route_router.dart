@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:today_safety/const/value/router.dart';
+import 'package:today_safety/ui/route/route_check_list_detail.dart';
 import 'package:today_safety/ui/route/route_init.dart';
 import 'package:today_safety/ui/route/route_login.dart';
-import 'package:today_safety/ui/route/route_site_check_list_new.dart';
+import 'package:today_safety/ui/route/route_check_list_new.dart';
 import 'package:today_safety/ui/route/route_site_detail.dart';
 import 'package:today_safety/ui/route/route_site_new.dart';
 import 'package:today_safety/ui/route/route_site_search.dart';
@@ -64,9 +65,15 @@ class RouteRouter extends StatelessWidget {
         ),
 
         GetPage(
-          name: keyRouteSiteCheckListNew,
-          page: () => const RouteSiteCheckListNew(),
+          name: keyRouteCheckListNew,
+          page: () => const RouteCheckListNew(),
         ),
+
+        GetPage(
+          name: '$keyRouteCheckListDetail/:$keyCheckListId',
+          page: () => const RouteCheckListDetail(),
+        ),
+
 
 
         /*  GetPage(

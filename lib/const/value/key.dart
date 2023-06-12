@@ -44,6 +44,7 @@ const String keyDong = 'dong';
 const String keyAddressLoad = 'address_load';
 const String keyAddressJibun = 'address_Jibun';
 const String keyAddressBuildingName = 'address_building_name';
+const String keySite = 'site';
 const String keySites = 'sites';
 const String keyImages= 'images';
 
@@ -53,3 +54,7 @@ const String keyLocation= 'location';
 const String keyUserCount= 'user_count';
 const String keyName= 'name';
 const String keyUrlLogoImage= 'url_logo_image';
+
+const String keyFac= 'fac';
+const String keyCheckList= 'check_list';
+const String keyCheckListS= 'check_lists';

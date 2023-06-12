@@ -3,14 +3,8 @@ import 'fuc.dart';
 
 /// fuc : Frequently Used Checklist
 
-/*
-고소 작업 : work_at_height
-전기 관련 작업 : work_with_electric
-*/
-
 ///fuc 프리셋 이미지 파일 기본 주소
 const String _pathBaseFucPresetImage = 'assets/images/fuc_preset';
-//assets/images/fuc/work_with_electric.png
 
 ///fuc 프리셋 코드
 const String keyWorkAtHeight = 'work_at_height';
@@ -55,7 +49,6 @@ ModelFucPreset getModelFucPreset(String code) {
 
 /// fuc 프리셋 모델의 이미지 파일 주소를 반환
 /// png
-/// 없으면 '';
 String getPathFucPresetImage(ModelFucPreset modelFucPreset) {
   String path = "$_pathBaseFucPresetImage/${modelFucPreset.code}.png";
   return path;
