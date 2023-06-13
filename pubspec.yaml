@@ -80,6 +80,8 @@ dependencies:
   firebase_crashlytics: ^3.3.2
   firebase_dynamic_links: ^5.3.2
   firebase_remote_config: ^4.2.2
+  google_fonts:
+  font_awesome_flutter:
 
 dev_dependencies:
   flutter_test:
