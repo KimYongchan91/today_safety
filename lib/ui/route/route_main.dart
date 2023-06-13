@@ -120,7 +120,7 @@ class RouteMain extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   //'$keyRouteCheckListDetail/:$keyCheckListId/$keyRouteCheckListCheck',
-                  Get.toNamed('$keyRouteCheckListDetail/dsfksfjl/$keyRouteCheckListCheckWithOutSlash',
+                  Get.toNamed('$keyRouteCheckListDetail/Y7eoaYJLn5v1YvolI0xW/$keyRouteCheckListCheckWithOutSlash',
                       arguments: {keyUrl: 'test'});
                 },
                 child: const Text('인증 페이지로'),

@@ -69,6 +69,7 @@ dependencies:
   algolia: ^1.1.2
   kpostal: ^0.5.1
   syncfusion_flutter_barcodes: ^21.2.9
+  camera: ^0.10.5+2
 
   firebase_analytics: ^10.4.2
   firebase_auth: ^4.6.2
