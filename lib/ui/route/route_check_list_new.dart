@@ -73,7 +73,7 @@ class _RouteCheckListNewState extends State<RouteCheckListNew> {
                       builder: (context, value, child) => ListView.builder(
                         itemBuilder: (context, index) => InkWell(
                           onTap: () {},
-                          child: ItemCheck(value[index], () {
+                          child: ItemCheck(value[index], onDelete: () {
                             onDeleteModelFuc(value[index]);
                           }),
                         ),
@@ -220,12 +220,10 @@ class _RouteCheckListNewState extends State<RouteCheckListNew> {
       listModelCheck: valueNotifierListModelCheck.value,
     );
     try {
-      DocumentReference documentReference = await FirebaseFirestore.instance
-          .collection(keyCheckListS)
-          .add(modelCheckList.toJson());
+      DocumentReference documentReference =
+          await FirebaseFirestore.instance.collection(keyCheckListS).add(modelCheckList.toJson());
       Get.back();
       showSnackBarOnRoute('체크리스트를 만들었어요.');
-
     } catch (e) {
       MyApp.logger.wtf('서버에 전송 실패 : ${e.toString()}');
       showSnackBarOnRoute(messageServerError);

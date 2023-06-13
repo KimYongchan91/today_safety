@@ -9,7 +9,7 @@ import 'package:today_safety/ui/route/route_check_list_new.dart';
 import 'package:today_safety/ui/route/route_site_detail.dart';
 import 'package:today_safety/ui/route/route_site_new.dart';
 import 'package:today_safety/ui/route/route_site_search.dart';
-import 'package:today_safety/ui/route/route_verify.dart';
+import 'package:today_safety/ui/route/route_check_list_check.dart';
 
 import 'route_main.dart';
 
@@ -47,10 +47,7 @@ class RouteRouter extends StatelessWidget {
           name: keyRouteLogin,
           page: () => const RouteLogin(),
         ),
-        GetPage(
-          name: keyRouteVerify,
-          page: () => const RouteVerify(),
-        ),
+
         GetPage(
           name: keyRouteSiteNew,
           page: () => const RouteSiteNew(),
@@ -72,6 +69,11 @@ class RouteRouter extends StatelessWidget {
         GetPage(
           name: '$keyRouteCheckListDetail/:$keyCheckListId',
           page: () => const RouteCheckListDetail(),
+        ),
+
+        GetPage(
+          name: '$keyRouteCheckListDetail/:$keyCheckListId/$keyRouteCheckListCheckWithOutSlash',
+          page: () => const RouteCheckListCheck(),
         ),
 
 

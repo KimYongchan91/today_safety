@@ -1,0 +1,1 @@
+const String urlAppLink ='https://kayple.com/today_safety/check_list';

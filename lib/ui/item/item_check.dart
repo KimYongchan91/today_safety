@@ -8,9 +8,9 @@ import 'package:today_safety/custom/custom_text_style.dart';
 
 class ItemCheck extends StatelessWidget {
   final ModelCheck modelCheck;
-  final void Function() onDelete;
+  final void Function()? onDelete;
 
-  const ItemCheck(this.modelCheck, this.onDelete, {Key? key}) : super(key: key);
+  const ItemCheck(this.modelCheck, {this.onDelete, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -37,15 +37,19 @@ class ItemCheck extends StatelessWidget {
             ),
           ),
           Positioned(
-              top: 5,
-              right: 5,
+            top: 5,
+            right: 5,
+            child: Visibility(
+              visible: onDelete != null,
               child: InkWell(
                 onTap: onDelete,
                 child: const Padding(
                   padding: EdgeInsets.all(10),
                   child: Icon(Icons.close),
                 ),
-              ))
+              ),
+            ),
+          )
         ],
       ),
     );
