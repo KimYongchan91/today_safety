@@ -70,6 +70,8 @@ dependencies:
   kpostal: ^0.5.1
   syncfusion_flutter_barcodes: ^21.2.9
   camera: ^0.10.5+2
+  google_fonts:
+  font_awesome_flutter:
 
   firebase_analytics: ^10.4.2
   firebase_auth: ^4.6.2
@@ -81,6 +83,7 @@ dependencies:
   firebase_crashlytics: ^3.3.2
   firebase_dynamic_links: ^5.3.2
   firebase_remote_config: ^4.2.2
+
 
 dev_dependencies:
   flutter_test:
