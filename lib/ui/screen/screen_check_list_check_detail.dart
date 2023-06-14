@@ -1,3 +1,4 @@
+/*
 import 'dart:io';
 
 import 'package:camera/camera.dart';
@@ -50,7 +51,7 @@ class _ScreenCheckListCheckDetailState extends State<ScreenCheckListCheckDetail>
                         }
 
                         var result = await Get.to(RouteCamera(
-                          modelCheck: widget.modelCheck,
+                          modelCheckList: widget.mo,
                         ));
 
                         if (result != null && result is XFile) {
@@ -72,3 +73,4 @@ class _ScreenCheckListCheckDetailState extends State<ScreenCheckListCheckDetail>
     );
   }
 }
+*/

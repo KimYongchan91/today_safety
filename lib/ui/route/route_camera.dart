@@ -12,9 +12,9 @@ import 'package:today_safety/ui/item/item_check.dart';
 import '../../my_app.dart';
 
 class RouteCamera extends StatefulWidget {
-  final ModelCheck? modelCheck;
+  final ModelCheckList? modelCheckList;
 
-  const RouteCamera({this.modelCheck, Key? key}) : super(key: key);
+  const RouteCamera({this.modelCheckList, Key? key}) : super(key: key);
 
   @override
   State<RouteCamera> createState() => _RouteCameraState();
@@ -24,6 +24,8 @@ class _RouteCameraState extends State<RouteCamera> {
   late Completer<bool> completerInit;
   late CameraController controller;
   late List<CameraDescription> _cameras;
+
+  ValueNotifier<int> valueNotifierIndexCheck = ValueNotifier(0);
 
   @override
   void initState() {
@@ -103,22 +105,24 @@ class _RouteCameraState extends State<RouteCamera> {
                     left: 0,
                     right: 0,
                     child: Visibility(
-                      visible: widget.modelCheck != null,
-                      child: ExpandablePanel(
-                        ///설명의 헤더 (항상 보이는)
-                        header: Text(widget.modelCheck!.name),
+                        visible: widget.modelCheckList != null,
+                        child: ValueListenableBuilder(
+                          valueListenable: valueNotifierIndexCheck,
+                          builder: (context, value, child) => ExpandablePanel(
+                            ///설명의 헤더 (항상 보이는)
+                            header: Text(widget.modelCheckList!.listModelCheck[value].name),
 
-                        ///설명의 바디 (축소되었을 때)
-                        collapsed: Container(),
+                            ///설명의 바디 (축소되었을 때)
+                            collapsed: Container(),
 
-                        ///설명의 바디 (확장되었을 때)
-                        expanded: ItemCheck(widget.modelCheck!),
-                        theme: const ExpandableThemeData(
-                          hasIcon: true,
-                          iconSize: 36,
-                        ),
-                      ),
-                    ),
+                            ///설명의 바디 (확장되었을 때)
+                            expanded: ItemCheck(widget.modelCheckList!.listModelCheck[value]),
+                            theme: const ExpandableThemeData(
+                              hasIcon: true,
+                              iconSize: 36,
+                            ),
+                          ),
+                        )),
                   ),
 
                   ///촬영 버튼
