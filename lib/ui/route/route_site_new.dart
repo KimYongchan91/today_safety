@@ -8,6 +8,7 @@ import 'package:dart_geohash/dart_geohash.dart';
 import 'package:device_info/device_info.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -17,6 +18,7 @@ import 'package:path/path.dart' as pt;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:today_safety/const/model/model_location.dart';
 import 'package:today_safety/const/model/model_site.dart';
+import 'package:today_safety/const/value/color.dart';
 import 'package:today_safety/const/value/router.dart';
 import 'package:today_safety/service/util/util_snackbar.dart';
 import 'package:today_safety/ui/dialog/dialog_close_route.dart';
@@ -54,6 +56,13 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
 
   ValueNotifier<bool> valueNotifierUpload = ValueNotifier(false);
 
+  TextStyle titleStyle = const TextStyle(
+    color: Colors.black,
+    fontWeight: FontWeight.bold,
+    fontSize: 18
+  );
+
+
   @override
   void initState() {
     if (widget.modelSiteOld != null) {
@@ -75,161 +84,295 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
           onTap: hideKeyboard,
           child: SafeArea(
             child: Scaffold(
-              body: SafeArea(
-                  child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: SingleChildScrollView(
-                  child: Column(
+              body: SingleChildScrollView(
+              child: Column(
+              children: [
+                ///앱바
+
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  width: MediaQuery.of(context).size.width,
+                  height: 60,
+                  color: Colors.white,
+                  child: Row(
                     children: [
-                      //
-                      const Text('이름'),
-                      CustomTextField(
-                        onChanged: (value) {
-                          setState(() {
-                            modelSiteNew.name = value;
-                          });
-                        },
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-
-                      //
-                      const Text('로고 이미지'),
-                      Container(
-                        width: _sizeLogoImage,
-                        height: _sizeLogoImage,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            width: 1,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        child: modelSiteNew.urlLogoImage.isNotEmpty
-                            ? Stack(
-                                children: [
-                                  //로고 이미지
-                                  Positioned.fill(
-                                    child: (modelSiteNew.urlLogoImage.startsWith('/data')
-                                        ? Image.file(
-                                            File(modelSiteNew.urlLogoImage),
-                                            width: _sizeLogoImage,
-                                            height: _sizeLogoImage,
-                                            fit: BoxFit.cover,
-                                          )
-                                        : CachedNetworkImage(
-                                            width: _sizeLogoImage,
-                                            height: _sizeLogoImage,
-                                            imageUrl: modelSiteNew.urlLogoImage,
-                                            fit: BoxFit.cover,
-                                          )),
-                                  ),
-
-                                  //로고 이미지 제거 버튼
-                                  Positioned(
-                                    top: 5,
-                                    right: 5,
-                                    child: InkWell(
-                                      onTap: deleteImage,
-                                      child:
-                                          const Padding(padding: EdgeInsets.all(5), child: Icon(Icons.close)),
-                                    ),
-                                  )
-                                ],
-                              )
-                            : Center(
-                                child: InkWell(
-                                  onTap: pickImage,
-                                  child: const Padding(
-                                    padding: EdgeInsets.all(20),
-                                    child: Icon(
-                                      Icons.photo,
-                                      size: _sizeLogoImage * 0.25,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-
-                      //
-                      const Text('주소'),
-                      Row(
-                        children: [
-                          Expanded(child: Text('${modelSiteNew.modelLocation.addressLoad}')),
-                          InkWell(
-                            onTap: searchLocation,
-                            child: const Padding(padding: EdgeInsets.all(10), child: Icon(Icons.search)),
-                          )
-                        ],
-                      ),
-
-                      modelSiteNew.modelLocation.lat != null
-                          ? SizedBox(
-                              width: Get.width,
-                              height: 200,
-                              child: ValueListenableBuilder(
-                                valueListenable: valueNotifierMarkers,
-                                builder: (context, value, child) => KakaoMap(
-                                  onMapCreated: ((controller) {
-                                    completer.complete();
-                                    kakaoMapController = controller;
-
-                                    _moveKaKaoMapToCenterAndAddMarker();
-                                  }),
-                                  markers: value.toList(),
-                                ),
-                              ),
-                            )
-                          : Container(),
-
-                      /*  TextField(),
-                     //
-*/
-                      //
-                      const SizedBox(
-                        height: 120,
-                      ),
-
-                      const Text('미리보기'),
-                      ItemSiteSearch(modelSiteNew),
-
-                      ///전송 버튼
                       InkWell(
-                        onTap: complete,
-                        child: Container(
-                          width: Get.width,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            color: const Color(0xfff84343),
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Center(
-                            child: ValueListenableBuilder(
-                              valueListenable: valueNotifierUpload,
-                              builder: (context, value, child) => value
-                                  ? const CircularProgressIndicator()
-                                  : const Padding(
-                                      padding: EdgeInsets.only(top: 2),
-                                      child: Text(
-                                        '만들기',
-                                        style: CustomTextStyle.normalWhiteBold(),
-                                      ),
-                                    ),
-                            ),
-                          ),
-                        ),
+                        onTap: (){
+                          Get.back();
+                        },
+                        child: FaIcon(FontAwesomeIcons.angleLeft),
                       ),
 
-                      const SizedBox(
-                        height: 24,
-                      ),
+                      const SizedBox(width: 20,),
+
+                      const Expanded(child: Text(
+                        '근무지 만들기',style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),
+                      )),
+
+
+
+
                     ],
                   ),
                 ),
-              )),
+
+
+
+///앱바 구분선
+Container(width: MediaQuery.of(context).size.width,
+height: 1,
+color: Colors.black45,),
+
+
+
+
+
+Container(
+  alignment: Alignment.centerLeft,
+  padding: EdgeInsets.symmetric(horizontal: 20),
+  color: Colors.white,
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      ///근무지 이미지
+
+
+      Align(
+        alignment: Alignment.center,
+        child: Container(
+
+          width: _sizeLogoImage,
+          height: _sizeLogoImage,
+          decoration: BoxDecoration(
+            border: Border.all(
+              width: 1,
+              color: Colors.grey,
+            ),
+          ),
+          child: modelSiteNew.urlLogoImage.isNotEmpty
+              ? Stack(
+            children: [
+              //로고 이미지
+              Positioned.fill(
+                child: (modelSiteNew.urlLogoImage.startsWith('/data')
+                    ? Image.file(
+                  File(modelSiteNew.urlLogoImage),
+                  width: _sizeLogoImage,
+                  height: _sizeLogoImage,
+                  fit: BoxFit.cover,
+                )
+                    : CachedNetworkImage(
+                  width: _sizeLogoImage,
+                  height: _sizeLogoImage,
+                  imageUrl: modelSiteNew.urlLogoImage,
+                  fit: BoxFit.cover,
+                )),
+              ),
+
+              //로고 이미지 제거 버튼
+              Positioned(
+                top: 5,
+                right: 5,
+                child: InkWell(
+                  onTap: deleteImage,
+                  child:
+                  const Padding(padding: EdgeInsets.all(5), child: Icon(Icons.close)),
+                ),
+              )
+            ],
+          )
+              : Center(
+            child: InkWell(
+              onTap: pickImage,
+              child: const Padding(
+                padding: EdgeInsets.all(20),
+                child: Icon(
+                  Icons.photo,
+                  size: _sizeLogoImage * 0.25,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+
+
+
+
+      const SizedBox(
+        height: 40,
+      ),
+
+
+
+
+
+
+
+
+
+///근무지 텍스트
+      Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20),
+          child: Text('이름',style: titleStyle,)),
+      const SizedBox(
+        height: 20,
+      ),
+
+
+///근무지 텍스트 폼
+      CustomTextField(
+        onChanged: (value) {
+          setState(() {
+            modelSiteNew.name = value;
+          });
+        },
+      ),
+
+
+
+      const SizedBox(
+        height: 40,
+      ),
+
+
+///주소 텍스트
+       Padding(
+           padding: const EdgeInsets.symmetric(vertical: 20),
+           child: Text('주소',style: titleStyle,)),
+
+      const SizedBox(
+        height: 20,
+      ),
+
+      ///주소 검색 버튼
+      InkWell(
+        onTap: searchLocation,
+
+
+        child: Container(
+          margin: EdgeInsets.symmetric(horizontal: 20),
+
+          padding: EdgeInsets.all(15),
+          width: MediaQuery.of(context).size.width,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5),
+
+            color: colorBackground
+          ),
+          child: const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              FaIcon(FontAwesomeIcons.locationDot,size: 14,),
+SizedBox(width: 5,),
+
+
+              Text(
+                '주소찾기',
+              ),
+            ],
+          ),
+        ),
+      ),
+
+
+
+
+
+
+      
+    ],
+  ),
+),
+
+
+                //
+
+
+
+
+                //
+
+
+                const SizedBox(
+                  height: 20,
+                ),
+
+                //
+
+                Row(
+                  children: [
+                    Expanded(child: Text('${modelSiteNew.modelLocation.addressLoad}')),
+                    InkWell(
+                      onTap: searchLocation,
+                      child: const Padding(padding: EdgeInsets.all(10), child: Icon(Icons.search)),
+                    )
+                  ],
+                ),
+
+                modelSiteNew.modelLocation.lat != null
+                    ? SizedBox(
+                        width: Get.width,
+                        height: 200,
+                        child: ValueListenableBuilder(
+                          valueListenable: valueNotifierMarkers,
+                          builder: (context, value, child) => KakaoMap(
+                            onMapCreated: ((controller) {
+                              completer.complete();
+                              kakaoMapController = controller;
+
+                              _moveKaKaoMapToCenterAndAddMarker();
+                            }),
+                            markers: value.toList(),
+                          ),
+                        ),
+                      )
+                    : Container(),
+
+                /*  TextField(),
+               //
+*/
+                //
+                const SizedBox(
+                  height: 120,
+                ),
+
+                const Text('미리보기'),
+                ItemSiteSearch(modelSiteNew),
+
+                ///전송 버튼
+                InkWell(
+                  onTap: complete,
+                  child: Container(
+                    width: Get.width,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      color: const Color(0xfff84343),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Center(
+                      child: ValueListenableBuilder(
+                        valueListenable: valueNotifierUpload,
+                        builder: (context, value, child) => value
+                            ? const CircularProgressIndicator()
+                            : const Padding(
+                                padding: EdgeInsets.only(top: 2),
+                                child: Text(
+                                  '만들기',
+                                  style: CustomTextStyle.normalWhiteBold(),
+                                ),
+                              ),
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(
+                  height: 24,
+                ),
+              ],
+              ),
+              ),
             ),
           ),
         ),
