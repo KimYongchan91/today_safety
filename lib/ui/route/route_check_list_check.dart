@@ -2,13 +2,19 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:today_safety/const/model/model_check_list.dart';
+import 'package:today_safety/ui/route/route_check_list_check_camera.dart';
+import 'package:today_safety/ui/route/test/route_test_animation_container.dart';
+import 'package:today_safety/ui/route/test/route_test_animation_hero.dart';
+import 'package:today_safety/ui/route/test/route_test_check_sequence.dart';
 import 'package:today_safety/ui/screen/screen_check_list_check_detail.dart';
 
 import '../../const/value/router.dart';
 import '../../custom/custom_text_style.dart';
 import '../../my_app.dart';
 import '../../service/util/util_check_list.dart';
+import '../../service/util/util_permission.dart';
 import '../item/item_check.dart';
 import '../screen/screen_check_list_check_main.dart';
 
@@ -78,47 +84,11 @@ class _RouteCheckListCheckState extends State<RouteCheckListCheck> {
                 return Column(
                   children: [
                     Expanded(
-                      child: IndexedStack(
-                        index: indexCheck,
-                        children: [
-                          ScreenCheckListCheckMain(modelCheckList!),
-                          ...modelCheckList!.listModelCheck.map((e) => ScreenCheckListCheckDetail(e)),
-                        ],
-                      ),
+                      child: ScreenCheckListCheckMain(modelCheckList!),
                     ),
-                    Row(
-                      children: [
-                        Flexible(
-                          flex: 1,
-                          child: Visibility(
-                            visible: indexCheck != 0,
-                            maintainSize: true,
-                            maintainAnimation: true,
-                            maintainState: true,
-                            child: _Button(
-                              '이전',
-                              movePreviousCheck,
-                              colorBackground: Colors.grey,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        Flexible(
-                          flex: 2,
-                          child: Visibility(
-                            visible: indexCheck < modelCheckList!.listModelCheck.length,
-                            maintainSize: true,
-                            maintainAnimation: true,
-                            maintainState: true,
-                            child: _Button(
-                              indexCheck == 0 ? '인증 시작' : '다음 인증',
-                              moveNextCheck,
-                            ),
-                          ),
-                        ),
-                      ],
+                    _Button(
+                      indexCheck == 0 ? '인증 시작' : '다음 인증',
+                      startCheck,
                     ),
                     const SizedBox(
                       height: 10,
@@ -171,6 +141,25 @@ class _RouteCheckListCheckState extends State<RouteCheckListCheck> {
       indexCheck++;
     });
   }
+
+  startCheck() async {
+    bool isPermissionGranted = await requestPermission(Permission.camera);
+    if (isPermissionGranted == false) {
+      return;
+    }
+
+    //todo test
+    /*var result = await Get.to(RouteCamera(
+      modelCheckList: modelCheckList,
+    ));*/
+    //Get.to(OpenContainerTransformDemo());
+
+    Get.to(RouteCheckListCheckCamera(modelCheckList!));
+
+   /* var result = await Get.to(RouteTestCheckSequence(
+      modelCheckList: modelCheckList,
+    ));*/
+  }
 }
 
 ///이 페이지에서 쓰이는 다음 인증, 이전 인증 버튼
@@ -179,7 +168,8 @@ class _Button extends StatelessWidget {
   final void Function()? onTap;
   final Color colorBackground;
 
-  const _Button(this.label, this.onTap, {this.colorBackground = const Color(0xfff84343), Key? key}) : super(key: key);
+  const _Button(this.label, this.onTap, {this.colorBackground = const Color(0xfff84343), Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:quiver/core.dart';
 
 import '../../service/util/util_firestore.dart';
 import '../value/key.dart';
@@ -33,4 +34,13 @@ class ModelCheck {
 
     return isForServerForm ? transformForServerDataType(result) : result;
   }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ModelCheck && other.name == name;
+  }
+
+  @override
+  int get hashCode => hash2(name, fac);
+
 }
