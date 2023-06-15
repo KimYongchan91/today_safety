@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -61,7 +62,8 @@ class RouteMain extends StatelessWidget {
                           padding: const EdgeInsets.all(20),
                           child: InkWell(
                             onTap: () {
-                              Get.toNamed('$keyRouteCheckListDetail/Y7eoaYJLn5v1YvolI0xW/$keyRouteCheckListCheckWithOutSlash',
+                              Get.toNamed(
+                                  '$keyRouteCheckListDetail/Y7eoaYJLn5v1YvolI0xW/$keyRouteCheckListCheckWithOutSlash',
                                   arguments: {keyUrl: 'test'});
                             },
                             child: const FaIcon(
@@ -222,7 +224,9 @@ class RouteMain extends StatelessWidget {
                                               child: Text(
                                                 '근무지 만들기',
                                                 style: TextStyle(
-                                                    fontWeight: FontWeight.bold, color: Colors.black45, fontSize: 16),
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.black45,
+                                                    fontSize: 16),
                                               ))
                                         ],
                                       )
@@ -242,10 +246,16 @@ class RouteMain extends StatelessWidget {
 
                                           ///이미지 영역
                                           Container(
-                                            width: MediaQuery.of(context).size.width,
-                                            height: MediaQuery.of(context).size.height / 4,
+                                            width: Get.width,
+                                            height: Get.height / 4,
                                             decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(20), color: Colors.redAccent),
+                                                borderRadius: BorderRadius.circular(20),
+                                                color: Colors.redAccent),
+                                            child:
+                                                //todo ldj 근무지 로고 이미지 부분
+                                                CachedNetworkImage(
+                                              imageUrl: value.modelSiteMy!.urlLogoImage,
+                                            ),
                                           ),
 
                                           const SizedBox(
@@ -263,7 +273,8 @@ class RouteMain extends StatelessWidget {
                                                       ///근무지 이름
                                                       Text(
                                                         value.modelSiteMy!.name,
-                                                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
+                                                        style: TextStyle(
+                                                            fontSize: 20, fontWeight: FontWeight.w800),
                                                       ),
 
                                                       const SizedBox(
