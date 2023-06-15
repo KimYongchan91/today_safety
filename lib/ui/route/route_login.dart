@@ -69,6 +69,7 @@ class _RouteLoginState extends State<RouteLogin> {
                           MyApp.providerUser.loginEasy(LoginType.kakao);
                         },
                         child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 30),
                             decoration: boxDecoration.copyWith(color: Colors.yellow.shade400,
 
                             ),
@@ -80,12 +81,14 @@ class _RouteLoginState extends State<RouteLogin> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 FaIcon(FontAwesomeIcons.solidComment, color: Colors.brown),
-                                SizedBox(
-                                  width: 20,
-                                ),
-                                Text(
-                                  '카카오로 로그인',
-                                  style: TextStyle(fontWeight: FontWeight.w800, color: Colors.brown),
+
+                                Expanded(
+                                  child: Center(
+                                    child: Text(
+                                      '카카오로 로그인',
+                                      style: TextStyle(fontWeight: FontWeight.w800, color: Colors.brown),
+                                    ),
+                                  ),
                                 ),
                               ],
                             )),
@@ -99,6 +102,7 @@ class _RouteLoginState extends State<RouteLogin> {
                           MyApp.providerUser.loginEasy(LoginType.google);
                         },
                         child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 30),
                           decoration: boxDecoration.copyWith(
 
                               color: Colors.white),
@@ -108,10 +112,9 @@ class _RouteLoginState extends State<RouteLogin> {
                           height: 50,
                           child: const Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                             FaIcon(FontAwesomeIcons.google),
-                            SizedBox(
-                              width: 20,
-                            ),
-                            Text('구글로 로그인')
+
+                            Expanded(child: Center(
+                                child: Text('구글로 로그인',style: TextStyle(fontWeight: FontWeight.w800),)))
                           ]),
                         ),
                       ),
