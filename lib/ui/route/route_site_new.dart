@@ -260,7 +260,18 @@ Container(
 
             color: colorBackground
           ),
-          child: const Row(
+          child:
+
+          modelSiteNew.modelLocation.addressLoad !=null
+            ?
+          Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+            const FaIcon(FontAwesomeIcons.locationDot,size: 14,),
+            const SizedBox(width: 5,),
+            Text('${modelSiteNew.modelLocation.addressLoad}')])
+
+          : const Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               FaIcon(FontAwesomeIcons.locationDot,size: 14,),
@@ -295,20 +306,12 @@ SizedBox(width: 5,),
 
 
                 const SizedBox(
-                  height: 20,
+                  height: 60,
                 ),
 
                 //
 
-                Row(
-                  children: [
-                    Expanded(child: Text('${modelSiteNew.modelLocation.addressLoad}')),
-                    InkWell(
-                      onTap: searchLocation,
-                      child: const Padding(padding: EdgeInsets.all(10), child: Icon(Icons.search)),
-                    )
-                  ],
-                ),
+
 
                 modelSiteNew.modelLocation.lat != null
                     ? SizedBox(
