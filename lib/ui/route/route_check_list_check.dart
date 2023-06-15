@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:today_safety/const/model/model_check_list.dart';
-import 'package:today_safety/ui/route/route_camera.dart';
+import 'package:today_safety/ui/route/route_check_list_check_camera.dart';
 import 'package:today_safety/ui/route/test/route_test_animation_container.dart';
 import 'package:today_safety/ui/route/test/route_test_animation_hero.dart';
 import 'package:today_safety/ui/route/test/route_test_check_sequence.dart';
@@ -154,7 +154,7 @@ class _RouteCheckListCheckState extends State<RouteCheckListCheck> {
     ));*/
     //Get.to(OpenContainerTransformDemo());
 
-    Get.to(RouteTestAnimationHero(modelCheckList!));
+    Get.to(RouteCheckListCheckCamera(modelCheckList!));
 
    /* var result = await Get.to(RouteTestCheckSequence(
       modelCheckList: modelCheckList,
