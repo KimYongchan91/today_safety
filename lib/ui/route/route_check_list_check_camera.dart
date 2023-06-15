@@ -4,17 +4,23 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:hero_animation/hero_animation.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:local_hero/local_hero.dart';
 import 'package:today_safety/const/model/model_check.dart';
 import 'package:today_safety/const/model/model_check_list.dart';
+import 'package:today_safety/const/model/model_location.dart';
 import 'package:today_safety/custom/custom_text_style.dart';
 import 'package:today_safety/custom/custom_value_listenable_builder2.dart';
+import 'package:today_safety/service/util/util_location.dart';
 
 import '../../const/model/model_check_history_local.dart';
 import '../../const/value/fuc.dart';
 import '../../my_app.dart';
+import '../../service/util/util_snackbar.dart';
+import '../item/item_check_history_local.dart';
 
 const double _sizeImageCheckSequence = 50;
 
@@ -40,7 +46,8 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
 
   //check별로 사진 촬영 정보를 담은 map
   //해당 check를 인증하기 전이라면 값은 null
-  ValueNotifier<Map<ModelCheck, ModelCheckHistoryLocal>> valueNotifierMapCheckHistoryLocal = ValueNotifier({});
+  ValueNotifier<Map<ModelCheck, ModelCheckHistoryLocal>> valueNotifierMapCheckHistoryLocal =
+      ValueNotifier({});
 
   //현재 사진 촬영 결과를 보여준다면 해당 index를, 아니면 null을 저장하는 벨류 노티파이어
   //위의 valueNotifierIndexCheck null이 아닐 경우의 값이 같아야 함.
@@ -49,13 +56,17 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
   //촬영 과정을 circular 인디케이터를 이용해 보여주기 위한 벨류 노티파이어
   ValueNotifier<bool> valueNotifierIsProcessingTakePhoto = ValueNotifier(false);
 
+  //위치 관련
+  ModelLocation? modelLocation;
+  late Completer completerGetModelLocation;
+
   @override
   void initState() {
     super.initState();
 
     //카메라 초기화
     initCamera();
-
+    initLocation();
     //
     for (var element in widget.modelCheckList.listModelCheck) {}
   }
@@ -67,6 +78,46 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
       cameraController.dispose();
     }
     super.dispose();
+  }
+
+  initLocation() async {
+    completerGetModelLocation = Completer();
+    Position? position;
+
+    try {
+      position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
+      MyApp.logger.d("위치 조회 성공 : ${position.latitude}, ${position.longitude}");
+    } on Exception catch (e) {
+      MyApp.logger.wtf("위치 조회 실패 : ${e.toString()}");
+    }
+
+    if (position == null) {
+      //showSnackBarOnRoute('위치 조회에 실패했어요.\n잠시 후 다시 시도해 주세요.');
+      completerGetModelLocation.complete();
+      return;
+    }
+
+    modelLocation = await getModelLocationFromLatLng(
+      position.latitude,
+      position.longitude,
+    );
+    if (modelLocation == null) {
+      //showSnackBarOnRoute('위치 조회에 실패했어요.\n잠시 후 다시 시도해 주세요.');
+      completerGetModelLocation.complete();
+      return;
+    }
+
+    MyApp.logger.d("카카오에서 받아온 주소 정보 : ${modelLocation!.toJson().toString()}");
+
+    //인증한 사진이 있다면 뒤늦게 라도 적용
+    if (valueNotifierMapCheckHistoryLocal.value.isNotEmpty) {
+      MyApp.logger.d("뒤늦게 위치 적용함");
+
+      Map<ModelCheck, ModelCheckHistoryLocal> mapNew = {...valueNotifierMapCheckHistoryLocal.value};
+      for (var element in valueNotifierMapCheckHistoryLocal.value.keys) {
+        mapNew[element]?.modelLocation = modelLocation;
+      }
+    }
   }
 
   initCamera() async {
@@ -129,23 +180,19 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
               } else {
                 return Stack(
                   children: [
-                    ///카메라 뷰(전체화면)
+                    ///카메라 뷰 (전체화면)
                     Positioned.fill(
                       child: ValueListenableBuilder(
                         valueListenable: valueNotifierIndexCheckShowResult,
-                        builder: (context, value, child) =>
+                        builder: (context, value, child) => value != null
 
-                            ///현재 사진 촬영 결과를 보여주고 있다면?
-                            value != null
-                                ? Image.file(File(valueNotifierMapCheckHistoryLocal
-                                        .value[widget.modelCheckList.listModelCheck[valueNotifierIndexCheck.value]]
-                                        ?.xFile
-                                        .path ??
-                                    ''))
-                                :
+                            ///사진 촬영 결과를 보여주는 부분
+                            ? ItemCheckHistoryLocal(valueNotifierMapCheckHistoryLocal
+                                .value[widget.modelCheckList.listModelCheck[valueNotifierIndexCheck.value]])
+                            :
 
-                                ///일반적인 촬영 중이라면?
-                                CameraPreview(cameraController),
+                            ///촬영 전 카메라 뷰
+                            CameraPreview(cameraController),
                       ),
                     ),
 
@@ -278,8 +325,16 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
                                           onPressed: takePhoto,
                                           child: ValueListenableBuilder(
                                             valueListenable: valueNotifierIsProcessingTakePhoto,
-                                            builder: (context, value, child) =>
-                                                value ? const Text('처리 중...') : const Text('촬영'),
+                                            builder: (context, value, child) => value
+
+                                                ///촬영 처리 중 아이콘
+                                                ? LoadingAnimationWidget.inkDrop(
+                                                    color: Colors.white,
+                                                    size: 20,
+                                                  )
+
+                                                ///촬영 하기 전
+                                                : const Text('촬영'),
                                           ),
                                         ),
 
@@ -346,6 +401,7 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
       date: Timestamp.now(),
       xFile: xFile,
       cameraLensDirection: cameraController.description.lensDirection,
+      modelLocation: modelLocation,
     );
 
     Map<ModelCheck, ModelCheckHistoryLocal> mapNew = {...valueNotifierMapCheckHistoryLocal.value};
@@ -376,10 +432,9 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
   }
 
   moveNextIndexChange() {
-
     bool isAllCheck = true;
     for (var element in widget.modelCheckList.listModelCheck) {
-      if(valueNotifierMapCheckHistoryLocal.value[element] == null){
+      if (valueNotifierMapCheckHistoryLocal.value[element] == null) {
         isAllCheck = false;
         break;
       }
@@ -389,7 +444,6 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
       //모든 인증이 완료되었다면? 즉 다음이 없다면?
       //현재 페이지를 기준으로 멈춤(결과를 보여줌)
       valueNotifierIndexCheckShowResult.value = valueNotifierIndexCheck.value;
-
     } else {
       //다음이 있다면
       //사진 촬영 안한 인덱스로 이동

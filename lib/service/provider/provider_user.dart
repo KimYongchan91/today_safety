@@ -63,7 +63,7 @@ class ProviderUser extends ChangeNotifier {
   }
 
   ///간편 로그인 시작
-  loginEasy(LoginType loginType) async {
+  Future<void> loginEasy(LoginType loginType) async {
     //로그아웃부터
     await clearProvider();
 
@@ -100,11 +100,10 @@ class ProviderUser extends ChangeNotifier {
       //로그인 성공
 
       //FirebaseAuth 로그인 적용
-      loginWithToken(result.data['data'][keyToken],
+      await loginWithToken(result.data['data'][keyToken],
           ModelUser.fromJson(result.data['data']['doc_data'], result.data['data']['doc_id']));
     } else {
-      //로그인 실패
-
+      //로그인한 이력이 없음
       if (result.data[keyMessage] == keyUserNotFound) {
         //유저가 존재 하지 않음.
         //회원 가입 진행
@@ -124,10 +123,8 @@ class ProviderUser extends ChangeNotifier {
           //회원가입 성공
 
           //FirebaseAuth 로그인 적용
-          loginWithToken(
+          await loginWithToken(
               resultJoin[keyToken], ModelUser.fromJson(modelUserNew.toJson(), resultJoin[keyDocId]));
-
-          notifyListeners();
         } on Exception catch (e) {
           MyApp.logger.wtf("회원 가입 중에 에러 발생 : ${e.toString()}");
           showSnackBarOnRoute(messageJoinFail);
@@ -150,6 +147,7 @@ class ProviderUser extends ChangeNotifier {
       this.modelUser = modelUser;
 
       jobAfterLoginSuccess();
+      showSnackBarOnRoute('로그인했어요.');
 
       notifyListeners();
     } on Exception catch (e) {
@@ -301,7 +299,7 @@ class ProviderUser extends ChangeNotifier {
       }
     } catch (error) {
       MyApp.logger.wtf('사용자 정보 요청 실패 $error');
-      showSnackBarOnRoute(messageKakaoLoginInvalidEmail);
+      showSnackBarOnRoute('카카로 로그인을 사용할 수 없어요.\n잠시 후에 다시 시도해 주세요.');
       return null;
     }
   }
@@ -468,7 +466,6 @@ class ProviderUser extends ChangeNotifier {
             notifyListeners();
             break;
         }
-
       }
     });
   }

@@ -1,6 +1,7 @@
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:today_safety/const/value/color.dart';
 import 'package:today_safety/service/provider/provider_user.dart';
@@ -16,10 +17,12 @@ class RouteLogin extends StatefulWidget {
 
 class _RouteLoginState extends State<RouteLogin> {
   late Color customColor;
-
   BoxDecoration boxDecoration = BoxDecoration(
     borderRadius: BorderRadius.circular(10),
   );
+
+  ValueNotifier<bool> valueNotifierIsProcessingLoginWithKakao = ValueNotifier(false);
+  ValueNotifier<bool> valueNotifierIsProcessingLoginWithGoogle = ValueNotifier(false);
 
   @override
   Widget build(BuildContext context) {
@@ -65,24 +68,37 @@ class _RouteLoginState extends State<RouteLogin> {
                       InkWell(
                         onTap: () async {
                           print("요청 보냄");
+                          if (valueNotifierIsProcessingLoginWithKakao.value ||
+                              valueNotifierIsProcessingLoginWithGoogle.value) {
+                            return;
+                          }
 
-                          MyApp.providerUser.loginEasy(LoginType.kakao);
+                          valueNotifierIsProcessingLoginWithKakao.value = true;
+                          await MyApp.providerUser.loginEasy(LoginType.kakao);
+                          valueNotifierIsProcessingLoginWithKakao.value = false;
                         },
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 30),
-                            decoration: boxDecoration.copyWith(color: Colors.yellow.shade400,
-
+                            padding: const EdgeInsets.symmetric(horizontal: 30),
+                            decoration: boxDecoration.copyWith(
+                              color: Colors.yellow.shade400,
                             ),
                             alignment: Alignment.center,
                             margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                             width: double.infinity,
                             height: 50,
-                            child: const Row(
+                            child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                FaIcon(FontAwesomeIcons.solidComment, color: Colors.brown),
-
-                                Expanded(
+                                //todo ldj, 로딩 중 아이콘 수정
+                                ValueListenableBuilder(
+                                  valueListenable: valueNotifierIsProcessingLoginWithKakao,
+                                  builder: (context, value, child) => value
+                                      ///로딩 중 아이콘
+                                      ? LoadingAnimationWidget.inkDrop(color: Colors.brown, size: 24)
+                                      ///로딩 중 아님
+                                      : const FaIcon(FontAwesomeIcons.solidComment, color: Colors.brown),
+                                ),
+                                const Expanded(
                                   child: Center(
                                     child: Text(
                                       '카카오로 로그인',
@@ -103,18 +119,19 @@ class _RouteLoginState extends State<RouteLogin> {
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 30),
-                          decoration: boxDecoration.copyWith(
-
-                              color: Colors.white),
+                          decoration: boxDecoration.copyWith(color: Colors.white),
                           alignment: Alignment.center,
                           margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                           width: double.infinity,
                           height: 50,
                           child: const Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                             FaIcon(FontAwesomeIcons.google),
-
-                            Expanded(child: Center(
-                                child: Text('구글로 로그인',style: TextStyle(fontWeight: FontWeight.w800),)))
+                            Expanded(
+                                child: Center(
+                                    child: Text(
+                              '구글로 로그인',
+                              style: TextStyle(fontWeight: FontWeight.w800),
+                            )))
                           ]),
                         ),
                       ),
