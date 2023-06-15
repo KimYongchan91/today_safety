@@ -5,6 +5,8 @@ import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hero_animation/hero_animation.dart';
+import 'package:local_hero/local_hero.dart';
 import 'package:today_safety/const/model/model_check.dart';
 import 'package:today_safety/const/model/model_check_list.dart';
 import 'package:today_safety/custom/custom_text_style.dart';
@@ -43,6 +45,9 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
   //현재 사진 촬영 결과를 보여준다면 해당 index를, 아니면 null을 저장하는 벨류 노티파이어
   //위의 valueNotifierIndexCheck null이 아닐 경우의 값이 같아야 함.
   ValueNotifier<int?> valueNotifierIndexCheckShowResult = ValueNotifier(null);
+
+  //촬영 과정을 circular 인디케이터를 이용해 보여주기 위한 벨류 노티파이어
+  ValueNotifier<bool> valueNotifierIsProcessingTakePhoto = ValueNotifier(false);
 
   @override
   void initState() {
@@ -106,185 +111,191 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SizedBox(
-        width: Get.width,
-        height: Get.height,
-        child: FutureBuilder<bool>(
-          future: completerInit.future,
-          builder: (context, snapshot) {
-            if (snapshot.hasData == false) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            } else if (snapshot.data == false) {
-              return const Center(
-                child: Icon(Icons.error),
-              );
-            } else {
-              return Stack(
-                children: [
-                  ///카메라 뷰(전체화면)
-                  Positioned.fill(
-                    child: ValueListenableBuilder(
-                      valueListenable: valueNotifierIndexCheckShowResult,
-                      builder: (context, value, child) =>
+      body: SafeArea(
+        child: SizedBox(
+          width: Get.width,
+          height: Get.height,
+          child: FutureBuilder<bool>(
+            future: completerInit.future,
+            builder: (context, snapshot) {
+              if (snapshot.hasData == false) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else if (snapshot.data == false) {
+                return const Center(
+                  child: Icon(Icons.error),
+                );
+              } else {
+                return Stack(
+                  children: [
+                    ///카메라 뷰(전체화면)
+                    Positioned.fill(
+                      child: ValueListenableBuilder(
+                        valueListenable: valueNotifierIndexCheckShowResult,
+                        builder: (context, value, child) =>
 
-                          ///현재 사진 촬영 결과를 보여주고 있다면?
-                          value != null
-                              ? Image.file(File(valueNotifierMapCheckHistoryLocal
-                                      .value[widget.modelCheckList.listModelCheck[valueNotifierIndexCheck.value]]
-                                      ?.xFile
-                                      .path ??
-                                  ''))
-                              :
+                            ///현재 사진 촬영 결과를 보여주고 있다면?
+                            value != null
+                                ? Image.file(File(valueNotifierMapCheckHistoryLocal
+                                        .value[widget.modelCheckList.listModelCheck[valueNotifierIndexCheck.value]]
+                                        ?.xFile
+                                        .path ??
+                                    ''))
+                                :
 
-                              ///일반적인 촬영 중이라면?
-                              CameraPreview(cameraController),
+                                ///일반적인 촬영 중이라면?
+                                CameraPreview(cameraController),
+                      ),
                     ),
-                  ),
 
-                  ///인증 진행도 부분
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 40),
-                      child: SizedBox(
-                        height: _sizeImageCheckSequence + 10,
-                        child: CustomValueListenableBuilder2(
-                          a: valueNotifierMapCheckHistoryLocal,
-                          b: valueNotifierIndexCheck,
-                          builder: (context, a, b, child) => ListView.builder(
-                            itemCount: widget.modelCheckList.listModelCheck.length,
+                    ///인증 진행도 부분
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 40),
+                        child: SizedBox(
+                          height: _sizeImageCheckSequence + 10,
+                          child: CustomValueListenableBuilder2(
+                            a: valueNotifierMapCheckHistoryLocal,
+                            b: valueNotifierIndexCheck,
+                            builder: (context, a, b, child) => ListView.builder(
+                              itemCount: widget.modelCheckList.listModelCheck.length,
 
-                            ///진행도 아이템
-                            itemBuilder: (context, index) => InkWell(
-                              onTap: () {
-                                changeIndexCheck(index);
-                              },
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  ///이미지
-                                  Container(
-                                    width: _sizeImageCheckSequence,
-                                    height: _sizeImageCheckSequence,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: a[widget.modelCheckList.listModelCheck[index]] != null
-                                            ? Colors.green
-                                            : b == index
-                                                ? Colors.blueAccent
-                                                : Colors.red,
-                                        width: 5,
-                                      ),
-                                    ),
-                                    child: Image.asset(
-                                      getPathCheckImage(widget.modelCheckList.listModelCheck[index]),
+                              ///진행도 아이템
+                              itemBuilder: (context, index) => InkWell(
+                                onTap: () {
+                                  changeIndexCheck(index);
+                                },
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    ///이미지
+                                    Container(
                                       width: _sizeImageCheckSequence,
                                       height: _sizeImageCheckSequence,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          color: a[widget.modelCheckList.listModelCheck[index]] != null
+                                              ? Colors.green
+                                              : b == index
+                                                  ? Colors.blueAccent
+                                                  : Colors.red,
+                                          width: 5,
+                                        ),
+                                      ),
+                                      child: Image.asset(
+                                        getPathCheckImage(widget.modelCheckList.listModelCheck[index]),
+                                        width: _sizeImageCheckSequence,
+                                        height: _sizeImageCheckSequence,
+                                      ),
                                     ),
-                                  ),
 
-                                  ///현재 진행 중이라면 현재 체크 항목의 제목까지
-                                  b == index
-                                      ? Text(
-                                          widget.modelCheckList.listModelCheck[index].name,
-                                          style: CustomTextStyle.bigBlackBold(),
-                                        )
-                                      : Container()
-                                ],
+                                    ///현재 진행 중이라면 현재 체크 항목의 제목까지
+                                    b == index
+                                        ? Text(
+                                            widget.modelCheckList.listModelCheck[index].name,
+                                            style: CustomTextStyle.bigBlackBold(),
+                                          )
+                                        : Container()
+                                  ],
+                                ),
                               ),
+                              scrollDirection: Axis.horizontal,
                             ),
-                            scrollDirection: Axis.horizontal,
                           ),
                         ),
                       ),
                     ),
-                  ),
 
-                  ///인증 방법 설명 부분
+                    ///인증 방법 설명 부분
 /*                  Positioned(
-                    top: Get.mediaQuery.viewPadding.top,
-                    left: 0,
-                    right: 0,
-                    child: Visibility(
-                        visible: widget.modelCheckList != null,
-                        child: ValueListenableBuilder(
-                          valueListenable: valueNotifierIndexCheck,
-                          builder: (context, value, child) => ExpandablePanel(
-                            ///설명의 헤더 (항상 보이는)
-                            header: Text(widget.modelCheckList!.listModelCheck[value].name),
+                      top: Get.mediaQuery.viewPadding.top,
+                      left: 0,
+                      right: 0,
+                      child: Visibility(
+                          visible: widget.modelCheckList != null,
+                          child: ValueListenableBuilder(
+                            valueListenable: valueNotifierIndexCheck,
+                            builder: (context, value, child) => ExpandablePanel(
+                              ///설명의 헤더 (항상 보이는)
+                              header: Text(widget.modelCheckList!.listModelCheck[value].name),
 
-                            ///설명의 바디 (축소되었을 때)
-                            collapsed: Container(),
+                              ///설명의 바디 (축소되었을 때)
+                              collapsed: Container(),
 
-                            ///설명의 바디 (확장되었을 때)
-                            expanded: ItemCheck(widget.modelCheckList!.listModelCheck[value]),
-                            theme: const ExpandableThemeData(
-                              hasIcon: true,
-                              iconSize: 36,
+                              ///설명의 바디 (확장되었을 때)
+                              expanded: ItemCheck(widget.modelCheckList!.listModelCheck[value]),
+                              theme: const ExpandableThemeData(
+                                hasIcon: true,
+                                iconSize: 36,
+                              ),
                             ),
-                          ),
-                        )),
-                  ),*/
+                          )),
+                    ),*/
 
-                  /*
+                    /*
 
-                ValueListenableBuilder(
-                      valueListenable: valueNotifierIndexCheckShowResult,
-                      builder: (context, value, child) =>
+                  ValueListenableBuilder(
+                        valueListenable: valueNotifierIndexCheckShowResult,
+                        builder: (context, value, child) =>
 
-                          ///현재 사진 촬영 결과를 보여주고 있다면?
-                          value != null
-                              ? Image.file(File(valueNotifierMapCheckHistoryLocal
-                                      .value[widget.modelCheckList.listModelCheck[valueNotifierIndexCheck.value]]
-                                      ?.xFile
-                                      .path ??
-                                  ''))
-                              :
-
-                              ///일반적인 촬영 중이라면?
-                              CameraPreview(cameraController),
-                    )
-                 */
-                  Align(
-                      alignment: Alignment.bottomCenter,
-                      child: ValueListenableBuilder(
-                          valueListenable: valueNotifierIndexCheckShowResult,
-                          builder: (context, value, child) {
                             ///현재 사진 촬영 결과를 보여주고 있다면?
-                            return value != null
-                                ? Row(
-                                    children: [
-                                      ElevatedButton(
-                                        onPressed: () {},
-                                        child: Text('다시 촬영'),
-                                      ),
-                                    ],
-                                  )
+                            value != null
+                                ? Image.file(File(valueNotifierMapCheckHistoryLocal
+                                        .value[widget.modelCheckList.listModelCheck[valueNotifierIndexCheck.value]]
+                                        ?.xFile
+                                        .path ??
+                                    ''))
                                 :
 
                                 ///일반적인 촬영 중이라면?
-                                Row(
-                                    children: [
-                                      ///촬영 버튼
-                                      ElevatedButton(
-                                        onPressed: takePhoto,
-                                        child: const Text('적용'),
-                                      ),
+                                CameraPreview(cameraController),
+                      )
+                   */
+                    Align(
+                        alignment: Alignment.bottomCenter,
+                        child: ValueListenableBuilder(
+                            valueListenable: valueNotifierIndexCheckShowResult,
+                            builder: (context, value, child) {
+                              ///현재 사진 촬영 결과를 보여주고 있다면?
+                              return value != null
+                                  ? Row(
+                                      children: [
+                                        ElevatedButton(
+                                          onPressed: removePhoto,
+                                          child: Text('다시 촬영'),
+                                        ),
+                                      ],
+                                    )
+                                  :
 
-                                      ///카메라 방향 전환 버튼
-                                      ElevatedButton(
-                                        onPressed: changeCameraDirection,
-                                        child: const Text('카메라 전환'),
-                                      ),
-                                    ],
-                                  );
-                          })),
-                ],
-              );
-            }
-          },
+                                  ///일반적인 촬영 중이라면?
+                                  Row(
+                                      children: [
+                                        ///촬영 버튼
+                                        ElevatedButton(
+                                          onPressed: takePhoto,
+                                          child: ValueListenableBuilder(
+                                            valueListenable: valueNotifierIsProcessingTakePhoto,
+                                            builder: (context, value, child) =>
+                                                value ? const Text('처리 중...') : const Text('촬영'),
+                                          ),
+                                        ),
+
+                                        ///카메라 방향 전환 버튼
+                                        ElevatedButton(
+                                          onPressed: changeCameraDirection,
+                                          child: const Text('카메라 전환'),
+                                        ),
+                                      ],
+                                    );
+                            })),
+                  ],
+                );
+              }
+            },
+          ),
         ),
       ),
     );
@@ -320,6 +331,11 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
   }
 
   takePhoto() async {
+    if (valueNotifierIsProcessingTakePhoto.value) {
+      return;
+    }
+    valueNotifierIsProcessingTakePhoto.value = true;
+
     //cameraController.pausePreview();
     XFile xFile = await cameraController.takePicture();
     MyApp.logger.d('촬영된 사진 주소 : ${xFile.path}');
@@ -338,6 +354,8 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
 
     //다음 페이지로
     moveNextIndexChange();
+
+    valueNotifierIsProcessingTakePhoto.value = false;
 
     //valueNotifierIndexCheckShowResult.value = valueNotifierIndexCheck.value;
 
@@ -358,9 +376,20 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
   }
 
   moveNextIndexChange() {
-    //다음이 없다면?
-    if (valueNotifierIndexCheck.value >= widget.modelCheckList.listModelCheck.length - 1) {
-      return;
+
+    bool isAllCheck = true;
+    for (var element in widget.modelCheckList.listModelCheck) {
+      if(valueNotifierMapCheckHistoryLocal.value[element] == null){
+        isAllCheck = false;
+        break;
+      }
+    }
+
+    if (valueNotifierIndexCheck.value >= widget.modelCheckList.listModelCheck.length - 1 || isAllCheck) {
+      //모든 인증이 완료되었다면? 즉 다음이 없다면?
+      //현재 페이지를 기준으로 멈춤(결과를 보여줌)
+      valueNotifierIndexCheckShowResult.value = valueNotifierIndexCheck.value;
+
     } else {
       //다음이 있다면
       //사진 촬영 안한 인덱스로 이동
@@ -371,5 +400,12 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
         }
       }
     }
+  }
+
+  removePhoto() {
+    Map<ModelCheck, ModelCheckHistoryLocal> mapNew = {...valueNotifierMapCheckHistoryLocal.value};
+    mapNew.remove(widget.modelCheckList.listModelCheck[valueNotifierIndexCheck.value]);
+    valueNotifierMapCheckHistoryLocal.value = mapNew;
+    valueNotifierIndexCheckShowResult.value = null;
   }
 }
