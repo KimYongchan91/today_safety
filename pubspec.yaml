@@ -78,6 +78,7 @@ dependencies:
   circular_countdown_timer: ^0.2.3
   hero_animation: ^1.0.0+3
   local_hero: ^0.2.0
+  location: ^4.4.0
 
   firebase_analytics: ^10.4.2
   firebase_auth: ^4.6.2

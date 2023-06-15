@@ -148,6 +148,11 @@ class _RouteCheckListCheckState extends State<RouteCheckListCheck> {
       return;
     }
 
+    isPermissionGranted = await requestPermission(Permission.locationWhenInUse);
+    if (isPermissionGranted == false) {
+      return;
+    }
+
     //todo test
     /*var result = await Get.to(RouteCamera(
       modelCheckList: modelCheckList,
@@ -156,7 +161,7 @@ class _RouteCheckListCheckState extends State<RouteCheckListCheck> {
 
     Get.to(RouteCheckListCheckCamera(modelCheckList!));
 
-   /* var result = await Get.to(RouteTestCheckSequence(
+    /* var result = await Get.to(RouteTestCheckSequence(
       modelCheckList: modelCheckList,
     ));*/
   }

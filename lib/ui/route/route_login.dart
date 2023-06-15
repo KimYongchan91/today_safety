@@ -93,7 +93,7 @@ class _RouteLoginState extends State<RouteLogin> {
                                 ValueListenableBuilder(
                                   valueListenable: valueNotifierIsProcessingLoginWithKakao,
                                   builder: (context, value, child) => value
-                                      ///로딩 중
+                                      ///로딩 중 아이콘
                                       ? LoadingAnimationWidget.inkDrop(color: Colors.brown, size: 24)
                                       ///로딩 중 아님
                                       : const FaIcon(FontAwesomeIcons.solidComment, color: Colors.brown),

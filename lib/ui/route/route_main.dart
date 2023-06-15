@@ -59,7 +59,7 @@ class RouteMain extends StatelessWidget {
 
                         ///인증페이지
                         Padding(
-                          padding: const EdgeInsets.all(20),
+                          padding: const EdgeInsets.all(10),
                           child: InkWell(
                             onTap: () {
                               Get.toNamed(
@@ -73,9 +73,13 @@ class RouteMain extends StatelessWidget {
                           ),
                         ),
 
+                        const SizedBox(
+                          width: 5,
+                        ),
+
                         ///로그인페이지
                         Padding(
-                          padding: const EdgeInsets.all(20),
+                          padding: const EdgeInsets.all(10),
                           child: InkWell(
                             onTap: () {
                               Get.toNamed(keyRouteLogin);
@@ -124,7 +128,7 @@ class RouteMain extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     ///이름
-                                    Text(
+                                    const Text(
                                       '이근영',
                                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                                     ),
@@ -148,7 +152,7 @@ class RouteMain extends StatelessWidget {
                     builder: (context, value, child) => value.modelUser == null
 
                         ///로그인 안됐을때
-                        ? UnLoginUserArea()
+                        ? const UnLoginUserArea()
 
                         ///로그인 상태일때
                         : Container(
@@ -231,40 +235,41 @@ class RouteMain extends StatelessWidget {
                                         ],
                                       )
 
-                                    ///로그인 && 근무지 작성
-                                    : Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          const Text(
-                                            '내가 관리하는 근무지',
-                                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                                          ),
-
-                                          const SizedBox(
-                                            height: 30,
-                                          ),
-
-                                          ///이미지 영역
-                                          Container(
-                                            width: Get.width,
-                                            height: Get.height / 4,
-                                            decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(20),
-                                                color: Colors.redAccent),
-                                            child:
-                                                //todo ldj 근무지 로고 이미지 부분
-                                                CachedNetworkImage(
-                                              imageUrl: value.modelSiteMy!.urlLogoImage,
+                                    ///로그인 되어있고, 내가 관리하는 근무지가 있을 때
+                                    : InkWell(
+                                        onTap: goRouteSiteDetail,
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            const Text(
+                                              '내가 관리하는 근무지',
+                                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                                             ),
-                                          ),
 
-                                          const SizedBox(
-                                            height: 20,
-                                          ),
+                                            const SizedBox(
+                                              height: 30,
+                                            ),
 
-                                          InkWell(
-                                            onTap: goRouteSiteDetail,
-                                            child: Row(
+                                            ///이미지 영역
+                                            Container(
+                                              width: Get.width,
+                                              height: Get.height / 4,
+                                              decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(20),
+                                                  color: Colors.redAccent),
+                                              child:
+                                                  //todo ldj 근무지 로고 이미지 부분 수정
+                                                  ///근무지 로고 이미지
+                                                  CachedNetworkImage(
+                                                imageUrl: value.modelSiteMy!.urlLogoImage,
+                                              ),
+                                            ),
+
+                                            const SizedBox(
+                                              height: 20,
+                                            ),
+
+                                            Row(
                                               children: [
                                                 Expanded(
                                                   child: Column(
@@ -273,7 +278,7 @@ class RouteMain extends StatelessWidget {
                                                       ///근무지 이름
                                                       Text(
                                                         value.modelSiteMy!.name,
-                                                        style: TextStyle(
+                                                        style: const TextStyle(
                                                             fontSize: 20, fontWeight: FontWeight.w800),
                                                       ),
 
@@ -303,8 +308,8 @@ class RouteMain extends StatelessWidget {
                                                 )
                                               ],
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       )),
                   ),
 
