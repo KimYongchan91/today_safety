@@ -63,7 +63,7 @@ class RouteMain extends StatelessWidget {
 
                         ///인증페이지
                         Padding(
-                          padding: const EdgeInsets.all(10),
+                          padding: const EdgeInsets.all(20),
                           child: InkWell(
                             onTap: () {
                               Get.toNamed('$keyRouteCheckListDetail/dsfksfjl/$keyRouteCheckListCheckWithOutSlash',
@@ -78,7 +78,7 @@ class RouteMain extends StatelessWidget {
 
                         ///로그인페이지
                         Padding(
-                          padding: const EdgeInsets.all(10),
+                          padding: const EdgeInsets.all(20),
                           child: InkWell(
                             onTap: () {
                               Get.toNamed(keyRouteLogin);
