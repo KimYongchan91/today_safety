@@ -1,6 +1,8 @@
 const String keyUrl = 'url';
 
 const String keyUsers = 'users';
+const String keyUserChecks = 'user_checks';
+
 
 const String keyKakao = 'kakao';
 const String keyNaver = 'naver';
@@ -58,3 +60,18 @@ const String keyUrlLogoImage= 'url_logo_image';
 const String keyFac= 'fac';
 const String keyCheckList= 'check_list';
 const String keyCheckListS= 'check_lists';
+
+const String keyCheckHistory= 'check_history';
+const String keyUrlCheckImage= 'url_check_image';
+const String keyCameraDirection= 'camera_direction';
+const String keyBack= 'back';
+const String keyFront= 'front';
+const String keyDevice= 'device';
+const String keyCode= 'code';
+const String keyModel= 'model';
+const String keyOs= 'os';
+const String keyAndroid= 'android';
+const String keyIos= 'ios';
+const String keyOsVersion= 'os_version';
+
+

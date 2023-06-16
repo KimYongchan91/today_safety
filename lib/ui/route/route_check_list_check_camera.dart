@@ -1,13 +1,17 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:today_safety/const/model/model_check.dart';
 import 'package:today_safety/const/model/model_check_list.dart';
+import 'package:today_safety/const/model/model_device.dart';
 import 'package:today_safety/const/model/model_location.dart';
+import 'package:today_safety/const/value/key.dart';
 import 'package:today_safety/custom/custom_text_style.dart';
 import 'package:today_safety/custom/custom_value_listenable_builder2.dart';
 import 'package:today_safety/service/util/util_location.dart';
@@ -54,6 +58,9 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
   //위치 관련
   ModelLocation? modelLocation;
   late Completer completerGetModelLocation;
+
+  //서버로 전송
+  ValueNotifier<bool> valueNotifierIsUploadingToServer = ValueNotifier(false);
 
   @override
   void initState() {
@@ -257,9 +264,17 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
                             visible: value.keys.length == widget.modelCheckList.listModelCheck.length,
                             child: Padding(
                               padding: EdgeInsets.only(top: _sizeImageCheckSequence + 10),
-                              child: ElevatedButton(
-                                onPressed: completeCheck,
-                                child: Text('인증 완료'),
+                              child: ValueListenableBuilder(
+                                valueListenable: valueNotifierIsUploadingToServer,
+                                builder: (context, value, child) => ElevatedButton(
+                                  onPressed: completeCheck,
+                                  child: value
+                                      ? LoadingAnimationWidget.inkDrop(
+                                          color: Colors.white,
+                                          size: 20,
+                                        )
+                                      : Text('인증 완료'),
+                                ),
                               ),
                             ),
                           ),
@@ -445,7 +460,7 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
     bool isAllCheck = true;
     for (var element in widget.modelCheckList.listModelCheck) {
       if (valueNotifierMapCheckHistoryLocal.value[element] == null) {
-        MyApp.logger.d("촬영 안 한 인증이 있음");
+        //MyApp.logger.d("촬영 안 한 인증이 있음");
         isAllCheck = false;
         break;
       }
@@ -474,5 +489,40 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
     valueNotifierIndexCheckShowResult.value = null;
   }
 
-  completeCheck() {}
+  completeCheck() async {
+    if (valueNotifierIsUploadingToServer.value) {
+      return;
+    }
+    //valueNotifierIsUploadingToServer.value = true;
+
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    ModelDevice modelDevice;
+
+    if (Platform.isAndroid) {
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      modelDevice = ModelDevice(
+        model: androidInfo.model,
+        os: keyAndroid,
+        osVersion: androidInfo.version.sdkInt.toString(),
+      );
+    } else if (Platform.isIOS) {
+      IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+      modelDevice = ModelDevice(
+        model: iosInfo.utsname.machine,
+        os: keyIos,
+        osVersion: iosInfo.systemVersion,
+      );
+    } else {
+      modelDevice = ModelDevice.fromJson({});
+    }
+
+    MyApp.logger.d('디바이스 모델 : ${modelDevice.toJson().toString()}');
+
+    //todo kyc
+    //model_location을 check_history_local에 각각 두는 게 아니라 전체적으로 1번만 하도록
+
+
+    //valueNotifierIsUploadingToServer.value = true;
+    //await FirebaseFirestore.instance.collection(keyUserChecks).add({});
+  }
 }
