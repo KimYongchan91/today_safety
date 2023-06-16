@@ -1,14 +1,10 @@
 import 'dart:async';
-import 'dart:io';
-
 import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import 'package:hero_animation/hero_animation.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:local_hero/local_hero.dart';
 import 'package:today_safety/const/model/model_check.dart';
 import 'package:today_safety/const/model/model_check_list.dart';
 import 'package:today_safety/const/model/model_location.dart';
@@ -19,7 +15,6 @@ import 'package:today_safety/service/util/util_location.dart';
 import '../../const/model/model_check_history_local.dart';
 import '../../const/value/fuc.dart';
 import '../../my_app.dart';
-import '../../service/util/util_snackbar.dart';
 import '../item/item_check_history_local.dart';
 
 const double _sizeImageCheckSequence = 50;
@@ -199,61 +194,76 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
                     ///인증 진행도 부분
                     Align(
                       alignment: Alignment.topCenter,
-                      child: Padding(
-                        padding: EdgeInsets.only(top: 40),
-                        child: SizedBox(
-                          height: _sizeImageCheckSequence + 10,
-                          child: CustomValueListenableBuilder2(
-                            a: valueNotifierMapCheckHistoryLocal,
-                            b: valueNotifierIndexCheck,
-                            builder: (context, a, b, child) => ListView.builder(
-                              itemCount: widget.modelCheckList.listModelCheck.length,
+                      child: SizedBox(
+                        height: _sizeImageCheckSequence + 10,
+                        child: CustomValueListenableBuilder2(
+                          a: valueNotifierMapCheckHistoryLocal,
+                          b: valueNotifierIndexCheck,
+                          builder: (context, a, b, child) => ListView.builder(
+                            itemCount: widget.modelCheckList.listModelCheck.length,
 
-                              ///진행도 아이템
-                              itemBuilder: (context, index) => InkWell(
-                                onTap: () {
-                                  changeIndexCheck(index);
-                                },
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    ///이미지
-                                    Container(
-                                      width: _sizeImageCheckSequence,
-                                      height: _sizeImageCheckSequence,
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: a[widget.modelCheckList.listModelCheck[index]] != null
-                                              ? Colors.green
-                                              : b == index
-                                                  ? Colors.blueAccent
-                                                  : Colors.red,
-                                          width: 5,
-                                        ),
-                                      ),
-                                      child: Image.asset(
-                                        getPathCheckImage(widget.modelCheckList.listModelCheck[index]),
-                                        width: _sizeImageCheckSequence,
-                                        height: _sizeImageCheckSequence,
+                            ///진행도 아이템
+                            itemBuilder: (context, index) => InkWell(
+                              onTap: () {
+                                changeIndexCheck(index);
+                              },
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  ///이미지
+                                  Container(
+                                    width: _sizeImageCheckSequence,
+                                    height: _sizeImageCheckSequence,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: a[widget.modelCheckList.listModelCheck[index]] != null
+                                            ? Colors.green
+                                            : b == index
+                                                ? Colors.blueAccent
+                                                : Colors.red,
+                                        width: 5,
                                       ),
                                     ),
+                                    child: Image.asset(
+                                      getPathCheckImage(widget.modelCheckList.listModelCheck[index]),
+                                      width: _sizeImageCheckSequence,
+                                      height: _sizeImageCheckSequence,
+                                    ),
+                                  ),
 
-                                    ///현재 진행 중이라면 현재 체크 항목의 제목까지
-                                    b == index
-                                        ? Text(
-                                            widget.modelCheckList.listModelCheck[index].name,
-                                            style: CustomTextStyle.bigBlackBold(),
-                                          )
-                                        : Container()
-                                  ],
-                                ),
+                                  ///현재 진행 중이라면 현재 체크 항목의 제목까지
+                                  b == index
+                                      ? Text(
+                                          widget.modelCheckList.listModelCheck[index].name,
+                                          style: CustomTextStyle.bigBlackBold(),
+                                        )
+                                      : Container()
+                                ],
                               ),
-                              scrollDirection: Axis.horizontal,
                             ),
+                            scrollDirection: Axis.horizontal,
                           ),
                         ),
                       ),
                     ),
+
+                    ///인증 완료 버튼
+                    ///모든 촬영이 완료되었을 때만 보임
+                    Align(
+                        alignment: Alignment.topCenter,
+                        child: ValueListenableBuilder(
+                          valueListenable: valueNotifierMapCheckHistoryLocal,
+                          builder: (context, value, child) => Visibility(
+                            visible: value.keys.length == widget.modelCheckList.listModelCheck.length,
+                            child: Padding(
+                              padding: EdgeInsets.only(top: _sizeImageCheckSequence + 10),
+                              child: ElevatedButton(
+                                onPressed: completeCheck,
+                                child: Text('인증 완료'),
+                              ),
+                            ),
+                          ),
+                        )),
 
                     ///인증 방법 설명 부분
 /*                  Positioned(
@@ -435,19 +445,20 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
     bool isAllCheck = true;
     for (var element in widget.modelCheckList.listModelCheck) {
       if (valueNotifierMapCheckHistoryLocal.value[element] == null) {
+        MyApp.logger.d("촬영 안 한 인증이 있음");
         isAllCheck = false;
         break;
       }
     }
 
-    if (valueNotifierIndexCheck.value >= widget.modelCheckList.listModelCheck.length - 1 || isAllCheck) {
+    if (isAllCheck) {
       //모든 인증이 완료되었다면? 즉 다음이 없다면?
       //현재 페이지를 기준으로 멈춤(결과를 보여줌)
       valueNotifierIndexCheckShowResult.value = valueNotifierIndexCheck.value;
     } else {
       //다음이 있다면
       //사진 촬영 안한 인덱스로 이동
-      for (int i = valueNotifierIndexCheck.value + 1; i < widget.modelCheckList.listModelCheck.length; i++) {
+      for (int i = 0; i < widget.modelCheckList.listModelCheck.length; i++) {
         if (valueNotifierMapCheckHistoryLocal.value[widget.modelCheckList.listModelCheck[i]] == null) {
           changeIndexCheck(i);
           break;
@@ -462,4 +473,6 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
     valueNotifierMapCheckHistoryLocal.value = mapNew;
     valueNotifierIndexCheckShowResult.value = null;
   }
+
+  completeCheck() {}
 }
