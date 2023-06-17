@@ -27,7 +27,7 @@ BarChartData getLineChartData(List<ModelDailyCheckHistory> listModelDailyCheckHi
     }
   }
 
- /* MyApp.logger.d("listModelDailyCheckHistory[i].userCheckHistoryCount .toDouble() : ${[
+  /* MyApp.logger.d("listModelDailyCheckHistory[i].userCheckHistoryCount .toDouble() : ${[
     ...listModelDailyCheckHistory.map((e) => e.userCheckHistoryCount.toDouble()).toList()
   ]}");*/
 
@@ -63,14 +63,29 @@ BarChartData getLineChartData(List<ModelDailyCheckHistory> listModelDailyCheckHi
           showTitles: true,
           reservedSize: 30,
           interval: 1,
-          getTitlesWidget: (value, meta){
-            return Text('');
-
-            if(value.toInt() ==0){
-              return Text('');
+          getTitlesWidget: (value, meta) {
+            int index = value.toInt();
+            //예외 처리용
+            if (index < 0 || index >= listModelDailyCheckHistory.length) {
+              return Container();
             }
 
-            //if(value.toInt() == )
+            String dayOnly = listModelDailyCheckHistory[index].dateDisplay.split("-").last;
+            if (dayOnly.length == 2 && dayOnly[0] == '0') {
+              dayOnly = dayOnly[1];
+            }
+
+            Color color = Colors.black;
+            if (listModelDailyCheckHistory[index].dateWeek == 6) {
+              color = Colors.blueAccent;
+            } else if (listModelDailyCheckHistory[index].dateWeek == 7) {
+              color = Colors.redAccent;
+            }
+
+            return Text(
+              '$dayOnly일',
+              style: TextStyle(color: color),
+            );
           },
         ),
       ),
@@ -78,8 +93,8 @@ BarChartData getLineChartData(List<ModelDailyCheckHistory> listModelDailyCheckHi
         sideTitles: SideTitles(
           showTitles: true,
           interval: 1,
-          getTitlesWidget: (value, meta) => Text(value.toString()),
-          reservedSize: 42,
+          getTitlesWidget: (value, meta) => Text(value.toInt().toString()),
+          reservedSize: 20,
         ),
       ),
     ),
@@ -89,6 +104,6 @@ BarChartData getLineChartData(List<ModelDailyCheckHistory> listModelDailyCheckHi
     ),
     minY: 0,
     maxY: maxY.toDouble(),
-    barGroups:listBarChartGroupData,
+    barGroups: listBarChartGroupData,
   );
 }

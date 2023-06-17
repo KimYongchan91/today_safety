@@ -13,6 +13,8 @@ class ItemMainBanner extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         color: Colors.white,
       ),
+
+      //todo ldj, 가로 사이즈 오버플로우 해결
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
