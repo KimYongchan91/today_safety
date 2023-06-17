@@ -6,6 +6,8 @@ import 'package:intl/intl.dart';
 import 'package:today_safety/const/model/model_user_check_history.dart';
 import 'package:today_safety/const/value/key.dart';
 
+import '../../../const/value/value.dart';
+
 class RouteTest extends StatefulWidget {
   const RouteTest({Key? key}) : super(key: key);
 
@@ -37,16 +39,15 @@ class _RouteTestState extends State<RouteTest> {
                   Map<String, dynamic> jsonOld = documentSnapshot.data() as Map<String, dynamic>;
 
                   //하루 기준 밀리초
-                  const int millisecondDay = 24 * 60 * 60 * 1000;
                   Random random = Random();
 
                   //총 몇일?
-                  int countTargetDay = 30;
+                  int countTargetDay = 15;
 
                   for (int i = 1; i < countTargetDay; i++) {
                     Map<String, dynamic> json = {...jsonOld};
                     DateTime datetimeNew = DateTime.fromMillisecondsSinceEpoch(
-                        jsonOld[keyDate].toDate().millisecondsSinceEpoch + i * millisecondDay);
+                        jsonOld[keyDate].toDate().millisecondsSinceEpoch - i * millisecondDay);
                     final String displayDateToday = DateFormat('yyyy-MM-dd').format(datetimeNew);
 
                     json[keyDate] = Timestamp.fromDate(datetimeNew);

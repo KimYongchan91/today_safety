@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -15,6 +16,7 @@ import 'package:today_safety/ui/widget/icon_error.dart';
 import '../../const/value/router.dart';
 import '../../my_app.dart';
 import '../../service/util/util_app_link.dart';
+import '../../service/util/util_chart.dart';
 import '../../service/util/util_check_list.dart';
 
 class RouteCheckListDetail extends StatefulWidget {
@@ -116,18 +118,33 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                         ],
                       ),
 
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
 
-                      Text(
-                        '인증 추세',
+                      const Text(
+                        '최근 인증 추세',
                         style: CustomTextStyle.bigBlackBold(),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
 
+                      Consumer<ProviderUserCheckHistory>(
+                        builder: (context, value, child) => AspectRatio(
+                          aspectRatio: 3 / 2,
+                          child: BarChart(
+                            getLineChartData(value.listModelDailyCheckHistory),
+                          ),
+                        ),
+                        /*ListView.builder(
+                          itemCount: value.listModelDailyCheckHistory.length,
+                          itemBuilder: (context, index) => Text(value.listModelDailyCheckHistory[index].dateDisplay +
+                              value.listModelDailyCheckHistory[index].userCheckHistoryCount.toString()),
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                        )*/
+                      ),
                       const SizedBox(
                         height: 20,
                       ),
@@ -163,15 +180,15 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                         ),
                       ),
 
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
 
-                      Text(
+                      const Text(
                         '인증 항목',
                         style: CustomTextStyle.bigBlackBold(),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
 
