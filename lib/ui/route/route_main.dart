@@ -260,8 +260,11 @@ class RouteMain extends StatelessWidget {
                                 child:
                                 //todo ldj 근무지 로고 이미지 부분 수정
                                 ///근무지 로고 이미지
-                                CachedNetworkImage(
-                                  imageUrl: value.modelSiteMy!.urlLogoImage,
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(20),
+                                  child: CachedNetworkImage(
+                                    imageUrl: value.modelSiteMy!.urlLogoImage,fit: BoxFit.cover,
+                                  ),
                                 ),
                               ),
 
