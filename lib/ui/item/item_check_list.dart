@@ -21,21 +21,31 @@ class ItemCheckList extends StatelessWidget {
         Get.toNamed('$keyRouteCheckListDetail/${modelCheckList.docId}', arguments: {keyModelCheckList: modelCheckList});
       },
       child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         width: Get.width,
-        height: 150,
-        decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
+        decoration: BoxDecoration(color: Colors.white, border: Border.all(color: Colors.grey)),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
-              width: 100,
-              height: 100,
+              width: 90,
+              height: 90,
               child: SfBarcodeGenerator(
                 value: '$urlAppLink/${modelCheckList.docId}',
                 symbology: QRCode(),
                 showValue: false,
               ),
             ),
-            Text(modelCheckList.name),
+            const SizedBox(
+              width: 30,
+            ),
+            Expanded(
+                child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: Text(
+                      modelCheckList.name,
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    ))),
           ],
         ),
       ),

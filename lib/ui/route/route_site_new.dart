@@ -118,7 +118,7 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
 
                     Container(
                       alignment: Alignment.centerLeft,
-                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                       color: Colors.white,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -128,11 +128,12 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
                           Align(
                             alignment: Alignment.center,
                             child: Container(
-                              width: _sizeLogoImage,
-                              height: _sizeLogoImage,
+                              width: Get.width,
+                              height: Get.height/4,
                               decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
                                 border: Border.all(
-                                  width: 1,
+                                  width: 2,
                                   color: Colors.grey,
                                 ),
                               ),
@@ -142,27 +143,36 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
                                         //로고 이미지
                                         Positioned.fill(
                                           child: (modelSiteNew.urlLogoImage.startsWith('/data')
-                                              ? Image.file(
-                                                  File(modelSiteNew.urlLogoImage),
-                                                  width: _sizeLogoImage,
-                                                  height: _sizeLogoImage,
-                                                  fit: BoxFit.cover,
-                                                )
-                                              : CachedNetworkImage(
-                                                  width: _sizeLogoImage,
-                                                  height: _sizeLogoImage,
-                                                  imageUrl: modelSiteNew.urlLogoImage,
-                                                  fit: BoxFit.cover,
-                                                )),
+                                              ? ClipRRect(
+                                            borderRadius: BorderRadius.circular(20),
+                                                child: Image.file(
+                                                    File(modelSiteNew.urlLogoImage),
+                                                  width: Get.width,
+                                                  height: Get.height/4,
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                              )
+                                              : ClipRRect(
+                                            borderRadius: BorderRadius.circular(20),
+                                                child: CachedNetworkImage(
+                                            width: Get.width,
+                                            height: Get.height/4,
+                                                    imageUrl: modelSiteNew.urlLogoImage,
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                              )),
                                         ),
 
                                         //로고 이미지 제거 버튼
                                         Positioned(
-                                          top: 5,
-                                          right: 5,
+                                          top: 10,
+                                          right: 10,
                                           child: InkWell(
                                             onTap: deleteImage,
-                                            child: const Padding(padding: EdgeInsets.all(5), child: Icon(Icons.close)),
+                                            child: Container(
+                                              padding: const EdgeInsets.all(5),
+                                                decoration: const BoxDecoration(shape: BoxShape.circle,color: Color(0x55000000)),
+                                                child: const Icon(Icons.close,color: Colors.white,size: 20,)),
                                           ),
                                         )
                                       ],
@@ -172,9 +182,13 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
                                         onTap: pickImage,
                                         child: const Padding(
                                           padding: EdgeInsets.all(20),
-                                          child: Icon(
-                                            Icons.photo,
-                                            size: _sizeLogoImage * 0.25,
+                                          child:Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              FaIcon(FontAwesomeIcons.images,color: Colors.grey,size: 30,),
+                                              SizedBox(height: 10,),
+                                              Text('이미지를 등록하세요.',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.grey),)
+                                            ],
                                           ),
                                         ),
                                       ),
@@ -226,20 +240,20 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
                           InkWell(
                             onTap: searchLocation,
                             child: Container(
-                              margin: EdgeInsets.symmetric(horizontal: 20),
-                              padding: EdgeInsets.all(15),
+                              margin: const EdgeInsets.symmetric(horizontal: 20),
+                              padding: const EdgeInsets.all(15),
                               width: MediaQuery.of(context).size.width,
                               decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: colorBackground),
                               child: modelSiteNew.modelLocation.addressLoad != null
-                                  ? Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                                  ? Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                                       const FaIcon(
-                                        FontAwesomeIcons.locationDot,
+                                        FontAwesomeIcons.locationDot,color: Colors.blue,
                                         size: 14,
                                       ),
                                       const SizedBox(
                                         width: 5,
                                       ),
-                                      Text('${modelSiteNew.modelLocation.addressLoad}')
+                                      Text('${modelSiteNew.modelLocation.addressLoad}',style: const TextStyle(color: Colors.blue),)
                                     ])
                                   : const Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
@@ -267,7 +281,7 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
                     //
 
                     const SizedBox(
-                      height: 60,
+                      height: 10,
                     ),
 
                     //
@@ -275,7 +289,7 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
                     modelSiteNew.modelLocation.lat != null
                         ? SizedBox(
                             width: Get.width,
-                            height: 200,
+                            height: 250,
                             child: ValueListenableBuilder(
                               valueListenable: valueNotifierMarkers,
                               builder: (context, value, child) => KakaoMap(
@@ -329,9 +343,7 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
                       ),
                     ),
 
-                    const SizedBox(
-                      height: 24,
-                    ),
+
                   ],
                 ),
               ),

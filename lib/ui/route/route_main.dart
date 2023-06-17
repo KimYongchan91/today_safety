@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:today_safety/const/value/router.dart';
 import 'package:today_safety/service/provider/provider_user.dart';
 import 'package:today_safety/ui/route/test/route_test.dart';
+import 'package:today_safety/ui/item/item_banner.dart';
 
 import '../../const/value/color.dart';
 import '../../const/value/key.dart';
@@ -214,7 +215,7 @@ class RouteMain extends StatelessWidget {
                                             },
                                             child: Container(
                                               padding: const EdgeInsets.all(10),
-                                              height: MediaQuery.of(context).size.height / 5,
+                                              height: MediaQuery.of(context).size.height / 4,
                                               decoration: mainButton,
                                               child: const Expanded(
                                                   child: Center(
@@ -263,8 +264,13 @@ class RouteMain extends StatelessWidget {
                                               child:
                                                   //todo ldj 근무지 로고 이미지 부분 수정
                                                   ///근무지 로고 이미지
-                                                  CachedNetworkImage(
-                                                imageUrl: value.modelSiteMy!.urlLogoImage,
+
+                                                  ClipRRect(
+                                                borderRadius: BorderRadius.circular(20),
+                                                child: CachedNetworkImage(
+                                                  imageUrl: value.modelSiteMy!.urlLogoImage,
+                                                  fit: BoxFit.cover,
+                                                ),
                                               ),
                                             ),
 
@@ -313,7 +319,8 @@ class RouteMain extends StatelessWidget {
                                             ),
                                           ],
                                         ),
-                                      )),
+                                      ),
+                          ),
                   ),
 
                   /*
@@ -337,6 +344,8 @@ class RouteMain extends StatelessWidget {
 
 
                   */
+                  const Spacer(),
+                  const ItemMainBanner(),
                 ]),
           ),
         ),
