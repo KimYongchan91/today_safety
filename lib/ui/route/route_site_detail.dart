@@ -174,9 +174,9 @@ padding: const EdgeInsets.symmetric(horizontal: 30,vertical: 20),
 
                     InkWell(
                       onTap: (){
-                        addCheckList;
+                        addCheckList();
                       },
-                      child:  const SizedBox(
+                      child:   const SizedBox(
                         child: Row(
                           children: [
                             FaIcon(FontAwesomeIcons.plus,color: Colors.blue,size: 13,),

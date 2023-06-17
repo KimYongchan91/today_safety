@@ -1,11 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_barcodes/barcodes.dart';
 import 'package:today_safety/const/model/model_check_list.dart';
+import 'package:today_safety/const/value/color.dart';
 import 'package:today_safety/custom/custom_text_style.dart';
 import 'package:today_safety/service/provider/provider_user_check_history.dart';
 import 'package:today_safety/ui/item/item_check.dart';
@@ -71,6 +73,7 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: colorBackground,
       body: SafeArea(
         child: FutureBuilder<bool>(
           future: completerModelCheckList.future,
@@ -91,6 +94,41 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                 builder: (context, child) => SingleChildScrollView(
                   child: Column(
                     children: [
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
+                        width: Get.width,
+                        height: 70,
+                        color: Colors.white,
+                        child: Row(
+                          children: [
+                            InkWell(
+                            onTap: (){
+                              Get.back();
+                            },
+                              child: const Padding(
+                                padding: EdgeInsets.all(10),
+                                child: FaIcon(FontAwesomeIcons.angleLeft,
+                                ),
+                              ),
+
+                            ),
+                            const SizedBox(width: 10,),
+                            Text(
+                              modelCheckList!.name,
+                              style: const CustomTextStyle.bigBlackBold(),
+                            ),
+
+
+                          ],
+
+                        ),
+                      ),
+
+                      Container(width: Get.width,
+                      height: 1,
+                          color: Colors.black45,),
+
+
                       const SizedBox(
                         height: 20,
                       ),
@@ -98,10 +136,7 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                       ///체크 리스트 이름, QR 코드
                       Row(
                         children: [
-                          Text(
-                            modelCheckList!.name,
-                            style: const CustomTextStyle.bigBlackBold(),
-                          ),
+
 
                           ///QR 코드
                           SizedBox(
@@ -122,55 +157,73 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                       ///최근 인증한 유저
                       ///3개 정도?
                       Consumer<ProviderUserCheckHistory>(
-                        builder: (context, value, child) => Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  '최근 인증 근무자',
-                                  style: CustomTextStyle.bigBlackBold(),
+                        builder: (context, value, child) => Container(
+                          color: Colors.white,
+                          margin: const EdgeInsets.symmetric(vertical: 10),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      '최근 인증 근무자',
+                                      style: CustomTextStyle.bigBlackBold(),
+                                    ),
+                                    Text(
+                                      '더보기',
+                                      style: CustomTextStyle.normalGreyBold(),
+                                    )
+                                  ],
                                 ),
-                                Text(
-                                  '더보기',
-                                  style: CustomTextStyle.normalGreyBold(),
-                                )
-                              ],
+                              ),
+                              ListView.builder(
+                                itemCount: value.listModelUserCheckHistory.length,
+                                itemBuilder: (context, index) => ItemUserCheckHistory(
+                                  value.listModelUserCheckHistory[index],
+                                ),
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+
+
+
+                      Container(
+                        padding: const EdgeInsets.symmetric(vertical: 20,horizontal: 20),
+                        color: Colors.white,
+                        margin: const EdgeInsets.symmetric(vertical: 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '인증 항목',
+                              style: CustomTextStyle.bigBlackBold(),
                             ),
+                            SizedBox(
+                              height: 20,
+                            ),
+
+                            ///체크 항목 리스트 뷰
                             ListView.builder(
-                              itemCount: value.listModelUserCheckHistory.length,
-                              itemBuilder: (context, index) => ItemUserCheckHistory(
-                                value.listModelUserCheckHistory[index],
+                              itemCount: modelCheckList!.listModelCheck.length,
+                              itemBuilder: (context, index) => ItemCheck(
+                                modelCheckList!.listModelCheck[index],
                               ),
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
                             )
+
                           ],
                         ),
                       ),
 
-                      SizedBox(
-                        height: 20,
-                      ),
 
-                      Text(
-                        '인증 항목',
-                        style: CustomTextStyle.bigBlackBold(),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-
-                      ///체크 항목 리스트 뷰
-                      ListView.builder(
-                        itemCount: modelCheckList!.listModelCheck.length,
-                        itemBuilder: (context, index) => ItemCheck(
-                          modelCheckList!.listModelCheck[index],
-                        ),
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                      )
                     ],
                   ),
                 ),
