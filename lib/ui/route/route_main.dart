@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:today_safety/const/value/router.dart';
 import 'package:today_safety/service/provider/provider_user.dart';
+import 'package:today_safety/ui/item/item_banner.dart';
 
 import '../../const/value/color.dart';
 import '../../const/value/key.dart';
@@ -208,7 +209,7 @@ class RouteMain extends StatelessWidget {
                               },
                               child: Container(
                                 padding: const EdgeInsets.all(10),
-                                height: MediaQuery.of(context).size.height / 5,
+                                height: MediaQuery.of(context).size.height / 4,
                                 decoration: mainButton,
                                 child: const Expanded(
                                     child: Center(
@@ -311,9 +312,12 @@ class RouteMain extends StatelessWidget {
                                   )
                                 ],
                               ),
+
+
+
                             ],
                           ),
-                        )),
+                        ),),
                   ),
 
                   /*
@@ -337,6 +341,8 @@ class RouteMain extends StatelessWidget {
 
 
                   */
+const Spacer(),
+                  const ItemMainBanner(),
                 ]),
           ),
         ),
