@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:device_info/device_info.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -11,14 +12,19 @@ import 'package:today_safety/const/model/model_check.dart';
 import 'package:today_safety/const/model/model_check_list.dart';
 import 'package:today_safety/const/model/model_device.dart';
 import 'package:today_safety/const/model/model_location.dart';
+import 'package:today_safety/const/model/model_user_check_history.dart';
 import 'package:today_safety/const/value/key.dart';
 import 'package:today_safety/custom/custom_text_style.dart';
 import 'package:today_safety/custom/custom_value_listenable_builder2.dart';
 import 'package:today_safety/service/util/util_location.dart';
+import 'package:path/path.dart' as pt;
+import 'package:today_safety/service/util/util_snackbar.dart';
 
-import '../../const/model/model_check_history_local.dart';
+import '../../const/model/model_check_image.dart';
+import '../../const/model/model_check_image_local.dart';
 import '../../const/value/fuc.dart';
 import '../../my_app.dart';
+import '../../service/util/util_firestore.dart';
 import '../item/item_check_history_local.dart';
 
 const double _sizeImageCheckSequence = 50;
@@ -45,8 +51,7 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
 
   //check별로 사진 촬영 정보를 담은 map
   //해당 check를 인증하기 전이라면 값은 null
-  ValueNotifier<Map<ModelCheck, ModelCheckHistoryLocal>> valueNotifierMapCheckHistoryLocal =
-      ValueNotifier({});
+  ValueNotifier<Map<ModelCheck, ModelCheckImageLocal>> valueNotifierMapCheckImageLocal = ValueNotifier({});
 
   //현재 사진 촬영 결과를 보여준다면 해당 index를, 아니면 null을 저장하는 벨류 노티파이어
   //위의 valueNotifierIndexCheck null이 아닐 경우의 값이 같아야 함.
@@ -112,14 +117,15 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
     MyApp.logger.d("카카오에서 받아온 주소 정보 : ${modelLocation!.toJson().toString()}");
 
     //인증한 사진이 있다면 뒤늦게 라도 적용
-    if (valueNotifierMapCheckHistoryLocal.value.isNotEmpty) {
+    //해당 기능 삭제
+/*    if (valueNotifierMapCheckHistoryLocal.value.isNotEmpty) {
       MyApp.logger.d("뒤늦게 위치 적용함");
 
       Map<ModelCheck, ModelCheckHistoryLocal> mapNew = {...valueNotifierMapCheckHistoryLocal.value};
       for (var element in valueNotifierMapCheckHistoryLocal.value.keys) {
         mapNew[element]?.modelLocation = modelLocation;
       }
-    }
+    }*/
   }
 
   initCamera() async {
@@ -189,7 +195,7 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
                         builder: (context, value, child) => value != null
 
                             ///사진 촬영 결과를 보여주는 부분
-                            ? ItemCheckHistoryLocal(valueNotifierMapCheckHistoryLocal
+                            ? ItemCheckHistoryLocal(valueNotifierMapCheckImageLocal
                                 .value[widget.modelCheckList.listModelCheck[valueNotifierIndexCheck.value]])
                             :
 
@@ -204,7 +210,7 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
                       child: SizedBox(
                         height: _sizeImageCheckSequence + 10,
                         child: CustomValueListenableBuilder2(
-                          a: valueNotifierMapCheckHistoryLocal,
+                          a: valueNotifierMapCheckImageLocal,
                           b: valueNotifierIndexCheck,
                           builder: (context, a, b, child) => ListView.builder(
                             itemCount: widget.modelCheckList.listModelCheck.length,
@@ -259,7 +265,7 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
                     Align(
                         alignment: Alignment.topCenter,
                         child: ValueListenableBuilder(
-                          valueListenable: valueNotifierMapCheckHistoryLocal,
+                          valueListenable: valueNotifierMapCheckImageLocal,
                           builder: (context, value, child) => Visibility(
                             visible: value.keys.length == widget.modelCheckList.listModelCheck.length,
                             child: Padding(
@@ -421,17 +427,16 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
     MyApp.logger.d('촬영된 사진 주소 : ${xFile.path}');
 
     //
-    ModelCheckHistoryLocal modelCheckHistoryLocal = ModelCheckHistoryLocal(
+    ModelCheckImageLocal modelCheckHistoryLocal = ModelCheckImageLocal(
       modelCheck: widget.modelCheckList.listModelCheck[valueNotifierIndexCheck.value],
       date: Timestamp.now(),
       xFile: xFile,
       cameraLensDirection: cameraController.description.lensDirection,
-      modelLocation: modelLocation,
     );
 
-    Map<ModelCheck, ModelCheckHistoryLocal> mapNew = {...valueNotifierMapCheckHistoryLocal.value};
+    Map<ModelCheck, ModelCheckImageLocal> mapNew = {...valueNotifierMapCheckImageLocal.value};
     mapNew[widget.modelCheckList.listModelCheck[valueNotifierIndexCheck.value]] = modelCheckHistoryLocal;
-    valueNotifierMapCheckHistoryLocal.value = mapNew;
+    valueNotifierMapCheckImageLocal.value = mapNew;
 
     //다음 페이지로
     moveNextIndexChange();
@@ -444,7 +449,7 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
   }
 
   changeIndexCheck(int index) {
-    if (valueNotifierMapCheckHistoryLocal.value[widget.modelCheckList.listModelCheck[index]] == null) {
+    if (valueNotifierMapCheckImageLocal.value[widget.modelCheckList.listModelCheck[index]] == null) {
       //해당 index가 아직 촬영 전이라면
       valueNotifierIndexCheck.value = index;
       valueNotifierIndexCheckShowResult.value = null;
@@ -459,7 +464,7 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
   moveNextIndexChange() {
     bool isAllCheck = true;
     for (var element in widget.modelCheckList.listModelCheck) {
-      if (valueNotifierMapCheckHistoryLocal.value[element] == null) {
+      if (valueNotifierMapCheckImageLocal.value[element] == null) {
         //MyApp.logger.d("촬영 안 한 인증이 있음");
         isAllCheck = false;
         break;
@@ -474,7 +479,7 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
       //다음이 있다면
       //사진 촬영 안한 인덱스로 이동
       for (int i = 0; i < widget.modelCheckList.listModelCheck.length; i++) {
-        if (valueNotifierMapCheckHistoryLocal.value[widget.modelCheckList.listModelCheck[i]] == null) {
+        if (valueNotifierMapCheckImageLocal.value[widget.modelCheckList.listModelCheck[i]] == null) {
           changeIndexCheck(i);
           break;
         }
@@ -483,9 +488,9 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
   }
 
   removePhoto() {
-    Map<ModelCheck, ModelCheckHistoryLocal> mapNew = {...valueNotifierMapCheckHistoryLocal.value};
+    Map<ModelCheck, ModelCheckImageLocal> mapNew = {...valueNotifierMapCheckImageLocal.value};
     mapNew.remove(widget.modelCheckList.listModelCheck[valueNotifierIndexCheck.value]);
-    valueNotifierMapCheckHistoryLocal.value = mapNew;
+    valueNotifierMapCheckImageLocal.value = mapNew;
     valueNotifierIndexCheckShowResult.value = null;
   }
 
@@ -493,7 +498,7 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
     if (valueNotifierIsUploadingToServer.value) {
       return;
     }
-    //valueNotifierIsUploadingToServer.value = true;
+    valueNotifierIsUploadingToServer.value = true;
 
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     ModelDevice modelDevice;
@@ -518,11 +523,79 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
 
     MyApp.logger.d('디바이스 모델 : ${modelDevice.toJson().toString()}');
 
-    //todo kyc
-    //model_location을 check_history_local에 각각 두는 게 아니라 전체적으로 1번만 하도록
+    ModelUserCheckHistory modelUserCheckHistory = ModelUserCheckHistory(
+      checkListId: widget.modelCheckList.docId,
+      user: MyApp.providerUser.modelUser?.id ?? '',
+      date: Timestamp.now(),
+      modelLocation: modelLocation!,
+      modelDevice: modelDevice,
+      listModelCheckImage: [], //비어있는 전송 상태로 시작
+    );
 
+    ///user_check_history 문서 생성
+    DocumentReference documentReference =
+        await FirebaseFirestore.instance.collection(keyUserCheckHistories).add(modelUserCheckHistory.toJson());
 
-    //valueNotifierIsUploadingToServer.value = true;
+    ///이미지 전송
+    List<Completer> listCompleterUploadImageToServer = [];
+    List<ModelCheckImage> listModelCheckImage = [];
+    for (var element in valueNotifierMapCheckImageLocal.value.values) {
+      Completer completerUploadImageToServer = Completer();
+      listCompleterUploadImageToServer.add(completerUploadImageToServer);
+
+      String cameraDirection;
+      if (element.cameraLensDirection == CameraLensDirection.front) {
+        cameraDirection = keyFront;
+      } else if (element.cameraLensDirection == CameraLensDirection.back) {
+        cameraDirection = keyBack;
+      } else {
+        cameraDirection = '';
+      }
+
+      ModelCheckImage modelCheckImage = ModelCheckImage(
+        name: element.modelCheck.name,
+        date: element.date,
+        fac: element.modelCheck.fac,
+        urlImage: '',
+        cameraDirection: cameraDirection,
+      );
+
+      FirebaseStorage.instance
+          .ref(
+              "$keyImages/$keyUserCheckHistories/${documentReference.id}/${pt.basename(File(element.xFile.path).path)}")
+          .putFile(File(element.xFile.path))
+          .then((uploadTask) {
+        MyApp.logger.d('서버로 사진 전송 성공 : ${uploadTask.ref.toString()}');
+        return uploadTask.ref.getDownloadURL();
+      }).then((urlDownload) {
+        MyApp.logger.d('다운로드 url 조회 성공 : $urlDownload');
+        modelCheckImage.urlImage = urlDownload;
+        listModelCheckImage.add(modelCheckImage);
+        completerUploadImageToServer.complete();
+      });
+    }
+
+    ///모든 이미지 전송될때까지 기다림
+    await Future.wait([...listCompleterUploadImageToServer.map((e) => e.future).toList()]);
+
+    ///전송된 이미지들 정렬
+    List<String> listName = [...valueNotifierMapCheckImageLocal.value.values.map((e) => e.modelCheck.name).toList()];
+    listModelCheckImage.sort(
+      (a, b) {
+        return listName.indexOf(a.name).compareTo(listName.indexOf(b.name));
+      },
+    );
+
+    ///user_check_history 문서 수정
+    await documentReference.update({
+      keyImage: getListModelCheckImageFromLocal(listModelCheckImage),
+    });
+
+    ///chek_lists의 daily_check_histories 문서 수정
+
+    valueNotifierIsUploadingToServer.value = false;
+
+    showSnackBarOnRoute('인증을 완료했어요.');
     //await FirebaseFirestore.instance.collection(keyUserChecks).add({});
   }
 }

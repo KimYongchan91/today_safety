@@ -5,12 +5,12 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:today_safety/custom/custom_text_style.dart';
 
-import '../../const/model/model_check_history_local.dart';
+import '../../const/model/model_check_image_local.dart';
 import '../widget/icon_error.dart';
 
 ///사진 촬영 결과
 class ItemCheckHistoryLocal extends StatelessWidget {
-  final ModelCheckHistoryLocal? modelCheckHistoryLocal;
+  final ModelCheckImageLocal? modelCheckHistoryLocal;
 
   const ItemCheckHistoryLocal(this.modelCheckHistoryLocal, {Key? key}) : super(key: key);
 
@@ -37,8 +37,7 @@ class ItemCheckHistoryLocal extends StatelessWidget {
           bottom: 100,
           right: 100,
           child: Text(
-            '시간 : ${DateFormat('yyyy-mm-dd HH:mm:ss').format(modelCheckHistoryLocal!.date.toDate())}\n'
-            '위치 : ${modelCheckHistoryLocal?.modelLocation?.lat}, ${modelCheckHistoryLocal?.modelLocation?.lng}',
+            '시간 : ${DateFormat('yyyy-mm-dd HH:mm:ss').format(modelCheckHistoryLocal!.date.toDate())}\n',
             style: CustomTextStyle.normalRedBold(),
           ),
         ),

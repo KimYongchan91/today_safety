@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:today_safety/const/model/model_check_image.dart';
 
 import '../../const/model/model_check.dart';
 import '../../my_app.dart';
@@ -38,6 +39,7 @@ Map<String, dynamic> transformForServerDataType(Map<String, dynamic> mapOld) {
   return mapNew;
 }
 
+///
 List<ModelCheck> getListModelCheckFromServer(dynamic list) {
   List<ModelCheck> result = [];
 
@@ -51,6 +53,30 @@ List<ModelCheck> getListModelCheckFromServer(dynamic list) {
 }
 
 dynamic getListModelCheckFromLocal(List<ModelCheck> list){
+  List<dynamic> result = [];
+
+  for (var element in list) {
+    result.add(element.toJson());
+  }
+
+
+  return result;
+}
+
+///
+List<ModelCheckImage> getListModelCheckImageFromServer(dynamic list) {
+  List<ModelCheckImage> result = [];
+
+  if (list is List) {
+    for (var element in list) {
+      result.add(ModelCheckImage.fromJson(element));
+    }
+  }
+
+  return result;
+}
+
+dynamic getListModelCheckImageFromLocal(List<ModelCheckImage> list){
   List<dynamic> result = [];
 
   for (var element in list) {

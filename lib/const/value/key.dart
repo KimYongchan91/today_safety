@@ -61,8 +61,8 @@ const String keyFac= 'fac';
 const String keyCheckList= 'check_list';
 const String keyCheckListS= 'check_lists';
 
-const String keyCheckHistory= 'check_history';
-const String keyUrlCheckImage= 'url_check_image';
+const String keyImage= 'image';
+const String keyUrlImage= 'url_image';
 const String keyCameraDirection= 'camera_direction';
 const String keyBack= 'back';
 const String keyFront= 'front';
@@ -73,5 +73,12 @@ const String keyOs= 'os';
 const String keyAndroid= 'android';
 const String keyIos= 'ios';
 const String keyOsVersion= 'os_version';
+
+const String keyUserCheckHistories = 'user_check_histories';
+const String keyUser = 'user';
+
+const String keyUserDailyCheckHistories = 'daily_user_check_histories';
+
+
 
 
