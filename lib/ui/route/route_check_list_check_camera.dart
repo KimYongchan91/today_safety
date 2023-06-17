@@ -508,7 +508,7 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
 
     //현재 날짜
     final Timestamp timestampNow = Timestamp.now();
-    final String displayDateToday = DateFormat('yyyy-mm-dd').format(timestampNow.toDate());
+    final String displayDateToday = DateFormat('yyyy-MM-dd').format(timestampNow.toDate());
 
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     ModelDevice modelDevice;
@@ -538,6 +538,7 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
       modelUser: MyApp.providerUser.modelUser!,
       date: timestampNow,
       dateDisplay: displayDateToday,
+      dateWeek: timestampNow.toDate().weekday,
       modelLocation: modelLocation!,
       modelDevice: modelDevice,
       listModelCheckImage: [], //비어있는 전송 상태로 시작
@@ -604,9 +605,7 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
 
     ///chek_lists의 daily_check_histories 문서 수정
     ///추후에 할 예정
-    /*
     //먼저 문서가 있나 조회
-
 
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
         .collection(keyCheckListS)
@@ -618,22 +617,29 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
 
     //문서가 있음
     if (querySnapshot.docs.isNotEmpty) {
+      querySnapshot.docs.first.reference.update({
+        keyUserCheckHistoryCount: FieldValue.increment(1),
+        keyUserCheckHistory: FieldValue.arrayRemove([
+          modelUserCheckHistory.toJson(),
+        ])
+      });
+    } else {
+      //문서가 없음
+
       await FirebaseFirestore.instance
           .collection(keyCheckListS)
           .doc(widget.modelCheckList.docId)
           .collection(keyDailyCheckHistories)
           .add({
-        keyDate : timestampNow,
-        keyDateDisplay : displayDateToday,
-        keyUserCountTotal : 1,
-        keyUserCount : {
-          widget.modelCheckList.docId
-        },
+        keyDate: timestampNow,
+        keyDateDisplay: displayDateToday,
+        keyDateWeek: timestampNow.toDate().weekday,
+        keyUserCheckHistoryCount: 1,
+        keyUserCheckHistory: [
+          modelUserCheckHistory.toJson(),
+        ],
       });
-    } else {
-      //문서가 없음
     }
-    */
 
     valueNotifierIsUploadingToServer.value = false;
     showSnackBarOnRoute('인증을 완료했어요.');

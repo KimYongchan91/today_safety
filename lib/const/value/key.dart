@@ -1,7 +1,6 @@
 const String keyUrl = 'url';
 
 const String keyUsers = 'users';
-const String keyUserChecks = 'user_checks';
 
 const String keyKakao = 'kakao';
 const String keyNaver = 'naver';
@@ -78,4 +77,8 @@ const String keyUser = 'user';
 
 const String keyDailyCheckHistories = 'daily_check_histories';
 const String keyDateDisplay = 'date_display';
+const String keyDateWeek = 'date_week';
 const String keyUserCountTotal = 'user_count_total';
+
+const String keyUserCheckHistory= 'user_check_history';
+const String keyUserCheckHistoryCount= 'user_check_history_count';

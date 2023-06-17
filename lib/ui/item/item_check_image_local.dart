@@ -37,7 +37,7 @@ class ItemCheckImageLocal extends StatelessWidget {
           bottom: 100,
           right: 100,
           child: Text(
-            '촬영 시간 : ${DateFormat('yyyy-mm-dd HH:mm:ss').format(modelCheckHistoryLocal!.date.toDate())}\n',
+            '촬영 시간 : ${DateFormat('yyyy-MM-dd HH:mm:ss').format(modelCheckHistoryLocal!.date.toDate())}\n',
             style: CustomTextStyle.normalRedBold(),
           ),
         ),

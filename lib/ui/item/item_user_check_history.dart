@@ -9,10 +9,23 @@ class ItemUserCheckHistory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ExpandablePanel(
-      header: Text(modelUserCheckHistory.modelUser.name),//todo kyc, 인증 시간 추가
-      collapsed: Container(),
-      expanded: Container(), //todo kyc, 인증 주소 등 추가
+    return Container(
+      decoration: BoxDecoration(
+          border: Border.all(
+        color: Colors.grey,
+      )),
+      child: ExpandablePanel(
+        header: Text(modelUserCheckHistory.modelUser.name), //todo kyc, 인증 시간 추가
+        collapsed: Container(),
+        expanded: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+                "인증 위치 :${modelUserCheckHistory.modelLocation.si} ${modelUserCheckHistory.modelLocation.gu} "
+                    "${modelUserCheckHistory.modelLocation.dong}")
+          ],
+        ), //todo kyc, 인증 주소 등 추가
+      ),
     );
   }
 }

@@ -14,6 +14,7 @@ class ModelUserCheckHistory {
   final ModelUser modelUser;
   final Timestamp date;
   final String dateDisplay;
+  final int dateWeek;
   final ModelLocation modelLocation;
   final ModelDevice modelDevice;
   final List<ModelCheckImage> listModelCheckImage;
@@ -24,6 +25,7 @@ class ModelUserCheckHistory {
     required this.modelUser,
     required this.date,
     required this.dateDisplay,
+    required this.dateWeek,
     required this.modelLocation,
     required this.modelDevice,
     required this.listModelCheckImage,
@@ -34,6 +36,7 @@ class ModelUserCheckHistory {
         modelUser = ModelUser.fromJson(json[keyUser], json[keyUser]?[keyDocId] ?? ''),
         date = getTimestampFromData(json[keyDate]) ?? Timestamp.now(),
         dateDisplay = json[keyDateDisplay] ?? '',
+        dateWeek = json[keyDateWeek] ?? 1,
         modelLocation = ModelLocation.fromJson(json[keyLocation] ?? {}),
         modelDevice = ModelDevice.fromJson(json[keyDevice] ?? {}),
         listModelCheckImage = getListModelCheckImageFromServer(json[keyImage]);
@@ -44,6 +47,7 @@ class ModelUserCheckHistory {
       keyUser: modelUser.toJson(),
       keyDate: date,
       keyDateDisplay: dateDisplay,
+      keyDateWeek : dateWeek,
       keyLocation: modelLocation.toJson(),
       keyDevice: modelDevice.toJson(),
       keyImage: getListModelCheckImageFromLocal(listModelCheckImage),
