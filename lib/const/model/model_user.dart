@@ -8,6 +8,7 @@ class ModelUser {
   final String docId;
   final String id;
   final String idExceptLT;
+  final String name;
   final String loginType;
   final String state;
   final Timestamp dateJoin;
@@ -16,6 +17,7 @@ class ModelUser {
     this.docId = '',
     required this.id,
     required this.idExceptLT,
+    required this.name,
     required this.loginType,
     required this.state,
     required this.dateJoin,
@@ -26,6 +28,7 @@ class ModelUser {
       ///유저 13
       : id = map[keyId] ?? '',
         idExceptLT = map[keyIdExceptLT] ?? '',
+        name = map[keyName] ?? '',
         loginType = map[keyLoginType] ?? '',
         state = map[keyState] ?? '',
         dateJoin = getTimestampFromData(map[keyDateJoin]) ?? Timestamp.now();
@@ -35,6 +38,7 @@ class ModelUser {
       //keyDocId: docId,
       keyId: id,
       keyIdExceptLT: idExceptLT,
+      keyName: name,
       keyLoginType: loginType,
       keyState: state,
       keyDateJoin: dateJoin,

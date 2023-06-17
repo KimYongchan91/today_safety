@@ -9,10 +9,10 @@ import '../../const/model/model_check_image_local.dart';
 import '../widget/icon_error.dart';
 
 ///사진 촬영 결과
-class ItemCheckHistoryLocal extends StatelessWidget {
+class ItemCheckImageLocal extends StatelessWidget {
   final ModelCheckImageLocal? modelCheckHistoryLocal;
 
-  const ItemCheckHistoryLocal(this.modelCheckHistoryLocal, {Key? key}) : super(key: key);
+  const ItemCheckImageLocal(this.modelCheckHistoryLocal, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,7 @@ class ItemCheckHistoryLocal extends StatelessWidget {
           bottom: 100,
           right: 100,
           child: Text(
-            '시간 : ${DateFormat('yyyy-mm-dd HH:mm:ss').format(modelCheckHistoryLocal!.date.toDate())}\n',
+            '촬영 시간 : ${DateFormat('yyyy-mm-dd HH:mm:ss').format(modelCheckHistoryLocal!.date.toDate())}\n',
             style: CustomTextStyle.normalRedBold(),
           ),
         ),

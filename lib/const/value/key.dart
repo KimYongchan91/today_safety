@@ -3,7 +3,6 @@ const String keyUrl = 'url';
 const String keyUsers = 'users';
 const String keyUserChecks = 'user_checks';
 
-
 const String keyKakao = 'kakao';
 const String keyNaver = 'naver';
 const String keyGoogle = 'google';
@@ -48,37 +47,35 @@ const String keyAddressJibun = 'address_Jibun';
 const String keyAddressBuildingName = 'address_building_name';
 const String keySite = 'site';
 const String keySites = 'sites';
-const String keyImages= 'images';
+const String keyImages = 'images';
 
-const String keyCompany= 'company';
-const String keyDate= 'date';
-const String keyLocation= 'location';
-const String keyUserCount= 'user_count';
-const String keyName= 'name';
-const String keyUrlLogoImage= 'url_logo_image';
+const String keyCompany = 'company';
+const String keyDate = 'date';
+const String keyLocation = 'location';
+const String keyUserCount = 'user_count';
+const String keyName = 'name';
+const String keyUrlLogoImage = 'url_logo_image';
 
-const String keyFac= 'fac';
-const String keyCheckList= 'check_list';
-const String keyCheckListS= 'check_lists';
+const String keyFac = 'fac';
+const String keyCheckList = 'check_list';
+const String keyCheckListS = 'check_lists';
 
-const String keyImage= 'image';
-const String keyUrlImage= 'url_image';
-const String keyCameraDirection= 'camera_direction';
-const String keyBack= 'back';
-const String keyFront= 'front';
-const String keyDevice= 'device';
-const String keyCode= 'code';
-const String keyModel= 'model';
-const String keyOs= 'os';
-const String keyAndroid= 'android';
-const String keyIos= 'ios';
-const String keyOsVersion= 'os_version';
+const String keyImage = 'image';
+const String keyUrlImage = 'url_image';
+const String keyCameraDirection = 'camera_direction';
+const String keyBack = 'back';
+const String keyFront = 'front';
+const String keyDevice = 'device';
+const String keyCode = 'code';
+const String keyModel = 'model';
+const String keyOs = 'os';
+const String keyAndroid = 'android';
+const String keyIos = 'ios';
+const String keyOsVersion = 'os_version';
 
 const String keyUserCheckHistories = 'user_check_histories';
 const String keyUser = 'user';
 
-const String keyUserDailyCheckHistories = 'daily_user_check_histories';
-
-
-
-
+const String keyDailyCheckHistories = 'daily_check_histories';
+const String keyDateDisplay = 'date_display';
+const String keyUserCountTotal = 'user_count_total';

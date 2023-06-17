@@ -1,13 +1,16 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_barcodes/barcodes.dart';
 import 'package:today_safety/const/model/model_check_list.dart';
-import 'package:today_safety/const/value/key.dart';
 import 'package:today_safety/custom/custom_text_style.dart';
+import 'package:today_safety/service/provider/provider_user_check_history.dart';
 import 'package:today_safety/ui/item/item_check.dart';
+import 'package:today_safety/ui/item/item_user_check_history.dart';
+import 'package:today_safety/ui/widget/icon_error.dart';
 
 import '../../const/value/router.dart';
 import '../../my_app.dart';
@@ -22,7 +25,9 @@ class RouteCheckListDetail extends StatefulWidget {
 }
 
 class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
-  late Completer<ModelCheckList?> completerModelCheckList;
+  late Completer<bool> completerModelCheckList;
+  ModelCheckList? modelCheckList;
+  late ProviderUserCheckHistory providerUserCheckHistory;
 
   @override
   void initState() {
@@ -31,73 +36,148 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
     completerModelCheckList = Completer();
 
     if (Get.parameters[keyCheckListId] == null) {
-      completerModelCheckList.complete(null);
+      completerModelCheckList.complete(false);
       return;
     }
 
     if (Get.arguments?[keyModelCheckList] != null) {
-      completerModelCheckList.complete(Get.arguments[keyModelCheckList]);
+      modelCheckList = Get.arguments[keyModelCheckList];
+      completerModelCheckList.complete(true);
     } else {
       getModelCheckListFromServerByDocId(Get.parameters[keyCheckListId]!).then((value) {
-        completerModelCheckList.complete(value);
+        if (value != null) {
+          modelCheckList = value;
+          completerModelCheckList.complete(true);
+        } else {
+          modelCheckList = null;
+          completerModelCheckList.complete(false);
+        }
       });
     }
 
+    completerModelCheckList.future.then((value) {
+      if (value) {
+        initByCheckList();
+      }
+    });
+
     super.initState();
+  }
+
+  initByCheckList() {
+    providerUserCheckHistory = ProviderUserCheckHistory(checkListId: modelCheckList!.docId);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: FutureBuilder<ModelCheckList?>(
+        child: FutureBuilder<bool>(
           future: completerModelCheckList.future,
           builder: (context, snapshot) {
             if (snapshot.hasData == false) {
-              return const Center(
-                child: CircularProgressIndicator(),
+              ///로딩 중
+              return Center(
+                child: LoadingAnimationWidget.inkDrop(
+                  color: Colors.greenAccent,
+                  size: 48,
+                ),
               );
-            } else if (snapshot.data != null) {
-              return Column(
-                children: [
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Row(
+            } else if (snapshot.data == true) {
+              return MultiProvider(
+                providers: [
+                  ChangeNotifierProvider.value(value: providerUserCheckHistory),
+                ],
+                builder: (context, child) => SingleChildScrollView(
+                  child: Column(
                     children: [
+                      const SizedBox(
+                        height: 20,
+                      ),
+
+                      ///체크 리스트 이름, QR 코드
+                      Row(
+                        children: [
+                          Text(
+                            modelCheckList!.name,
+                            style: const CustomTextStyle.bigBlackBold(),
+                          ),
+
+                          ///QR 코드
+                          SizedBox(
+                            width: 100,
+                            height: 100,
+                            child: SfBarcodeGenerator(
+                              value: '$urlAppLink/${modelCheckList!.docId}',
+                              symbology: QRCode(),
+                              showValue: false,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+
+                      ///최근 인증한 유저
+                      ///3개 정도?
+                      Consumer<ProviderUserCheckHistory>(
+                        builder: (context, value, child) => Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  '최근 인증 근무자',
+                                  style: CustomTextStyle.bigBlackBold(),
+                                ),
+                                Text(
+                                  '더보기',
+                                  style: CustomTextStyle.normalGreyBold(),
+                                )
+                              ],
+                            ),
+                            ListView.builder(
+                              itemCount: value.listModelUserCheckHistory.length,
+                              itemBuilder: (context, index) => ItemUserCheckHistory(
+                                value.listModelUserCheckHistory[index],
+                              ),
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                            )
+                          ],
+                        ),
+                      ),
+
+                      SizedBox(
+                        height: 20,
+                      ),
+
                       Text(
-                        snapshot.data!.name,
+                        '인증 항목',
                         style: CustomTextStyle.bigBlackBold(),
                       ),
                       SizedBox(
-                        width: 100,
-                        height: 100,
-                        child: SfBarcodeGenerator(
-                          value: '$urlAppLink/${snapshot.data!.docId}',
-                          symbology: QRCode(),
-                          showValue: false,
-                        ),
+                        height: 20,
                       ),
+
+                      ///체크 항목 리스트 뷰
+                      ListView.builder(
+                        itemCount: modelCheckList!.listModelCheck.length,
+                        itemBuilder: (context, index) => ItemCheck(
+                          modelCheckList!.listModelCheck[index],
+                        ),
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                      )
                     ],
                   ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  ListView.builder(
-                    itemCount: snapshot.data!.listModelCheck.length,
-                    itemBuilder: (context, index) => ItemCheck(
-                      snapshot.data!.listModelCheck[index],
-                    ),
-                    shrinkWrap: true,
-                  )
-                ],
+                ),
               );
             } else {
               return const Center(
-                child: Icon(
-                  Icons.error,
-                  color: Colors.red,
-                ),
+                child: IconError(),
               );
             }
           },

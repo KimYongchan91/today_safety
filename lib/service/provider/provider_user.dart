@@ -5,6 +5,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart' as ks;
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
@@ -12,6 +13,7 @@ import 'package:today_safety/const/model/model_site.dart';
 import 'package:today_safety/const/model/model_user.dart';
 import 'package:today_safety/const/model/model_user_easy_login.dart';
 import 'package:today_safety/service/util/util_login.dart';
+import 'package:today_safety/ui/dialog/dialog_input_name.dart';
 
 import '../../const/value/key.dart';
 import '../../my_app.dart';
@@ -42,8 +44,8 @@ class ProviderUser extends ChangeNotifier {
 
       if (querySnapshot.docs.isNotEmpty) {
         //유저 문서가 존재함
-        ModelUser modelUser = ModelUser.fromJson(
-            querySnapshot.docs.first.data() as Map<dynamic, dynamic>, querySnapshot.docs.first.id);
+        ModelUser modelUser =
+            ModelUser.fromJson(querySnapshot.docs.first.data() as Map<dynamic, dynamic>, querySnapshot.docs.first.id);
         if (modelUser.state == keyOn) {
           MyApp.logger.d("유저 문서가 존재함");
           this.modelUser = modelUser;
@@ -107,10 +109,20 @@ class ProviderUser extends ChangeNotifier {
       if (result.data[keyMessage] == keyUserNotFound) {
         //유저가 존재 하지 않음.
         //회원 가입 진행
+        //이름을 물어보자.
+        var name = await Get.dialog(
+          DialogInputName(modelUserEasyLogin.email),
+          barrierDismissible: false,
+        );
+        if (name == null) {
+          showSnackBarOnRoute('이름이 입력되지 않았어요.');
+          return;
+        }
 
         ModelUser modelUserNew = ModelUser(
           id: getIdWithLoginType(modelUserEasyLogin),
           idExceptLT: modelUserEasyLogin.email,
+          name: name,
           loginType: modelUserEasyLogin.loginType,
           state: keyOn,
           dateJoin: Timestamp.now(),
@@ -123,8 +135,7 @@ class ProviderUser extends ChangeNotifier {
           //회원가입 성공
 
           //FirebaseAuth 로그인 적용
-          await loginWithToken(
-              resultJoin[keyToken], ModelUser.fromJson(modelUserNew.toJson(), resultJoin[keyDocId]));
+          await loginWithToken(resultJoin[keyToken], ModelUser.fromJson(modelUserNew.toJson(), resultJoin[keyDocId]));
         } on Exception catch (e) {
           MyApp.logger.wtf("회원 가입 중에 에러 발생 : ${e.toString()}");
           showSnackBarOnRoute(messageJoinFail);

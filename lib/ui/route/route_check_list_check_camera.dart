@@ -7,6 +7,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:today_safety/const/model/model_check.dart';
 import 'package:today_safety/const/model/model_check_list.dart';
@@ -25,7 +26,7 @@ import '../../const/model/model_check_image_local.dart';
 import '../../const/value/fuc.dart';
 import '../../my_app.dart';
 import '../../service/util/util_firestore.dart';
-import '../item/item_check_history_local.dart';
+import '../item/item_check_image_local.dart';
 
 const double _sizeImageCheckSequence = 50;
 
@@ -195,7 +196,7 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
                         builder: (context, value, child) => value != null
 
                             ///사진 촬영 결과를 보여주는 부분
-                            ? ItemCheckHistoryLocal(valueNotifierMapCheckImageLocal
+                            ? ItemCheckImageLocal(valueNotifierMapCheckImageLocal
                                 .value[widget.modelCheckList.listModelCheck[valueNotifierIndexCheck.value]])
                             :
 
@@ -498,7 +499,16 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
     if (valueNotifierIsUploadingToServer.value) {
       return;
     }
+
+    if (MyApp.providerUser.modelUser == null) {
+      showSnackBarOnRoute(messageNeedLogin);
+      return;
+    }
     valueNotifierIsUploadingToServer.value = true;
+
+    //현재 날짜
+    final Timestamp timestampNow = Timestamp.now();
+    final String displayDateToday = DateFormat('yyyy-mm-dd').format(timestampNow.toDate());
 
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     ModelDevice modelDevice;
@@ -525,8 +535,9 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
 
     ModelUserCheckHistory modelUserCheckHistory = ModelUserCheckHistory(
       checkListId: widget.modelCheckList.docId,
-      user: MyApp.providerUser.modelUser?.id ?? '',
-      date: Timestamp.now(),
+      modelUser: MyApp.providerUser.modelUser!,
+      date: timestampNow,
+      dateDisplay: displayDateToday,
       modelLocation: modelLocation!,
       modelDevice: modelDevice,
       listModelCheckImage: [], //비어있는 전송 상태로 시작
@@ -592,9 +603,39 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
     });
 
     ///chek_lists의 daily_check_histories 문서 수정
+    ///추후에 할 예정
+    /*
+    //먼저 문서가 있나 조회
+
+
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection(keyCheckListS)
+        .doc(widget.modelCheckList.docId)
+        .collection(keyDailyCheckHistories)
+        .where(keyDateDisplay, isEqualTo: displayDateToday)
+        .limit(1)
+        .get();
+
+    //문서가 있음
+    if (querySnapshot.docs.isNotEmpty) {
+      await FirebaseFirestore.instance
+          .collection(keyCheckListS)
+          .doc(widget.modelCheckList.docId)
+          .collection(keyDailyCheckHistories)
+          .add({
+        keyDate : timestampNow,
+        keyDateDisplay : displayDateToday,
+        keyUserCountTotal : 1,
+        keyUserCount : {
+          widget.modelCheckList.docId
+        },
+      });
+    } else {
+      //문서가 없음
+    }
+    */
 
     valueNotifierIsUploadingToServer.value = false;
-
     showSnackBarOnRoute('인증을 완료했어요.');
     //await FirebaseFirestore.instance.collection(keyUserChecks).add({});
   }

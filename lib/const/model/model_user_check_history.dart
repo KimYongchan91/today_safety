@@ -2,44 +2,51 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:today_safety/const/model/model_check_image.dart';
 import 'package:today_safety/const/model/model_device.dart';
 import 'package:today_safety/const/model/model_location.dart';
+import 'package:today_safety/const/model/model_user.dart';
 import 'package:today_safety/const/value/key.dart';
 import 'package:today_safety/const/value/router.dart';
 
 import '../../service/util/util_firestore.dart';
 
 class ModelUserCheckHistory {
+  final String docId;
   final String checkListId;
-  final String user;
+  final ModelUser modelUser;
   final Timestamp date;
+  final String dateDisplay;
   final ModelLocation modelLocation;
   final ModelDevice modelDevice;
   final List<ModelCheckImage> listModelCheckImage;
 
   ModelUserCheckHistory({
+    this.docId = '',
     required this.checkListId,
-    required this.user,
+    required this.modelUser,
     required this.date,
+    required this.dateDisplay,
     required this.modelLocation,
     required this.modelDevice,
     required this.listModelCheckImage,
   });
 
-  ModelUserCheckHistory.fromJson(Map json)
+  ModelUserCheckHistory.fromJson(Map json, this.docId)
       : checkListId = json[keyCheckListId] ?? '',
-        user = json[keyUser] ?? '',
+        modelUser = ModelUser.fromJson(json[keyUser], json[keyUser]?[keyDocId] ?? ''),
         date = getTimestampFromData(json[keyDate]) ?? Timestamp.now(),
+        dateDisplay = json[keyDateDisplay] ?? '',
         modelLocation = ModelLocation.fromJson(json[keyLocation] ?? {}),
         modelDevice = ModelDevice.fromJson(json[keyDevice] ?? {}),
         listModelCheckImage = getListModelCheckImageFromServer(json[keyImage]);
 
-  Map<String,dynamic> toJson(){
+  Map<String, dynamic> toJson() {
     return {
-      keyCheckListId : checkListId,
-      keyUser : user,
-      keyDate : date,
-      keyLocation : modelLocation.toJson(),
-      keyDevice : modelDevice.toJson(),
-      keyImage : getListModelCheckImageFromLocal(listModelCheckImage),
+      keyCheckListId: checkListId,
+      keyUser: modelUser.toJson(),
+      keyDate: date,
+      keyDateDisplay: dateDisplay,
+      keyLocation: modelLocation.toJson(),
+      keyDevice: modelDevice.toJson(),
+      keyImage: getListModelCheckImageFromLocal(listModelCheckImage),
     };
   }
 }
