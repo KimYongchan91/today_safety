@@ -9,7 +9,7 @@ import 'package:today_safety/const/value/router.dart';
 import '../../service/util/util_firestore.dart';
 
 class ModelUserCheckHistory {
-  final String docId;
+  String docId;
   final String checkListId;
   final ModelUser modelUser;
   final Timestamp date;
@@ -43,11 +43,12 @@ class ModelUserCheckHistory {
 
   Map<String, dynamic> toJson() {
     return {
+      keyDocId: docId,
       keyCheckListId: checkListId,
       keyUser: modelUser.toJson(),
       keyDate: date,
       keyDateDisplay: dateDisplay,
-      keyDateWeek : dateWeek,
+      keyDateWeek: dateWeek,
       keyLocation: modelLocation.toJson(),
       keyDevice: modelDevice.toJson(),
       keyImage: getListModelCheckImageFromLocal(listModelCheckImage),

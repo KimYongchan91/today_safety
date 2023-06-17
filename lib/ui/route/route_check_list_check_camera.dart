@@ -547,6 +547,7 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
     ///user_check_history 문서 생성
     DocumentReference documentReference =
         await FirebaseFirestore.instance.collection(keyUserCheckHistories).add(modelUserCheckHistory.toJson());
+    modelUserCheckHistory.docId = documentReference.id;
 
     ///이미지 전송
     List<Completer> listCompleterUploadImageToServer = [];
@@ -619,7 +620,7 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
     if (querySnapshot.docs.isNotEmpty) {
       querySnapshot.docs.first.reference.update({
         keyUserCheckHistoryCount: FieldValue.increment(1),
-        keyUserCheckHistory: FieldValue.arrayRemove([
+        keyUserCheckHistory: FieldValue.arrayUnion([
           modelUserCheckHistory.toJson(),
         ])
       });
