@@ -115,6 +115,19 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                           ),
                         ],
                       ),
+
+                      SizedBox(
+                        height: 20,
+                      ),
+
+                      Text(
+                        '인증 추세',
+                        style: CustomTextStyle.bigBlackBold(),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+
                       const SizedBox(
                         height: 20,
                       ),
