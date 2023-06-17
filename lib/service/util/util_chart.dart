@@ -13,6 +13,9 @@ BarChartData getLineChartData(List<ModelDailyCheckHistory> listModelDailyCheckHi
       barRods: [
         BarChartRodData(
           toY: listModelDailyCheckHistory[i].userCheckHistoryCount.toDouble(),
+          color: Colors.green,
+          borderRadius: BorderRadius.zero,
+          width: 12,
           //gradient: _barsGradient,
         )
       ],

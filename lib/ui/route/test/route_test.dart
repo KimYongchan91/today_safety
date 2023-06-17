@@ -56,7 +56,7 @@ class _RouteTestState extends State<RouteTest> {
                     if (datetimeNew.weekday == 6 || datetimeNew.weekday == 7) {
                       json[keyUserCheckHistoryCount] = 0;
                     } else {
-                      json[keyUserCheckHistoryCount] = random.nextInt(7) + 3; //최소3, 최대 9
+                      json[keyUserCheckHistoryCount] = random.nextInt(27) + 3; //최소3, 최대 29
                     }
 
 
