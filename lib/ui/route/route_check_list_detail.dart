@@ -4,22 +4,27 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_barcodes/barcodes.dart';
+import 'package:table_calendar/table_calendar.dart';
 import 'package:today_safety/const/model/model_check_list.dart';
 import 'package:today_safety/const/value/color.dart';
+import 'package:today_safety/const/value/value.dart';
 import 'package:today_safety/custom/custom_text_style.dart';
 import 'package:today_safety/service/provider/provider_user_check_history.dart';
 import 'package:today_safety/ui/item/item_check.dart';
 import 'package:today_safety/ui/item/item_user_check_history.dart';
 import 'package:today_safety/ui/widget/icon_error.dart';
 
+import '../../const/model/model_user_check_history.dart';
 import '../../const/value/router.dart';
 import '../../my_app.dart';
 import '../../service/util/util_app_link.dart';
 import '../../service/util/util_chart.dart';
 import '../../service/util/util_check_list.dart';
+import '../item/item_calendar.dart';
 
 class RouteCheckListDetail extends StatefulWidget {
   const RouteCheckListDetail({Key? key}) : super(key: key);
@@ -97,7 +102,7 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                   child: Column(
                     children: [
                       Container(
-                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                         width: Get.width,
                         height: 70,
                         color: Colors.white,
@@ -149,6 +154,109 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                             ),
                           ),
                         ],
+                      ),
+
+                      const SizedBox(
+                        height: 20,
+                      ),
+
+                      const Text(
+                        '최근 인증 추세2',
+                        style: CustomTextStyle.bigBlackBold(),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+
+                      ///캘린더
+                      Consumer<ProviderUserCheckHistory>(
+                        builder: (context, value, child) => TableCalendar(
+                          firstDay: DateTime.fromMillisecondsSinceEpoch(
+                              DateTime.now().millisecondsSinceEpoch -
+                                  millisecondDay * dayGetDailyUserCheckHistory),
+                          lastDay: DateTime.now(),
+                          focusedDay: DateTime.now(),
+                          locale: keyKoreanKorea,
+                          //달력 형식 바꾸는 버튼
+                          availableCalendarFormats: const {
+                            CalendarFormat.month: 'Month',
+                            // CalendarFormat.twoWeeks: '2 weeks',
+                            // CalendarFormat.week: 'Week'
+                          },
+                          //월 보여주는 부분
+                          headerVisible: true,
+                          //요일 보여주는 부분
+                          daysOfWeekVisible: true,
+                          //페이지 점프를 사용할지
+                          pageJumpingEnabled: false,
+                          //페이지 점프 에니메이션을 사용할지
+                          pageAnimationEnabled: true,
+                          //이번 주가 올해의 몇 주차인지 보여주는 부분
+                          weekNumbersVisible: false,
+                          headerStyle: HeaderStyle(
+                            titleCentered: true,
+                            formatButtonVisible: false,
+                            formatButtonShowsNext: false,
+                            titleTextFormatter: (date, locale) {
+                              return DateFormat('yyyy년 M월').format(date);
+                            },
+                            //rightChevronIcon: const Icon(Icons.chevron_right,color: Colors.transparent,),
+                            //leftChevronIcon: false,
+                          ),
+
+                          onPageChanged: (focusedDay) {
+                            print("페이지 바뀜");
+                          },
+
+                          calendarBuilders: CalendarBuilders(
+                            //맨위 요일 빌더
+                            dowBuilder: (context, day) {
+                              final text = DateFormat('EEE', keyKoreanKorea).format(day);
+                              Color color = Colors.black;
+                              if (day.weekday == DateTime.saturday) {
+                                color = Colors.blue;
+                              } else if (day.weekday == DateTime.sunday) {
+                                color = Colors.red;
+                              }
+                              return Center(
+                                child: Text(
+                                  text,
+                                  style: TextStyle(color: color),
+                                ),
+                              );
+                            },
+
+                            //기본 빌더
+                            defaultBuilder: (context, day, focusedDay) {
+                              return ItemCalendar(
+                                dateTime: day,
+                                listModelUserCheckHistory: value.getDailyUserCheckHistoryCount(day),
+                              );
+                            },
+
+                            //마커 빌더
+                            /*markerBuilder: (context, day, focusedDay) {
+                              return Text(
+                                '${value.getDailyUserCheckHistoryCount(day).length}건',
+                                style: CustomTextStyle.normalGrey(),
+                              );
+                            },*/
+
+                            //오늘 날짜 빌더
+                            todayBuilder: (context, day, focusedDay) {
+                              return ItemCalendar(
+                                dateTime: day,
+                                isToday: true,
+                                listModelUserCheckHistory: value.getDailyUserCheckHistoryCount(day),
+                              );
+                            },
+
+                            //조회 날짜 범위 밖 빌더
+                            disabledBuilder: (context, day, focusedDay) {
+                              return Container();
+                            },
+                          ),
+                        ),
                       ),
 
                       const SizedBox(
@@ -227,11 +335,11 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            const Text(
                               '인증 항목',
                               style: CustomTextStyle.bigBlackBold(),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 20,
                             ),
 
@@ -262,3 +370,4 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
     );
   }
 }
+

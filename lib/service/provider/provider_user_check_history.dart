@@ -28,6 +28,8 @@ class ProviderUserCheckHistory extends ChangeNotifier {
   //일별 인증 통계
   List<ModelDailyCheckHistory> listModelDailyCheckHistory = [];
 
+  DateFormat dateFormatYyyyMMDd = DateFormat('yyyy-MM-dd');
+
   ProviderUserCheckHistory({
     required this.checkListId,
     this.limit = 3,
@@ -39,8 +41,9 @@ class ProviderUserCheckHistory extends ChangeNotifier {
   }
 
   init() {
-    Query query =
-        FirebaseFirestore.instance.collection(keyUserCheckHistories).where(keyCheckListId, isEqualTo: checkListId);
+    Query query = FirebaseFirestore.instance
+        .collection(keyUserCheckHistories)
+        .where(keyCheckListId, isEqualTo: checkListId);
 
     if (userId != null) {
       query = query.where('$keyUser.$keyId', isEqualTo: userId);
@@ -56,7 +59,8 @@ class ProviderUserCheckHistory extends ChangeNotifier {
     ///최근 인증 근무자 첫 수신
     query.get().then((value) {
       for (var element in value.docs) {
-        ModelUserCheckHistory modelUserCheckHistory = ModelUserCheckHistory.fromJson(element.data() as Map, element.id);
+        ModelUserCheckHistory modelUserCheckHistory =
+            ModelUserCheckHistory.fromJson(element.data() as Map, docId: element.id);
         listModelUserCheckHistory.add(modelUserCheckHistory);
       }
 
@@ -91,9 +95,8 @@ class ProviderUserCheckHistory extends ChangeNotifier {
 
     ///일별 인증 통계
     List<String> listDateDisplay = [];
-    int countTargetDay = 9; //9일 전부터 조회
     DateTime datetimeNow = DateTime.now();
-    for (int i = 0; i < countTargetDay; i++) {
+    for (int i = 0; i < dayGetDailyUserCheckHistory; i++) {
       DateTime dateTimeNew =
           DateTime.fromMillisecondsSinceEpoch(datetimeNow.millisecondsSinceEpoch - i * millisecondDay);
       final String displayDateToday = DateFormat('yyyy-MM-dd').format(dateTimeNew);
@@ -115,13 +118,16 @@ class ProviderUserCheckHistory extends ChangeNotifier {
       //MyApp.logger.d("일별 인증 통계 조회 결과 문서 개수 : ${value.docs.length.toString()}");
 
       for (var element in value.docs) {
-        ModelDailyCheckHistory modelDailyCheckHistory = ModelDailyCheckHistory.fromJson(element.data(), element.id);
+        ModelDailyCheckHistory modelDailyCheckHistory =
+            ModelDailyCheckHistory.fromJson(element.data(), element.id);
         listModelDailyCheckHistory.add(modelDailyCheckHistory);
       }
 
       //비어있는 문서 추가
       for (int i = 0; i < listDateDisplay.length; i++) {
-        if (listModelDailyCheckHistory.where((element) => element.dateDisplay == listDateDisplay[i]).isEmpty) {
+        if (listModelDailyCheckHistory
+            .where((element) => element.dateDisplay == listDateDisplay[i])
+            .isEmpty) {
           //존재하지 않는다면
           try {
             DateTime dateTimeEmpty = DateTime.parse(listDateDisplay[i]);
@@ -149,6 +155,19 @@ class ProviderUserCheckHistory extends ChangeNotifier {
 
       notifyListeners();
     });
+  }
+
+  List<ModelUserCheckHistory> getDailyUserCheckHistoryCount(DateTime dateTime) {
+    String dateTimeFormatted = dateFormatYyyyMMDd.format(dateTime);
+
+    Iterable<ModelDailyCheckHistory> iterable =
+        listModelDailyCheckHistory.where((element) => element.dateDisplay == dateTimeFormatted);
+
+    if (iterable.isEmpty) {
+      return [];
+    } else {
+      return iterable.first.listModelUserCheckHistory;
+    }
   }
 
   void clearProvider({bool isNotify = true}) {

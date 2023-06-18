@@ -9,7 +9,7 @@ import 'package:today_safety/const/value/router.dart';
 import '../../service/util/util_firestore.dart';
 
 class ModelUserCheckHistory {
-  String docId;
+  String? docId;
   final String checkListId;
   final ModelUser modelUser;
   final Timestamp date;
@@ -31,7 +31,7 @@ class ModelUserCheckHistory {
     required this.listModelCheckImage,
   });
 
-  ModelUserCheckHistory.fromJson(Map json, this.docId)
+  ModelUserCheckHistory.fromJson(Map json, {this.docId})
       : checkListId = json[keyCheckListId] ?? '',
         modelUser = ModelUser.fromJson(json[keyUser], json[keyUser]?[keyDocId] ?? ''),
         date = getTimestampFromData(json[keyDate]) ?? Timestamp.now(),

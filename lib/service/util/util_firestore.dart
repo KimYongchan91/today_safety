@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:today_safety/const/model/model_check_image.dart';
 
 import '../../const/model/model_check.dart';
+import '../../const/model/model_user_check_history.dart';
 import '../../my_app.dart';
 
 Timestamp? getTimestampFromData(dynamic data) {
@@ -77,6 +78,30 @@ List<ModelCheckImage> getListModelCheckImageFromServer(dynamic list) {
 }
 
 dynamic getListModelCheckImageFromLocal(List<ModelCheckImage> list){
+  List<dynamic> result = [];
+
+  for (var element in list) {
+    result.add(element.toJson());
+  }
+
+
+  return result;
+}
+
+///
+List<ModelUserCheckHistory> getListModelUserCheckHistoryFromServer(dynamic list) {
+  List<ModelUserCheckHistory> result = [];
+
+  if (list is List) {
+    for (var element in list) {
+      result.add(ModelUserCheckHistory.fromJson(element));
+    }
+  }
+
+  return result;
+}
+
+dynamic getListModelUserCheckHistoryFromLocal(List<ModelUserCheckHistory> list){
   List<dynamic> result = [];
 
   for (var element in list) {

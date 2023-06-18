@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:today_safety/const/value/router.dart';
+import 'package:today_safety/ui/route/route_check_list_daily.dart';
 import 'package:today_safety/ui/route/route_check_list_detail.dart';
 import 'package:today_safety/ui/route/route_init.dart';
 import 'package:today_safety/ui/route/route_login.dart';
@@ -47,7 +48,6 @@ class RouteRouter extends StatelessWidget {
           name: keyRouteLogin,
           page: () => const RouteLogin(),
         ),
-
         GetPage(
           name: keyRouteSiteNew,
           page: () => const RouteSiteNew(),
@@ -60,23 +60,23 @@ class RouteRouter extends StatelessWidget {
           name: '$keyRouteSiteDetail/:$keySiteId',
           page: () => const RouteSiteDetail(),
         ),
-
         GetPage(
           name: keyRouteCheckListNew,
           page: () => const RouteCheckListNew(),
         ),
-
         GetPage(
           name: '$keyRouteCheckListDetail/:$keyCheckListId',
           page: () => const RouteCheckListDetail(),
         ),
-
         GetPage(
           name: '$keyRouteCheckListDetail/:$keyCheckListId/$keyRouteCheckListCheckWithOutSlash',
           page: () => const RouteCheckListCheck(),
         ),
-
-
+        GetPage(
+          name:
+              '$keyRouteCheckListDetail/:$keyCheckListId/$keyRouteCheckListDailyWithOutSlash/:$keyDailyDateFormatted',
+          page: () => const RouteCheckListDaily(),
+        ),
 
         /*  GetPage(
           name: keyRouteWelcome,

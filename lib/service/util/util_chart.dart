@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../const/model/model_daily_check_history.dart';
 import '../../my_app.dart';
+import 'dart:math' as math;
 
 BarChartData getLineChartData(List<ModelDailyCheckHistory> listModelDailyCheckHistory) {
   List<BarChartGroupData> listBarChartGroupData = [];
@@ -85,9 +86,13 @@ BarChartData getLineChartData(List<ModelDailyCheckHistory> listModelDailyCheckHi
               color = Colors.redAccent;
             }
 
-            return Text(
-              '$dayOnly일',
-              style: TextStyle(color: color),
+            return Transform.rotate(
+              angle : 0,
+              //angle: -math.pi / 2,
+              child: Text(
+                '$dayOnly',
+                style: TextStyle(color: color,fontSize: 9),
+              ),
             );
           },
         ),
