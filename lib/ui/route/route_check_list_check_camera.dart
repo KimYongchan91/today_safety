@@ -412,7 +412,6 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
         }
         break;
       case CameraLensDirection.external:
-        // TODO: Handle this case.
         break;
     }
   }
@@ -545,8 +544,9 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
     );
 
     ///user_check_history 문서 생성
-    DocumentReference documentReference =
-        await FirebaseFirestore.instance.collection(keyUserCheckHistories).add(modelUserCheckHistory.toJson());
+    DocumentReference documentReference = await FirebaseFirestore.instance
+        .collection(keyUserCheckHistories)
+        .add(modelUserCheckHistory.toJson());
     modelUserCheckHistory.docId = documentReference.id;
 
     ///이미지 전송
@@ -592,7 +592,9 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
     await Future.wait([...listCompleterUploadImageToServer.map((e) => e.future).toList()]);
 
     ///전송된 이미지들 정렬
-    List<String> listName = [...valueNotifierMapCheckImageLocal.value.values.map((e) => e.modelCheck.name).toList()];
+    List<String> listName = [
+      ...valueNotifierMapCheckImageLocal.value.values.map((e) => e.modelCheck.name).toList()
+    ];
     listModelCheckImage.sort(
       (a, b) {
         return listName.indexOf(a.name).compareTo(listName.indexOf(b.name));

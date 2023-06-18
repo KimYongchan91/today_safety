@@ -44,8 +44,8 @@ class ProviderUser extends ChangeNotifier {
 
       if (querySnapshot.docs.isNotEmpty) {
         //유저 문서가 존재함
-        ModelUser modelUser =
-            ModelUser.fromJson(querySnapshot.docs.first.data() as Map<dynamic, dynamic>, querySnapshot.docs.first.id);
+        ModelUser modelUser = ModelUser.fromJson(
+            querySnapshot.docs.first.data() as Map<dynamic, dynamic>, querySnapshot.docs.first.id);
         if (modelUser.state == keyOn) {
           MyApp.logger.d("유저 문서가 존재함");
           this.modelUser = modelUser;
@@ -135,7 +135,8 @@ class ProviderUser extends ChangeNotifier {
           //회원가입 성공
 
           //FirebaseAuth 로그인 적용
-          await loginWithToken(resultJoin[keyToken], ModelUser.fromJson(modelUserNew.toJson(), resultJoin[keyDocId]));
+          await loginWithToken(
+              resultJoin[keyToken], ModelUser.fromJson(modelUserNew.toJson(), resultJoin[keyDocId]));
         } on Exception catch (e) {
           MyApp.logger.wtf("회원 가입 중에 에러 발생 : ${e.toString()}");
           showSnackBarOnRoute(messageJoinFail);
@@ -500,9 +501,9 @@ class ProviderUser extends ChangeNotifier {
   logoutFromAll() async {
     //구글 로그아웃
     try {
-      FirebaseAuth.instance.signOut();
+      if (FirebaseAuth.instance.currentUser != null) FirebaseAuth.instance.signOut();
     } on Exception catch (e) {
-      // TODO
+      MyApp.logger.wtf("구글 로그아웃 실패 : ${e.toString()}");
     }
 
     //카카오 로그아웃
