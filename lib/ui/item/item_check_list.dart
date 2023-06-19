@@ -13,7 +13,7 @@ class ItemCheckList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('https://kayple.com/today_safety/check_list/${modelCheckList.docId}');
+    //print('https://kayple.com/today_safety/check_list/${modelCheckList.docId}');
     return InkWell(
       onTap: () {
         // test

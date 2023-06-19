@@ -33,7 +33,7 @@ class _RouteSiteDetailState extends State<RouteSiteDetail> {
 
   @override
   void initState() {
-    MyApp.logger.d("사이트 id : ${Get.parameters[keySiteId]}");
+    //MyApp.logger.d("사이트 id : ${Get.parameters[keySiteId]}");
     modelSite = Get.arguments[keyModelSite];
 
     providerCheckList = ProviderCheckList(modelSite);

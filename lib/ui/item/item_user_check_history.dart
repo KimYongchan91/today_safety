@@ -7,6 +7,7 @@ import 'package:today_safety/const/model/model_user_check_history.dart';
 import 'package:today_safety/const/value/value.dart';
 import 'package:today_safety/custom/custom_text_style.dart';
 import 'package:today_safety/ui/route/route_check_image_detail.dart';
+import 'package:today_safety/ui/route/route_map_detail.dart';
 
 const double sizeCheckImage = 60;
 
@@ -39,7 +40,7 @@ class ItemUserCheckHistory extends StatelessWidget {
         header: Row(
           children: [
             Text(modelUserCheckHistory.modelUser.name),
-            Spacer(),
+            const Spacer(),
             Text(
               millisecondGapFormatted,
               style: const CustomTextStyle.normalRedBold(),
@@ -52,8 +53,19 @@ class ItemUserCheckHistory extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('인증 날짜 : ${DateFormat('yyyy-MM-dd HH:mm:ss').format(modelUserCheckHistory.date.toDate())}'),
-            Text("인증 위치 :${modelUserCheckHistory.modelLocation.si} ${modelUserCheckHistory.modelLocation.gu} "
-                "${modelUserCheckHistory.modelLocation.dong}"),
+            InkWell(
+              onTap: onTapLocation,
+              child: Row(
+                children: [
+                  Text(
+                    "인증 위치 :${modelUserCheckHistory.modelLocation.si} ${modelUserCheckHistory.modelLocation.gu} "
+                    "${modelUserCheckHistory.modelLocation.dong}",
+                    style: const CustomTextStyle.normalBlue(),
+                  ),
+                  const Icon(Icons.map)
+                ],
+              ),
+            ),
             Text("기기 정보 : ${modelUserCheckHistory.modelDevice.toJson().toString()}"),
 
             ///인증 사진 가로 리스트 뷰
@@ -89,5 +101,9 @@ class ItemUserCheckHistory extends StatelessWidget {
         ), //todo kyc, 인증 주소 등 추가
       ),
     );
+  }
+
+  onTapLocation(){
+    Get.to(()=>RouteMapDetail(modelUserCheckHistory: modelUserCheckHistory));
   }
 }
