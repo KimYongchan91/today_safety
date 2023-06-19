@@ -180,6 +180,9 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                             // CalendarFormat.twoWeeks: '2 weeks',
                             // CalendarFormat.week: 'Week'
                           },
+
+                          //제스처 인식 방향
+                          availableGestures: AvailableGestures.horizontalSwipe,
                           //월 보여주는 부분
                           headerVisible: true,
                           //요일 보여주는 부분
