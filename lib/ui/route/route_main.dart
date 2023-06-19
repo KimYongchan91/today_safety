@@ -12,7 +12,6 @@ import '../../const/value/color.dart';
 import '../../const/value/key.dart';
 import '../../my_app.dart';
 
-//동준과의 test
 class RouteMain extends StatelessWidget {
   const RouteMain({Key? key}) : super(key: key);
 
@@ -135,17 +134,17 @@ class RouteMain extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     ///이름
-                                    const Text(
-                                      '이근영',
-                                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                                    Text(
+                                      value.modelUser?.name ?? "이름",
+                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                                     ),
                                     const SizedBox(
                                       height: 5,
                                     ),
 
-                                    ///ㅇㅏㅇㅣㄷㅣ
+                                    ///아이디
                                     Text(
-                                      value.modelUser?.id ?? '로그인을 해주세요.',
+                                      value.modelUser?.idExceptLT ?? '로그인을 해주세요.',
                                       style: const TextStyle(fontSize: 12),
                                     ),
                                   ],

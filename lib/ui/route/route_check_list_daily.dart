@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:today_safety/const/model/model_check_list.dart';
 import 'package:today_safety/custom/custom_text_style.dart';
 
 import '../../const/model/model_user_check_history.dart';
@@ -18,6 +19,7 @@ class RouteCheckListDaily extends StatefulWidget {
 
 class _RouteCheckListDailyState extends State<RouteCheckListDaily> {
   String dateFormatted = '';
+  ModelCheckList? modelCheckList;
   List<ModelUserCheckHistory> listModelUserCheckHistory = [];
   late Completer<bool> comparableGetListModelUserCheckHistory;
 
@@ -29,6 +31,8 @@ class _RouteCheckListDailyState extends State<RouteCheckListDaily> {
         "keyCheckListId : ${Get.parameters[keyCheckListId]}, keyDailyDateFormatted : ${Get.parameters[keyDailyDateFormatted]}");
 
     dateFormatted = Get.parameters[keyDailyDateFormatted] ?? '날짜 없음';
+
+    modelCheckList = Get.arguments[keyModelCheckList];
 
     comparableGetListModelUserCheckHistory = Completer();
     if (Get.arguments[keyListModelUserCheckHistory] != null) {
@@ -55,6 +59,7 @@ class _RouteCheckListDailyState extends State<RouteCheckListDaily> {
                 itemCount: listModelUserCheckHistory.length,
                 itemBuilder: (context, index) => ItemUserCheckHistory(
                   listModelUserCheckHistory[index],
+                  modelCheckList: modelCheckList,
                 ),
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),

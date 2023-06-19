@@ -3,6 +3,7 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:today_safety/const/model/model_check_list.dart';
 import 'package:today_safety/const/model/model_user_check_history.dart';
 import 'package:today_safety/const/value/value.dart';
 import 'package:today_safety/custom/custom_text_style.dart';
@@ -13,13 +14,13 @@ const double sizeCheckImage = 60;
 
 class ItemUserCheckHistory extends StatelessWidget {
   final ModelUserCheckHistory modelUserCheckHistory;
+  final ModelCheckList? modelCheckList;
 
-  const ItemUserCheckHistory(this.modelUserCheckHistory, {Key? key}) : super(key: key);
+  const ItemUserCheckHistory(this.modelUserCheckHistory, {this.modelCheckList, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    int millisecondGap =
-        DateTime.now().millisecondsSinceEpoch - modelUserCheckHistory.date.millisecondsSinceEpoch;
+    int millisecondGap = DateTime.now().millisecondsSinceEpoch - modelUserCheckHistory.date.millisecondsSinceEpoch;
     String millisecondGapFormatted;
     if (millisecondGap < millisecondMinute) {
       millisecondGapFormatted = "방금";
@@ -103,7 +104,10 @@ class ItemUserCheckHistory extends StatelessWidget {
     );
   }
 
-  onTapLocation(){
-    Get.to(()=>RouteMapDetail(modelUserCheckHistory: modelUserCheckHistory));
+  onTapLocation() {
+    Get.to(() => RouteMapDetail(
+          modelUserCheckHistory: modelUserCheckHistory,
+          modelCheckList: modelCheckList,
+        ));
   }
 }

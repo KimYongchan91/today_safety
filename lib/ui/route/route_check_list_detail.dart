@@ -170,8 +170,7 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                       Consumer<ProviderUserCheckHistory>(
                         builder: (context, value, child) => TableCalendar(
                           firstDay: DateTime.fromMillisecondsSinceEpoch(
-                              DateTime.now().millisecondsSinceEpoch -
-                                  millisecondDay * dayGetDailyUserCheckHistory),
+                              DateTime.now().millisecondsSinceEpoch - millisecondDay * dayGetDailyUserCheckHistory),
                           lastDay: DateTime.now(),
                           focusedDay: DateTime.now(),
                           locale: keyKoreanKorea,
@@ -330,6 +329,7 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                                 itemCount: value.listModelUserCheckHistory.length,
                                 itemBuilder: (context, index) => ItemUserCheckHistory(
                                   value.listModelUserCheckHistory[index],
+                                  modelCheckList: modelCheckList,
                                 ),
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
@@ -381,4 +381,3 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
     );
   }
 }
-
