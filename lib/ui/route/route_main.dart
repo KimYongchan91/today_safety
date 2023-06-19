@@ -54,9 +54,18 @@ class _RouteMainState extends State<RouteMain> {
                       onTap: () {
                         Get.to(() => const RouteTest());
                       },
-                      child: FaIcon(
-                        FontAwesomeIcons.helmetSafety,
-                        color: Colors.yellow.shade700,
+                      child: Container(
+                        alignment: Alignment.center,
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: Colors.yellow.shade700,
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: const FaIcon(
+                          FontAwesomeIcons.helmetSafety,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                     const SizedBox(
@@ -404,10 +413,9 @@ class _RouteMainState extends State<RouteMain> {
           throw Exception('list weather is empty');
         }
 
-        for(dynamic weather in listMapAddressData){
+        for (dynamic weather in listMapAddressData) {
           print(weather.toString());
         }
-
       }
     } on Exception catch (e) {
       MyApp.logger.wtf("날씨 api 요청 실패 : ${e.toString()}");

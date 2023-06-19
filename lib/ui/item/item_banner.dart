@@ -24,13 +24,13 @@ class ItemMainBanner extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                '안전은 가장 큰 자산입니다.',
+                '안전은 가장 큰 자산',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
               ),
               SizedBox(
                 height: 10,
               ),
-              Text('오늘 안전과 함께 오늘도 안전한 하루되세요.'),
+              Text('오늘 안전과 함께 오늘도 안전'),
             ],
           )
         ],
