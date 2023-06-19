@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:device_info/device_info.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -14,6 +15,7 @@ import 'package:today_safety/const/model/model_check_list.dart';
 import 'package:today_safety/const/model/model_device.dart';
 import 'package:today_safety/const/model/model_location.dart';
 import 'package:today_safety/const/model/model_user_check_history.dart';
+import 'package:today_safety/const/value/color.dart';
 import 'package:today_safety/const/value/key.dart';
 import 'package:today_safety/custom/custom_text_style.dart';
 import 'package:today_safety/custom/custom_value_listenable_builder2.dart';
@@ -261,32 +263,6 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
                       ),
                     ),
 
-                    ///인증 완료 버튼
-                    ///모든 촬영이 완료되었을 때만 보임
-                    Align(
-                        alignment: Alignment.topCenter,
-                        child: ValueListenableBuilder(
-                          valueListenable: valueNotifierMapCheckImageLocal,
-                          builder: (context, value, child) => Visibility(
-                            visible: value.keys.length == widget.modelCheckList.listModelCheck.length,
-                            child: Padding(
-                              padding: EdgeInsets.only(top: _sizeImageCheckSequence + 10),
-                              child: ValueListenableBuilder(
-                                valueListenable: valueNotifierIsUploadingToServer,
-                                builder: (context, value, child) => ElevatedButton(
-                                  onPressed: completeCheck,
-                                  child: value
-                                      ? LoadingAnimationWidget.inkDrop(
-                                          color: Colors.white,
-                                          size: 20,
-                                        )
-                                      : Text('인증 완료'),
-                                ),
-                              ),
-                            ),
-                          ),
-                        )),
-
                     ///인증 방법 설명 부분
 /*                  Positioned(
                       top: Get.mediaQuery.viewPadding.top,
@@ -332,6 +308,8 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
                                 CameraPreview(cameraController),
                       )
                    */
+
+                    /// 재활영 , 인증 버튼
                     Align(
                         alignment: Alignment.bottomCenter,
                         child: ValueListenableBuilder(
@@ -339,43 +317,182 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
                             builder: (context, value, child) {
                               ///현재 사진 촬영 결과를 보여주고 있다면?
                               return value != null
-                                  ? Row(
-                                      children: [
-                                        ElevatedButton(
-                                          onPressed: removePhoto,
-                                          child: Text('다시 촬영'),
-                                        ),
-                                      ],
+                                  ? Container(
+                                padding: const EdgeInsets.symmetric(vertical: 40,horizontal: 20),
+                                height: Get.height / 6,
+                                width: Get.width,
+                                color: const Color(0x55000000),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Expanded(
+                                            flex: 1,
+                                            child: InkWell(
+                                              onTap: () {
+                                                removePhoto();
+                                              },
+                                              child: Container(
+alignment: Alignment.center,
+                                                  decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(20), color: const Color(0x55000000)),
+
+                                                  child: const Text(
+                                                    '다시 촬영',
+                                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18,color: Colors.white),
+                                                  )),
+                                            ),
+                                          ),
+
+                                          const SizedBox(
+                                            width: 20,
+                                          ),
+
+                                          ///인증 완료 버튼
+                                          ///모든 촬영이 완료되었을 때만 보임
+                                          Expanded(
+                                            flex: 1,
+                                            child: ValueListenableBuilder(
+                                              valueListenable: valueNotifierIsUploadingToServer,
+                                              builder: (context, value, child) => InkWell(
+                                                onTap: () {
+                                                  completeCheck();
+                                                },
+                                                child: value
+                                                    ? LoadingAnimationWidget.inkDrop(
+                                                        color: Colors.white,
+                                                        size: 20,
+                                                      )
+                                                    : Container(
+                                                    alignment: Alignment.center,
+
+                                                        decoration: BoxDecoration(
+                                                            color:  const Color(0x33ffffff),
+                                                          borderRadius: BorderRadius.circular(20),
+                                                        ),
+                                                        child: const Text(
+                                                          '인증 완료',
+                                                          style: TextStyle(
+                                                              fontSize: 18,
+                                                              color: Colors.white,
+                                                              fontWeight: FontWeight.bold),
+                                                        )),
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
                                     )
+                                  : SizedBox();
+                            })),
+
+                    ///로딩 애니메
+                    Align(
+                        alignment: Alignment.center,
+                        child: ValueListenableBuilder(
+                            valueListenable: valueNotifierIndexCheckShowResult,
+                            builder: (context, value, child) {
+                              ///현재 사진 촬영 결과를 보여주고 있다면?
+                              return value != null
+                                  ? const SizedBox()
                                   :
 
                                   ///일반적인 촬영 중이라면?
-                                  Row(
-                                      children: [
-                                        ///촬영 버튼
-                                        ElevatedButton(
-                                          onPressed: takePhoto,
-                                          child: ValueListenableBuilder(
-                                            valueListenable: valueNotifierIsProcessingTakePhoto,
-                                            builder: (context, value, child) => value
+                                  ValueListenableBuilder(
+                                      valueListenable: valueNotifierIsProcessingTakePhoto,
+                                      builder: (context, value, child) => value
 
-                                                ///촬영 처리 중 아이콘
-                                                ? LoadingAnimationWidget.inkDrop(
-                                                    color: Colors.white,
-                                                    size: 20,
-                                                  )
+                                          ///촬영 처리 중 아이콘
+                                          ? LoadingAnimationWidget.inkDrop(
+                                              color: Colors.white,
+                                              size: 20,
+                                            )
 
-                                                ///촬영 하기 전
-                                                : const Text('촬영'),
-                                          ),
-                                        ),
+                                          ///촬영 하기 전
+                                          : SizedBox(),
+                                    );
+                            })),
 
-                                        ///카메라 방향 전환 버튼
-                                        ElevatedButton(
-                                          onPressed: changeCameraDirection,
-                                          child: const Text('카메라 전환'),
-                                        ),
-                                      ],
+                    ///촬영버튼
+                    Align(
+                        alignment: Alignment.bottomCenter,
+                        child: ValueListenableBuilder(
+                            valueListenable: valueNotifierIndexCheckShowResult,
+                            builder: (context, value, child) {
+                              ///현재 사진 촬영 결과를 보여주고 있다면?
+                              return value != null
+                                  ? const SizedBox()
+                                  :
+
+                                  ///일반적인 촬영 중이라면?
+                                  ValueListenableBuilder(
+                                      valueListenable: valueNotifierIsProcessingTakePhoto,
+                                      builder: (context, value, child) => value
+
+                                          ///촬영 처리 중 아이콘
+                                          ? SizedBox()
+
+                                          ///촬영 하기 전
+                                          : Container(
+                                              padding: const EdgeInsets.symmetric(vertical: 35),
+                                              height: Get.height / 6,
+                                              width: Get.width,
+                                              color: const Color(0x55000000),
+                                              child: Row(
+                                                children: [
+                                                  const Expanded(flex: 1, child: SizedBox()),
+
+                                                  ///촬영 버튼
+                                                  Expanded(
+                                                    flex: 1,
+                                                    child: InkWell(
+                                                      onTap: () {
+                                                        takePhoto();
+                                                      },
+                                                      child: Container(
+                                                        width: 80,
+                                                        decoration: const BoxDecoration(
+                                                          shape: BoxShape.circle,
+                                                          color: Colors.white,
+                                                        ),
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.all(5),
+                                                          child: Container(
+                                                            decoration: BoxDecoration(
+                                                                shape: BoxShape.circle,
+                                                                color: Colors.white,
+                                                                border: Border.all(width: 0.5, color: Colors.black45)),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+
+                                                  ///카메라 전환
+                                                  Expanded(
+                                                    flex: 1,
+                                                    child: InkWell(
+                                                      onTap: () {
+                                                        changeCameraDirection();
+                                                      },
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.all(8.0),
+                                                        child: Container(
+                                                            alignment: Alignment.center,
+                                                            padding: const EdgeInsets.all(10),
+                                                            decoration: const BoxDecoration(
+                                                              shape: BoxShape.circle,
+                                                              color: Color(0x55000000),
+                                                            ),
+                                                            child: const FaIcon(
+                                                              FontAwesomeIcons.arrowRotateRight,
+                                                              color: Colors.white,
+                                                            )),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
                                     );
                             })),
                   ],
@@ -544,9 +661,8 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
     );
 
     ///user_check_history 문서 생성
-    DocumentReference documentReference = await FirebaseFirestore.instance
-        .collection(keyUserCheckHistories)
-        .add(modelUserCheckHistory.toJson());
+    DocumentReference documentReference =
+        await FirebaseFirestore.instance.collection(keyUserCheckHistories).add(modelUserCheckHistory.toJson());
     modelUserCheckHistory.docId = documentReference.id;
 
     ///이미지 전송
@@ -592,9 +708,7 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
     await Future.wait([...listCompleterUploadImageToServer.map((e) => e.future).toList()]);
 
     ///전송된 이미지들 정렬
-    List<String> listName = [
-      ...valueNotifierMapCheckImageLocal.value.values.map((e) => e.modelCheck.name).toList()
-    ];
+    List<String> listName = [...valueNotifierMapCheckImageLocal.value.values.map((e) => e.modelCheck.name).toList()];
     listModelCheckImage.sort(
       (a, b) {
         return listName.indexOf(a.name).compareTo(listName.indexOf(b.name));
