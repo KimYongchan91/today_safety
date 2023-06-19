@@ -83,6 +83,7 @@ dependencies:
   location: ^4.4.0
   fl_chart: ^0.63.0
   easy_image_viewer: ^1.2.1
+  csv: ^5.0.2
 
 
   firebase_analytics: ^10.4.2
@@ -138,6 +139,7 @@ flutter:
     - assets/images/fuc/
     - assets/images/fuc_preset/
     - assets/images/images/
+    - assets/datas/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

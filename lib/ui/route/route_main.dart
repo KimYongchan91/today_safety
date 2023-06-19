@@ -1,20 +1,26 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:today_safety/const/model/model_location_weather.dart';
 import 'package:today_safety/const/value/router.dart';
 import 'package:today_safety/service/provider/provider_user.dart';
 import 'package:today_safety/ui/route/test/route_test.dart';
 import 'package:today_safety/ui/item/item_banner.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter/services.dart' show rootBundle;
 
 import '../../const/value/color.dart';
 import '../../const/value/key.dart';
 import '../../my_app.dart';
+import '../../service/util/util_location.dart';
 
 class RouteMain extends StatefulWidget {
   const RouteMain({Key? key}) : super(key: key);
@@ -250,7 +256,9 @@ class _RouteMainState extends State<RouteMain> {
                                           child: Text(
                                             '근무지 만들기',
                                             style: TextStyle(
-                                                fontWeight: FontWeight.bold, color: Colors.black45, fontSize: 16),
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black45,
+                                                fontSize: 16),
                                           ))
                                     ],
                                   )
@@ -275,7 +283,8 @@ class _RouteMainState extends State<RouteMain> {
                                           width: Get.width,
                                           height: Get.height / 4,
                                           decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(20), color: Colors.redAccent),
+                                              borderRadius: BorderRadius.circular(20),
+                                              color: Colors.redAccent),
                                           child:
                                               //todo ldj 근무지 로고 이미지 부분 수정
                                               ///근무지 로고 이미지
@@ -302,7 +311,8 @@ class _RouteMainState extends State<RouteMain> {
                                                   ///근무지 이름
                                                   Text(
                                                     value.modelSiteMy!.name,
-                                                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
+                                                    style: const TextStyle(
+                                                        fontSize: 20, fontWeight: FontWeight.w800),
                                                   ),
 
                                                   const SizedBox(
@@ -357,11 +367,79 @@ class _RouteMainState extends State<RouteMain> {
   }
 
   refreshWeather() async {
+    int time = DateTime.now().millisecondsSinceEpoch;
+
+    //현재 주소 받아오기
+    Position? position;
+    try {
+      position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
+      MyApp.logger.d("위치 조회 성공 : ${position.latitude}, ${position.longitude}");
+    } on Exception catch (e) {
+      MyApp.logger.wtf("위치 조회 실패 : ${e.toString()}");
+    }
+
+    if (position == null) {
+      return;
+    }
+
+    //MyApp.logger.d("주소 받아오는 데 걸린 시간 : ${DateTime.now().millisecondsSinceEpoch-time}ms");
+    time = DateTime.now().millisecondsSinceEpoch;
+
+    //행정 구역 코드 받아오기
+    ModelLocationWeather? modelLocationWeather;
+    try {
+      modelLocationWeather = await getModelLocationWeatherFromLatLng(position.latitude, position.longitude);
+    } on Exception catch (e) {
+      MyApp.logger.wtf("행정 구역 코드 조회 실패 : ${e.toString()}");
+    }
+
+    if (modelLocationWeather == null) {
+      return;
+    }
+
+    //MyApp.logger.d("행정 구역 코드 받아오는 데 걸린 시간 : ${DateTime.now().millisecondsSinceEpoch-time}ms");
+    time = DateTime.now().millisecondsSinceEpoch;
+
+
+    //행정 구역 코드를 이용해 CSV 파일에서 x, y좌표 구해오기.
+    int? codeX;
+    int? codeY;
+
+    try {
+      final rawData = await rootBundle.loadString("assets/datas/address_code_simple.csv");
+      List<List<dynamic>> listData = const CsvToListConverter().convert(rawData);
+
+      //MyApp.logger.d("파일 읽은 결과 : ${listData[0].toString()}");
+      //MyApp.logger.d('data 타입 : ${listData[0].runtimeType.toString()}');
+      //MyApp.logger.d('0 타입 : ${listData[0][0].runtimeType.toString()}');
+
+      int codeH = int.parse(modelLocationWeather.code);
+      for (var data in listData) {
+        if (data[0] == codeH) {
+          codeX = data[1];
+          codeY = data[2];
+          listData.clear();
+          break;
+        }
+      }
+    } catch (e) {
+      MyApp.logger.wtf("CSV 파일에서 행정 구역 코드 조회 실패 : ${e.toString()}");
+    }
+
+    if (codeX == null || codeY ==null) {
+      return;
+    }
+
+
+    //MyApp.logger.d("CSV에서 x, y값 받아오는 데 걸린 시간 : ${DateTime.now().millisecondsSinceEpoch-time}ms");
+    time = DateTime.now().millisecondsSinceEpoch;
+
+
+    //MyApp.logger.d("찾은 결과 $codeX, $codeY");
+
     String urlBase = 'http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst';
     String keyService =
         '%2B%2BaANJW%2BGmM22jn4uU%2FTCiFfH58TiKg9euCqOwFAm%2FHNtf4K%2FlQ6zPxgMmXiuj7pPzt2LMOhS5yQBBFhm5IUrA%3D%3D';
-    String keyServiceDecoding =
-        '++aANJW+GmM22jn4uU/TCiFfH58TiKg9euCqOwFAm/HNtf4K/lQ6zPxgMmXiuj7pPzt2LMOhS5yQBBFhm5IUrA==';
 
     String baseTimeFormatted;
     int hourCurrent = DateTime.now().hour;
@@ -390,10 +468,10 @@ class _RouteMainState extends State<RouteMain> {
         "&numOfRows=10&dataType=JSON"
         "&base_date=${DateFormat('yyyyMMdd').format(DateTime.now())}"
         "&base_time=$baseTimeFormatted"
-        "&nx=55"
-        "&ny=127";
+        "&nx=$codeX"
+        "&ny=$codeY";
 
-    MyApp.logger.d('url : $url ');
+    //MyApp.logger.d('url : $url ');
 
     try {
       Map<String, String> requestHeaders = {
@@ -406,8 +484,18 @@ class _RouteMainState extends State<RouteMain> {
         throw Exception("Request to $url failed with status ${response.statusCode}: ${response.body}");
       } else {
         //성공
-        MyApp.logger.d(response.body.toString());
-        List<dynamic> listMapAddressData = jsonDecode(response.body)['response']?['body']?['items']?['item'] ?? [];
+        //MyApp.logger.d(response.body.toString());
+        List<dynamic> listMapAddressData =
+            jsonDecode(response.body)['response']?['body']?['items']?['item'] ?? [];
+
+        //T1H : 기온(c)
+        //RN1 : 강수량(mm/1h)
+        //REH : 습도 (%)
+        //VEC : 풍향 (deg)
+        //WSD : 풍속 (m/s)
+        //PTY : 강수 형태 (안 옴(0), 비(1), 비/눈(2), 눈(3), 소나기(4), 빗방울(5), 빗방울/눈날림(6), 눈날림(7))
+        //UUU : 동서 바람 성분 (m/s)
+        //VVV : 남북 바람 성분 (m/s)
 
         if (listMapAddressData.isEmpty) {
           throw Exception('list weather is empty');
@@ -416,6 +504,9 @@ class _RouteMainState extends State<RouteMain> {
         for (dynamic weather in listMapAddressData) {
           print(weather.toString());
         }
+
+        //MyApp.logger.d("기상청에서 날씨 정보 받아오는 데 걸린 시간 : ${DateTime.now().millisecondsSinceEpoch-time}ms");
+        time = DateTime.now().millisecondsSinceEpoch;
       }
     } on Exception catch (e) {
       MyApp.logger.wtf("날씨 api 요청 실패 : ${e.toString()}");
