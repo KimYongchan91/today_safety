@@ -210,54 +210,59 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
                     ///인증 진행도 부분
                     Align(
                       alignment: Alignment.topCenter,
-                      child: SizedBox(
-                        height: _sizeImageCheckSequence + 10,
-                        child: CustomValueListenableBuilder2(
-                          a: valueNotifierMapCheckImageLocal,
-                          b: valueNotifierIndexCheck,
-                          builder: (context, a, b, child) => ListView.builder(
-                            itemCount: widget.modelCheckList.listModelCheck.length,
+                      child: Container(
+                        color: const Color(0x55000000),
+                        width: Get.width,
+                        height: Get.height / 6,
+                        child: Container(
+                          height: _sizeImageCheckSequence + 10,
+                          child: CustomValueListenableBuilder2(
+                            a: valueNotifierMapCheckImageLocal,
+                            b: valueNotifierIndexCheck,
+                            builder: (context, a, b, child) => ListView.builder(
+                              itemCount: widget.modelCheckList.listModelCheck.length,
 
-                            ///진행도 아이템
-                            itemBuilder: (context, index) => InkWell(
-                              onTap: () {
-                                changeIndexCheck(index);
-                              },
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  ///이미지
-                                  Container(
-                                    width: _sizeImageCheckSequence,
-                                    height: _sizeImageCheckSequence,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: a[widget.modelCheckList.listModelCheck[index]] != null
-                                            ? Colors.green
-                                            : b == index
-                                                ? Colors.blueAccent
-                                                : Colors.red,
-                                        width: 5,
-                                      ),
-                                    ),
-                                    child: Image.asset(
-                                      getPathCheckImage(widget.modelCheckList.listModelCheck[index]),
+                              ///진행도 아이템
+                              itemBuilder: (context, index) => InkWell(
+                                onTap: () {
+                                  changeIndexCheck(index);
+                                },
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    ///이미지
+                                    Container(
                                       width: _sizeImageCheckSequence,
                                       height: _sizeImageCheckSequence,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          color: a[widget.modelCheckList.listModelCheck[index]] != null
+                                              ? Colors.green
+                                              : b == index
+                                                  ? Colors.blueAccent
+                                                  : Colors.red,
+                                          width: 3,
+                                        ),
+                                      ),
+                                      child: Image.asset(
+                                        getPathCheckImage(widget.modelCheckList.listModelCheck[index]),
+                                        width: _sizeImageCheckSequence,
+                                        height: _sizeImageCheckSequence,
+                                      ),
                                     ),
-                                  ),
 
-                                  ///현재 진행 중이라면 현재 체크 항목의 제목까지
-                                  b == index
-                                      ? Text(
-                                          widget.modelCheckList.listModelCheck[index].name,
-                                          style: CustomTextStyle.bigBlackBold(),
-                                        )
-                                      : Container()
-                                ],
+                                    ///현재 진행 중이라면 현재 체크 항목의 제목까지
+                                    b == index
+                                        ? Text(
+                                            widget.modelCheckList.listModelCheck[index].name,
+                                            style: CustomTextStyle.bigBlackBold(),
+                                          )
+                                        : Container()
+                                  ],
+                                ),
                               ),
+                              scrollDirection: Axis.horizontal,
                             ),
-                            scrollDirection: Axis.horizontal,
                           ),
                         ),
                       ),
@@ -318,10 +323,10 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
                               ///현재 사진 촬영 결과를 보여주고 있다면?
                               return value != null
                                   ? Container(
-                                padding: const EdgeInsets.symmetric(vertical: 40,horizontal: 20),
-                                height: Get.height / 6,
-                                width: Get.width,
-                                color: const Color(0x55000000),
+                                      padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
+                                      height: Get.height / 6,
+                                      width: Get.width,
+                                      color: const Color(0x55000000),
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
@@ -332,13 +337,14 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
                                                 removePhoto();
                                               },
                                               child: Container(
-alignment: Alignment.center,
+                                                  alignment: Alignment.center,
                                                   decoration: BoxDecoration(
-                                                      borderRadius: BorderRadius.circular(20), color: const Color(0x55000000)),
-
+                                                      borderRadius: BorderRadius.circular(20),
+                                                      color: const Color(0x55000000)),
                                                   child: const Text(
                                                     '다시 촬영',
-                                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18,color: Colors.white),
+                                                    style: TextStyle(
+                                                        fontWeight: FontWeight.bold, fontSize: 18, color: Colors.white),
                                                   )),
                                             ),
                                           ),
@@ -363,10 +369,9 @@ alignment: Alignment.center,
                                                         size: 20,
                                                       )
                                                     : Container(
-                                                    alignment: Alignment.center,
-
+                                                        alignment: Alignment.center,
                                                         decoration: BoxDecoration(
-                                                            color:  const Color(0x33ffffff),
+                                                          color: const Color(0x33ffffff),
                                                           borderRadius: BorderRadius.circular(20),
                                                         ),
                                                         child: const Text(

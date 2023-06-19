@@ -49,9 +49,18 @@ class RouteMain extends StatelessWidget {
                           onTap: () {
                             Get.to(() => const RouteTest());
                           },
-                          child: FaIcon(
-                            FontAwesomeIcons.helmetSafety,
-                            color: Colors.yellow.shade700,
+                          child: Container(
+                            alignment: Alignment.center,
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: Colors.yellow.shade700,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: const FaIcon(
+                              FontAwesomeIcons.helmetSafety,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                         const SizedBox(
