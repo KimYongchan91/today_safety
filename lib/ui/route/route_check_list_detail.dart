@@ -17,8 +17,6 @@ import 'package:today_safety/service/provider/provider_user_check_history.dart';
 import 'package:today_safety/ui/item/item_check.dart';
 import 'package:today_safety/ui/item/item_user_check_history.dart';
 import 'package:today_safety/ui/widget/icon_error.dart';
-
-import '../../const/model/model_user_check_history.dart';
 import '../../const/value/router.dart';
 import '../../my_app.dart';
 import '../../service/util/util_app_link.dart';
@@ -271,6 +269,7 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                         height: 20,
                       ),
 
+                      ///차트
                       Consumer<ProviderUserCheckHistory>(
                         builder: (context, value, child) => AspectRatio(
                           aspectRatio: 3 / 2,
@@ -285,6 +284,18 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                         )*/
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+
+                      const SizedBox(
+                        height: 20,
+                      ),
+
+                      const Text(
+                        '최근 인증 추세3',
+                        style: CustomTextStyle.bigBlackBold(),
                       ),
                       const SizedBox(
                         height: 20,

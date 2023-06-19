@@ -1,4 +1,6 @@
-const int millisecondDay = 24 * 60 * 60 * 1000;
+const int millisecondDay = 24 * millisecondHour;
+const int millisecondHour = 60 * millisecondMinute;
+const int millisecondMinute = 60 * 1000;
 
 const keyKoreanKorea = 'ko_KR';
 

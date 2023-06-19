@@ -82,6 +82,8 @@ dependencies:
   local_hero: ^0.2.0
   location: ^4.4.0
   fl_chart: ^0.63.0
+  easy_image_viewer: ^1.2.1
+
 
   firebase_analytics: ^10.4.2
   firebase_auth: ^4.6.2
