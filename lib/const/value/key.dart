@@ -80,5 +80,13 @@ const String keyDateDisplay = 'date_display';
 const String keyDateWeek = 'date_week';
 const String keyUserCountTotal = 'user_count_total';
 
-const String keyUserCheckHistory= 'user_check_history';
-const String keyUserCheckHistoryCount= 'user_check_history_count';
+const String keyUserCheckHistory = 'user_check_history';
+const String keyUserCheckHistoryCount = 'user_check_history_count';
+
+const String keyConstraintLocation = 'constraint_location';
+const String keyConstraintTime = 'constraint_time';
+const String keyType = 'type';
+const String keyRange = 'range';
+const String keyStart = 'start';
+const String keyEnd = 'end';
+const String keyWeek = 'week';
