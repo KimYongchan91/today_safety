@@ -44,7 +44,7 @@ class ItemCheckList extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     child: Text(
                       modelCheckList.name,
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18,),
                     ))),
           ],
         ),

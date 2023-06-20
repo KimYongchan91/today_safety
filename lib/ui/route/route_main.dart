@@ -371,96 +371,129 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                       ),
               ),
 
-              ///날씨 정보 영역
-              ValueListenableBuilder(
-                valueListenable: valueNotifierWeather,
-                builder: (context, value, child) => InkWell(
-                  onTap: () {
-                    if (value != null) {
-                      Get.to(() => RouteWeatherDetail(value));
-                    }
-                  },
-                  child: Container(
-                    width: Get.width,
-                    height: 80,
-                    child: Stack(
-                      children: [
-                        ///날씨 주소
-                        Positioned(
-                            top: 5,
-                            left: 5,
-                            child: value != null
-                                ? Text(
-                                    '${value.modelLocationWeather.gu} ${value.modelLocationWeather.dong}',
-                                    style: CustomTextStyle.normalBlackBold(),
-                                  )
-                                : Container()),
+              Expanded(
+                  child: Row(
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: ValueListenableBuilder(
+                      valueListenable: valueNotifierWeather,
+                      builder: (context, value, child) => InkWell(
+                        onTap: () {
+                          if (value != null) {
+                            Get.to(() => RouteWeatherDetail(value));
+                          }
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(10),
+                          color: Colors.white,
+                          width: Get.width,
+                          child: Column(
+                            children: [
+                              const Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Text(
+                                    '날씨',
+                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                                  )),
+                              Row(
+                                children: [
+                                  ///날씨 아이콘
+                                  value != null
+                                      ? Icon(
+                                          value.getIcon(),
+                                          size: 60,
+                                        )
+                                      : Container(),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          ///날씨 정보 받아온 시간
+                                          value != null
+                                              ? Text(
+                                                  value.getTime(),
+                                                  style: TextStyle(color: Colors.black45, fontWeight: FontWeight.w700),
+                                                )
+                                              : Container(),
 
-                        ///날씨 아이콘
-                        Positioned(
-                            top: 30,
-                            left: 5,
-                            child: value != null
-                                ? Icon(
-                                    value.getIcon(),
-                                    size: 48,
-                                  )
-                                : Container()),
+                                          ///날씨 새로고침 아이콘
+                                          InkWell(
+                                            onTap: refreshWeather,
+                                            child: Padding(
+                                              padding: EdgeInsets.all(5),
+                                              child: RotationTransition(
+                                                turns: Tween(begin: 0.0, end: 1.0).animate(controllerRefreshWeather),
+                                                child: Icon(Icons.refresh),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
 
-                        ///날씨 온도
-                        Positioned(
-                            top: 30,
-                            left: 60,
-                            child: value != null
-                                ? Text(
-                                    '온도 ${value.t1h.toString()}°C',
-                                    style: CustomTextStyle.normalBlackBold(),
-                                  )
-                                : Container()),
+                                      ///날씨 온도
+                                      value != null
+                                          ? Text(
+                                              '${value.t1h.toString()}°C',
+                                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 35),
+                                            )
+                                          : Container(),
 
-                        ///날씨 온도
-                        Positioned(
-                            top: 60,
-                            left: 60,
-                            child: value != null
-                                ? Text(
-                                    '강수량 ${value.rn1.toString()}mm/h',
-                                    style: CustomTextStyle.normalBlackBold(),
-                                  )
-                                : Container()),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
 
-                        ///날씨 새로고침 아이콘
-                        Positioned(
-                          top: 5,
-                          right: 5,
-                          child: InkWell(
-                            onTap: refreshWeather,
-                            child: Padding(
-                              padding: EdgeInsets.all(10),
-                              child: RotationTransition(
-                                turns: Tween(begin: 0.0, end: 1.0).animate(controllerRefreshWeather),
-                                child: Icon(Icons.refresh),
+                                      ///날씨 온도
+                                      value != null
+                                          ? Text(
+                                              '강수량 ${value.rn1.toString()}mm/h',
+                                              style: CustomTextStyle.normalBlackBold(),
+                                            )
+                                          : Container(),
+                                    ],
+                                  ),
+                                ],
                               ),
-                            ),
+                              const Spacer(),
+                              value != null
+                                  ? Align(
+                                      alignment: Alignment.bottomLeft,
+                                      child: Text(
+                                        '${value.modelLocationWeather.gu} ${value.modelLocationWeather.dong}',
+                                        style: const TextStyle(color: Colors.black45, fontWeight: FontWeight.w700),
+                                      ),
+                                    )
+                                  : Container(),
+                            ],
                           ),
                         ),
-
-                        ///날씨 정보 받아온 시간
-                        Positioned(
-                            bottom: 5,
-                            right: 5,
-                            child: value != null
-                                ? Text(
-                                    value.getTime(),
-                                    style: CustomTextStyle.normalBlackBold(),
-                                  )
-                                : Container()),
-                      ],
+                      ),
                     ),
                   ),
-                ),
-              ),
-              const Spacer(),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                      flex: 1,
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        color: Colors.white,
+                        child: const Column(
+                          children: [
+                            Text('전일 전국 사고자 현황',style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
+
+
+
+                          ],
+                        ),
+                      )),
+                ],
+              )),
+
+              ///날씨 정보 영역
+
+              //const Spacer(),
               const ItemMainBanner(),
             ]),
           ),
