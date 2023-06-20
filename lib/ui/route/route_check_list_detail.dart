@@ -35,6 +35,8 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
   late Completer<bool> completerModelCheckList;
   ModelCheckList? modelCheckList;
   late ProviderUserCheckHistory providerUserCheckHistory;
+  bool isViewCalendar = true;
+  bool isViewChart = false;
 
   @override
   void initState() {
@@ -77,6 +79,13 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
 
   @override
   Widget build(BuildContext context) {
+    TextStyle btnTxtStyle = const TextStyle(color: Colors.black45, fontWeight: FontWeight.bold, fontSize: 16);
+    BoxDecoration btnDecoration = BoxDecoration(
+      border: Border.all(
+        width: 0.5,
+      ),
+    );
+
     return Scaffold(
       backgroundColor: colorBackground,
       body: SafeArea(
@@ -99,6 +108,7 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                 builder: (context, child) => SingleChildScrollView(
                   child: Column(
                     children: [
+                      ///앱바
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                         width: Get.width,
@@ -118,11 +128,22 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                               ),
                             ),
                             const SizedBox(
-                              width: 10,
+                              width: 20,
                             ),
-                            Text(
-                              modelCheckList!.name,
-                              style: const CustomTextStyle.bigBlackBold(),
+                            Expanded(
+                              child: Text(
+                                modelCheckList!.name,
+                                style: const CustomTextStyle.bigBlackBold(),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 50,
+                              height: 50,
+                              child: SfBarcodeGenerator(
+                                value: '$urlAppLink/${modelCheckList!.docId}',
+                                symbology: QRCode(),
+                                showValue: false,
+                              ),
                             ),
                           ],
                         ),
@@ -134,173 +155,197 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                         color: Colors.black45,
                       ),
 
-                      const SizedBox(
-                        height: 20,
-                      ),
-
-                      ///체크 리스트 이름, QR 코드
-                      Row(
-                        children: [
-                          ///QR 코드
-                          SizedBox(
-                            width: 100,
-                            height: 100,
-                            child: SfBarcodeGenerator(
-                              value: '$urlAppLink/${modelCheckList!.docId}',
-                              symbology: QRCode(),
-                              showValue: false,
+                      Container(
+                        padding: const EdgeInsets.all(20),
+                        color: Colors.white,
+                        width: Get.width,
+                        child: Column(
+                          children: [
+                            const Align(
+                              alignment: Alignment.topLeft,
+                              child: Text(
+                                '인증 현황',
+                                style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
 
-                      const SizedBox(
-                        height: 20,
-                      ),
+                            const SizedBox(height: 20,),
 
-                      const Text(
-                        '최근 인증 추세2',
-                        style: CustomTextStyle.bigBlackBold(),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-
-                      ///캘린더
-                      Consumer<ProviderUserCheckHistory>(
-                        builder: (context, value, child) => TableCalendar(
-                          firstDay: DateTime.fromMillisecondsSinceEpoch(
-                              DateTime.now().millisecondsSinceEpoch - millisecondDay * dayGetDailyUserCheckHistory),
-                          lastDay: DateTime.now(),
-                          focusedDay: DateTime.now(),
-                          locale: keyKoreanKorea,
-                          //달력 형식 바꾸는 버튼
-                          availableCalendarFormats: const {
-                            CalendarFormat.month: 'Month',
-                            // CalendarFormat.twoWeeks: '2 weeks',
-                            // CalendarFormat.week: 'Week'
-                          },
-
-                          //제스처 인식 방향
-                          availableGestures: AvailableGestures.horizontalSwipe,
-                          //월 보여주는 부분
-                          headerVisible: true,
-                          //요일 보여주는 부분
-                          daysOfWeekVisible: true,
-                          //페이지 점프를 사용할지
-                          pageJumpingEnabled: false,
-                          //페이지 점프 에니메이션을 사용할지
-                          pageAnimationEnabled: true,
-                          //이번 주가 올해의 몇 주차인지 보여주는 부분
-                          weekNumbersVisible: false,
-                          headerStyle: HeaderStyle(
-                            titleCentered: true,
-                            formatButtonVisible: false,
-                            formatButtonShowsNext: false,
-                            titleTextFormatter: (date, locale) {
-                              return DateFormat('yyyy년 M월').format(date);
-                            },
-                            //rightChevronIcon: const Icon(Icons.chevron_right,color: Colors.transparent,),
-                            //leftChevronIcon: false,
-                          ),
-
-                          onPageChanged: (focusedDay) {
-                            print("페이지 바뀜");
-                          },
-
-                          calendarBuilders: CalendarBuilders(
-                            //맨위 요일 빌더
-                            dowBuilder: (context, day) {
-                              final text = DateFormat('EEE', keyKoreanKorea).format(day);
-                              Color color = Colors.black;
-                              if (day.weekday == DateTime.saturday) {
-                                color = Colors.blue;
-                              } else if (day.weekday == DateTime.sunday) {
-                                color = Colors.red;
-                              }
-                              return Center(
-                                child: Text(
-                                  text,
-                                  style: TextStyle(color: color),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                InkWell(
+                                    onTap: () {
+                                      isViewCalendar = true;
+                                      if (isViewCalendar == true) {
+                                        isViewChart = false;
+                                      }
+                                      setState(() {});
+                                    },
+                                    child: Text(
+                                      '달력',
+                                      style: btnTxtStyle.copyWith(
+                                        fontSize:  isViewCalendar == true ? 17 : 15,
+                                          color: isViewCalendar == true ? Colors.black : Colors.black45),
+                                    )),
+                                const SizedBox(
+                                  width: 20,
                                 ),
-                              );
-                            },
+                                InkWell(
+                                  onTap: () {
+                                    isViewChart = true;
+                                    if (isViewChart == true) {
+                                      isViewCalendar = false;
+                                    }
+                                    setState(() {});
+                                  },
+                                  child: Text(
+                                    '그래프',
+                                    style: btnTxtStyle.copyWith(
+                                        fontSize:  isViewChart == true ? 17 : 15,
+                                        color: isViewChart == true ? Colors.black : Colors.black45),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                                InkWell(
+                                  onTap: () {},
+                                  child: Text(
+                                    '표기3',
+                                    style: btnTxtStyle,
+                                  ),
+                                ),
+                              ],
+                            ),
 
-                            //기본 빌더
-                            defaultBuilder: (context, day, focusedDay) {
-                              return ItemCalendar(
-                                dateTime: day,
-                                listModelUserCheckHistory: value.getDailyUserCheckHistoryCount(day),
-                              );
-                            },
+                            const SizedBox(
+                              height: 20,
+                            ),
 
-                            //마커 빌더
-                            /*markerBuilder: (context, day, focusedDay) {
+                            ///달력
+                            isViewCalendar == true
+                                ? Consumer<ProviderUserCheckHistory>(
+                                    builder: (context, value, child) => TableCalendar(
+                                      firstDay: DateTime.fromMillisecondsSinceEpoch(
+                                          DateTime.now().millisecondsSinceEpoch -
+                                              millisecondDay * dayGetDailyUserCheckHistory),
+                                      lastDay: DateTime.now(),
+                                      focusedDay: DateTime.now(),
+                                      locale: keyKoreanKorea,
+                                      //달력 형식 바꾸는 버튼
+                                      availableCalendarFormats: const {
+                                        CalendarFormat.month: 'Month',
+                                        // CalendarFormat.twoWeeks: '2 weeks',
+                                        // CalendarFormat.week: 'Week'
+                                      },
+
+                                      //제스처 인식 방향
+                                      availableGestures: AvailableGestures.horizontalSwipe,
+                                      //월 보여주는 부분
+                                      headerVisible: true,
+                                      //요일 보여주는 부분
+                                      daysOfWeekVisible: true,
+                                      //페이지 점프를 사용할지
+                                      pageJumpingEnabled: false,
+                                      //페이지 점프 에니메이션을 사용할지
+                                      pageAnimationEnabled: true,
+                                      //이번 주가 올해의 몇 주차인지 보여주는 부분
+                                      weekNumbersVisible: false,
+                                      headerStyle: HeaderStyle(
+                                        titleCentered: true,
+                                        formatButtonVisible: false,
+                                        formatButtonShowsNext: false,
+                                        titleTextFormatter: (date, locale) {
+                                          return DateFormat('yyyy년 M월').format(date);
+                                        },
+                                        //rightChevronIcon: const Icon(Icons.chevron_right,color: Colors.transparent,),
+                                        //leftChevronIcon: false,
+                                      ),
+
+                                      onPageChanged: (focusedDay) {
+                                        print("페이지 바뀜");
+                                      },
+
+                                      calendarBuilders: CalendarBuilders(
+                                        //맨위 요일 빌더
+                                        dowBuilder: (context, day) {
+                                          final text = DateFormat('EEE', keyKoreanKorea).format(day);
+                                          Color color = Colors.black;
+                                          if (day.weekday == DateTime.saturday) {
+                                            color = Colors.blue;
+                                          } else if (day.weekday == DateTime.sunday) {
+                                            color = Colors.red;
+                                          }
+                                          return Center(
+                                            child: Text(
+                                              text,
+                                              style: TextStyle(color: color),
+                                            ),
+                                          );
+                                        },
+
+                                        //기본 빌더
+                                        defaultBuilder: (context, day, focusedDay) {
+                                          return ItemCalendar(
+                                            dateTime: day,
+                                            listModelUserCheckHistory: value.getDailyUserCheckHistoryCount(day),
+                                          );
+                                        },
+
+                                        //마커 빌더
+                                        /*markerBuilder: (context, day, focusedDay) {
                               return Text(
                                 '${value.getDailyUserCheckHistoryCount(day).length}건',
                                 style: CustomTextStyle.normalGrey(),
                               );
                             },*/
 
-                            //오늘 날짜 빌더
-                            todayBuilder: (context, day, focusedDay) {
-                              return ItemCalendar(
-                                dateTime: day,
-                                isToday: true,
-                                listModelUserCheckHistory: value.getDailyUserCheckHistoryCount(day),
-                              );
-                            },
+                                        //오늘 날짜 빌더
+                                        todayBuilder: (context, day, focusedDay) {
+                                          return ItemCalendar(
+                                            dateTime: day,
+                                            isToday: true,
+                                            listModelUserCheckHistory: value.getDailyUserCheckHistoryCount(day),
+                                          );
+                                        },
 
-                            //조회 날짜 범위 밖 빌더
-                            disabledBuilder: (context, day, focusedDay) {
-                              return Container();
-                            },
-                          ),
-                        ),
-                      ),
+                                        //조회 날짜 범위 밖 빌더
+                                        disabledBuilder: (context, day, focusedDay) {
+                                          return Container();
+                                        },
+                                      ),
+                                    ),
+                                  )
+                                : const SizedBox(),
 
-                      const SizedBox(
-                        height: 20,
-                      ),
+                            isViewChart == true
+                                ?
 
-                      const Text(
-                        '최근 인증 추세',
-                        style: CustomTextStyle.bigBlackBold(),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-
-                      ///차트
-                      Consumer<ProviderUserCheckHistory>(
-                        builder: (context, value, child) => AspectRatio(
-                          aspectRatio: 3 / 2,
-                          child: BarChart(
-                            getLineChartData(value.listModelDailyCheckHistory),
-                          ),
-                        ),
-                        /*ListView.builder(
+                                ///차트
+                                Consumer<ProviderUserCheckHistory>(
+                                    builder: (context, value, child) => AspectRatio(
+                                      aspectRatio: 3 / 2,
+                                      child: BarChart(
+                                        getLineChartData(value.listModelDailyCheckHistory),
+                                      ),
+                                    ),
+                                    /*ListView.builder(
                           itemCount: value.listModelDailyCheckHistory.length,
                           itemBuilder: (context, index) => Text(value.listModelDailyCheckHistory[index].dateDisplay +
                               value.listModelDailyCheckHistory[index].userCheckHistoryCount.toString()),
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                         )*/
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-
-                      const SizedBox(
-                        height: 20,
+                                  )
+                                : const SizedBox(),
+                          ],
+                        ),
                       ),
 
-                      const Text(
-                        '최근 인증 추세3',
-                        style: CustomTextStyle.bigBlackBold(),
-                      ),
+
                       const SizedBox(
-                        height: 20,
+                        height: 10,
                       ),
 
                       ///최근 인증한 유저

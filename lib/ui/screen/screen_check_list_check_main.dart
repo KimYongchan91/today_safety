@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:today_safety/const/model/model_check_list.dart';
 
 import '../../custom/custom_text_style.dart';
@@ -22,19 +24,35 @@ class _ScreenCheckListCheckMainState extends State<ScreenCheckListCheckMain> {
       child: Column(
         children: [
           const SizedBox(
-            height: 20,
+            height: 30,
           ),
-          Row(
-            children: [
-              Text(
-                '${widget.modelCheckList.name} 체크리스트 요약 페이지',
-                style: const CustomTextStyle.bigBlackBold(),
-              ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              children: [
+                InkWell(
+                    onTap: (){
+                      Get.back();
+                    },
+                    child: FaIcon(FontAwesomeIcons.angleLeft,color: Colors.black,)),
 
-            ],
+
+
+
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      '${widget.modelCheckList.name} 체크리스트 요약 페이지',
+                      style: const CustomTextStyle.bigBlackBold(),
+                    ),
+                  ),
+                ),
+
+              ],
+            ),
           ),
           const SizedBox(
-            height: 20,
+            height: 30,
           ),
           ListView.builder(
             itemCount: widget.modelCheckList.listModelCheck.length,

@@ -23,13 +23,13 @@ class ItemCheckList extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         width: Get.width,
-        decoration: BoxDecoration(color: Colors.white, border: Border.all(color: Colors.grey)),
+        decoration: BoxDecoration(color: Colors.white, border: Border(bottom: BorderSide(width: 0.3 , color: Colors.blue))),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
-              width: 90,
-              height: 90,
+              width: 50,
+              height: 50,
               child: SfBarcodeGenerator(
                 value: '$urlAppLink/${modelCheckList.docId}',
                 symbology: QRCode(),
@@ -40,12 +40,10 @@ class ItemCheckList extends StatelessWidget {
               width: 30,
             ),
             Expanded(
-                child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    child: Text(
-                      modelCheckList.name,
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18,),
-                    ))),
+                child: Text(
+                  modelCheckList.name,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18,),
+                )),
           ],
         ),
       ),

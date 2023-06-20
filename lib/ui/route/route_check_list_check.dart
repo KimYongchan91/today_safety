@@ -182,17 +182,17 @@ class _Button extends StatelessWidget {
       onTap: onTap,
       child: Container(
         //width: 147,
-        height: 50,
+        height: 60,
         decoration: BoxDecoration(
-          color: colorBackground,
-          borderRadius: BorderRadius.circular(4),
+          color: Colors.blueAccent,
+          borderRadius: BorderRadius.circular(20),
         ),
         child: Center(
           child: Padding(
             padding: const EdgeInsets.only(top: 2),
             child: Text(
               label,
-              style: const CustomTextStyle.normalWhiteBold(),
+              style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20),
             ),
           ),
         ),

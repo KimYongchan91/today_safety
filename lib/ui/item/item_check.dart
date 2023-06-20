@@ -16,26 +16,31 @@ class ItemCheck extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 10,vertical: 3),
-      height: Get.height/8,
+      margin: const EdgeInsets.symmetric(vertical: 2),
+      height: Get.height/10,
 
       child: Card(
-        elevation: 5,
+        elevation: 2,
         child: Stack(
           children: [
             Positioned.fill(
               child: Row(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(10),
                     child: AspectRatio(
                       aspectRatio: 1,
                       child: Image.asset(getPathCheckImage(modelCheck)),
                     ),
                   ),
-                  Text(
-                    modelCheck.name,
-                    style: const CustomTextStyle.bigBlackBold(),
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        modelCheck.name,
+                        style: TextStyle(color: Colors.black,fontSize: 18,fontWeight: FontWeight.w700),
+                      ),
+                    ),
                   )
                 ],
               ),
