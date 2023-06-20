@@ -106,7 +106,7 @@ Future<ModelLocationWeather?> getModelLocationWeatherFromLatLng(double lat, doub
         lng: lng,
         si: docFirst['region_1depth_name'],
         gu: docFirst['region_2depth_name'],
-        dong: docFirst['region_2depth_name'],
+        dong: docFirst['region_3depth_name'],
         code: docFirst[keyCode],
       );
 

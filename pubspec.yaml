@@ -84,6 +84,7 @@ dependencies:
   fl_chart: ^0.63.0
   easy_image_viewer: ^1.2.1
   csv: ^5.0.2
+  weather_icons: ^3.0.0
 
 
   firebase_analytics: ^10.4.2

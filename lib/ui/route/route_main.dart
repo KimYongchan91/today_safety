@@ -8,10 +8,15 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:today_safety/const/model/model_location_weather.dart';
+import 'package:today_safety/const/model/model_weather.dart';
 import 'package:today_safety/const/value/router.dart';
+import 'package:today_safety/const/value/value.dart';
+import 'package:today_safety/custom/custom_text_style.dart';
 import 'package:today_safety/service/provider/provider_user.dart';
+import 'package:today_safety/ui/route/route_weather_detail.dart';
 import 'package:today_safety/ui/route/test/route_test.dart';
 import 'package:today_safety/ui/item/item_banner.dart';
 import 'package:http/http.dart' as http;
@@ -21,6 +26,7 @@ import '../../const/value/color.dart';
 import '../../const/value/key.dart';
 import '../../my_app.dart';
 import '../../service/util/util_location.dart';
+import '../../service/util/util_permission.dart';
 
 class RouteMain extends StatefulWidget {
   const RouteMain({Key? key}) : super(key: key);
@@ -29,12 +35,34 @@ class RouteMain extends StatefulWidget {
   State<RouteMain> createState() => _RouteMainState();
 }
 
-class _RouteMainState extends State<RouteMain> {
+class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMixin {
   BoxDecoration mainButton = BoxDecoration(
     borderRadius: BorderRadius.circular(10),
     color: Colors.white,
     border: Border.all(width: 2, color: Colors.black45),
   );
+
+  ValueNotifier<ModelWeather?> valueNotifierWeather = ValueNotifier(null);
+  late AnimationController controllerRefreshWeather;
+
+  @override
+  void initState() {
+    controllerRefreshWeather = AnimationController(
+      duration: const Duration(milliseconds: 1000),
+      vsync: this,
+    );
+
+    ///날씨 자동 새로고침
+    WidgetsBinding.instance.addPostFrameCallback((_) => refreshWeather());
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    controllerRefreshWeather.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -348,14 +376,93 @@ class _RouteMainState extends State<RouteMain> {
               ),
 
               ///날씨 정보 영역
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  ElevatedButton(
-                    onPressed: refreshWeather,
-                    child: Text('날씨 새로고침'),
+              ValueListenableBuilder(
+                valueListenable: valueNotifierWeather,
+                builder: (context, value, child) => InkWell(
+                  onTap: () {
+                    if (value != null) {
+                      Get.to(() => RouteWeatherDetail(value));
+                    }
+                  },
+                  child: Container(
+                    width: Get.width,
+                    height: 80,
+                    child: Stack(
+                      children: [
+                        ///날씨 주소
+                        Positioned(
+                            top: 5,
+                            left: 5,
+                            child: value != null
+                                ? Text(
+                                    value.modelLocationWeather.dong,
+                                    style: CustomTextStyle.normalBlackBold(),
+                                  )
+                                : Container()),
+
+                        ///날씨 아이콘
+                        Positioned(
+                            top: 30,
+                            left: 5,
+                            child: value != null
+                                ? Icon(
+                                    value.getIcon(),
+                                    size: 48,
+                                  )
+                                : Container()),
+
+                        ///날씨 온도
+                        Positioned(
+                            top: 30,
+                            left: 60,
+                            child: value != null
+                                ? Text(
+                                    '온도 ${value.t1h.toString()}°C',
+                                    style: CustomTextStyle.normalBlackBold(),
+                                  )
+                                : Container()),
+
+                        ///날씨 온도
+                        Positioned(
+                            top: 60,
+                            left: 60,
+                            child: value != null
+                                ? Text(
+                                    '강수량 ${value.rn1.toString()}mm/h',
+                                    style: CustomTextStyle.normalBlackBold(),
+                                  )
+                                : Container()),
+
+                        ///날씨 새로고침 아이콘
+                        Positioned(
+                          top: 5,
+                          right: 5,
+                          child: InkWell(
+                            onTap: refreshWeather,
+                            child: Padding(
+                              padding: EdgeInsets.all(10),
+                              child: RotationTransition(
+                                turns: Tween(begin: 0.0, end: 1.0).animate(controllerRefreshWeather),
+                                child: Icon(Icons.refresh),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        ///날씨 정보 받아온 시간
+                        Positioned(
+                            bottom: 5,
+                            right: 5,
+                            child: value != null
+                                ? Text(
+                                    value.getTime(),
+                                    style: CustomTextStyle.normalBlackBold(),
+                                  )
+                                : Container()),
+                      ],
+                    ),
                   ),
-                ],
+                ),
               ),
               const Spacer(),
               const ItemMainBanner(),
@@ -367,7 +474,21 @@ class _RouteMainState extends State<RouteMain> {
   }
 
   refreshWeather() async {
-    int time = DateTime.now().millisecondsSinceEpoch;
+    if (controllerRefreshWeather.isAnimating) {
+      MyApp.logger.d("이미 실행 중");
+      return;
+    }
+
+    controllerRefreshWeather.repeat();
+
+    bool isPermissionGranted = await requestPermission(Permission.locationWhenInUse);
+    if (isPermissionGranted == false) {
+      controllerRefreshWeather.reset();
+      return;
+    }
+
+    final DateTime dateTimeNow = DateTime.now();
+    int time = dateTimeNow.millisecondsSinceEpoch;
 
     //현재 주소 받아오기
     Position? position;
@@ -379,11 +500,12 @@ class _RouteMainState extends State<RouteMain> {
     }
 
     if (position == null) {
+      controllerRefreshWeather.reset();
       return;
     }
 
     //MyApp.logger.d("주소 받아오는 데 걸린 시간 : ${DateTime.now().millisecondsSinceEpoch-time}ms");
-    time = DateTime.now().millisecondsSinceEpoch;
+    time = dateTimeNow.millisecondsSinceEpoch;
 
     //행정 구역 코드 받아오기
     ModelLocationWeather? modelLocationWeather;
@@ -394,12 +516,12 @@ class _RouteMainState extends State<RouteMain> {
     }
 
     if (modelLocationWeather == null) {
+      controllerRefreshWeather.reset();
       return;
     }
 
     //MyApp.logger.d("행정 구역 코드 받아오는 데 걸린 시간 : ${DateTime.now().millisecondsSinceEpoch-time}ms");
-    time = DateTime.now().millisecondsSinceEpoch;
-
+    time = dateTimeNow.millisecondsSinceEpoch;
 
     //행정 구역 코드를 이용해 CSV 파일에서 x, y좌표 구해오기.
     int? codeX;
@@ -424,16 +546,17 @@ class _RouteMainState extends State<RouteMain> {
       }
     } catch (e) {
       MyApp.logger.wtf("CSV 파일에서 행정 구역 코드 조회 실패 : ${e.toString()}");
+      controllerRefreshWeather.reset();
     }
 
-    if (codeX == null || codeY ==null) {
+    if (codeX == null || codeY == null) {
+      MyApp.logger.wtf("CSV 파일에서 행정 구역 코드 찾을 수 없음");
+      controllerRefreshWeather.reset();
       return;
     }
 
-
     //MyApp.logger.d("CSV에서 x, y값 받아오는 데 걸린 시간 : ${DateTime.now().millisecondsSinceEpoch-time}ms");
-    time = DateTime.now().millisecondsSinceEpoch;
-
+    time = dateTimeNow.millisecondsSinceEpoch;
 
     //MyApp.logger.d("찾은 결과 $codeX, $codeY");
 
@@ -442,8 +565,11 @@ class _RouteMainState extends State<RouteMain> {
         '%2B%2BaANJW%2BGmM22jn4uU%2FTCiFfH58TiKg9euCqOwFAm%2FHNtf4K%2FlQ6zPxgMmXiuj7pPzt2LMOhS5yQBBFhm5IUrA%3D%3D';
 
     String baseTimeFormatted;
-    int hourCurrent = DateTime.now().hour;
-    if (hourCurrent < 3) {
+    //1시간 전
+    int hourCurrent =
+        DateTime.fromMillisecondsSinceEpoch(dateTimeNow.millisecondsSinceEpoch - millisecondHour).hour;
+    baseTimeFormatted = '$hourCurrent'.padLeft(2, '0');
+/*    if (hourCurrent < 3) {
       baseTimeFormatted = "00";
     } else if (hourCurrent < 6) {
       baseTimeFormatted = "03";
@@ -459,14 +585,15 @@ class _RouteMainState extends State<RouteMain> {
       baseTimeFormatted = "18";
     } else {
       baseTimeFormatted = "21";
-    }
+    }*/
 
     baseTimeFormatted += "00";
 
+    String baseDateFormatted = DateFormat('yyyyMMdd').format(dateTimeNow);
     String url = "$urlBase?serviceKey=$keyService"
         "&pageNo=1"
         "&numOfRows=10&dataType=JSON"
-        "&base_date=${DateFormat('yyyyMMdd').format(DateTime.now())}"
+        "&base_date=$baseDateFormatted"
         "&base_time=$baseTimeFormatted"
         "&nx=$codeX"
         "&ny=$codeY";
@@ -478,7 +605,8 @@ class _RouteMainState extends State<RouteMain> {
         'Content-type': 'application/json',
         'Accept': 'application/json',
       };
-      var response = await http.get(Uri.parse(url), headers: requestHeaders);
+      var response =
+          await http.get(Uri.parse(url), headers: requestHeaders).timeout(const Duration(seconds: 5));
 
       if (response.statusCode != 200) {
         throw Exception("Request to $url failed with status ${response.statusCode}: ${response.body}");
@@ -501,14 +629,61 @@ class _RouteMainState extends State<RouteMain> {
           throw Exception('list weather is empty');
         }
 
+        ModelWeather modelWeather = ModelWeather(
+          baseDate: baseDateFormatted,
+          baseTime: baseTimeFormatted,
+          modelLocationWeather: modelLocationWeather,
+        );
         for (dynamic weather in listMapAddressData) {
-          print(weather.toString());
+          if (weather is Map && weather['category'] != null && weather['obsrValue'] != null) {
+            var value = weather['obsrValue'];
+            num valueParsed = 0;
+            try {
+              valueParsed = num.parse(value);
+            } catch (e) {
+              MyApp.logger.wtf('num.parse 실패 : ${e.toString()}');
+            }
+
+            switch (weather['category']) {
+              case 'PTY':
+                modelWeather.pty = valueParsed.toInt();
+                break;
+              case 'REH':
+                modelWeather.reh = valueParsed.toInt();
+                break;
+              case 'RN1':
+                modelWeather.rn1 = valueParsed.toInt();
+                break;
+              case 'T1H':
+                modelWeather.t1h = valueParsed.toInt();
+                break;
+              case 'UUU':
+                modelWeather.uuu = valueParsed.toDouble();
+                break;
+              case 'VEC':
+                modelWeather.vec = valueParsed.toInt();
+                break;
+              case 'VVV':
+                modelWeather.vvv = valueParsed.toDouble();
+                break;
+              case 'WSD':
+                modelWeather.wsd = valueParsed.toDouble();
+                break;
+              default:
+                break;
+            }
+          }
         }
+        MyApp.logger.d('조회된 날씨 정보 : ${modelWeather.toString()}');
+        valueNotifierWeather.value = modelWeather;
 
         //MyApp.logger.d("기상청에서 날씨 정보 받아오는 데 걸린 시간 : ${DateTime.now().millisecondsSinceEpoch-time}ms");
         time = DateTime.now().millisecondsSinceEpoch;
+
+        controllerRefreshWeather.reset();
       }
     } on Exception catch (e) {
+      controllerRefreshWeather.reset();
       MyApp.logger.wtf("날씨 api 요청 실패 : ${e.toString()}");
       return null;
     }
