@@ -173,8 +173,7 @@ class _Button extends StatelessWidget {
   final void Function()? onTap;
   final Color colorBackground;
 
-  const _Button(this.label, this.onTap, {this.colorBackground = const Color(0xfff84343), Key? key})
-      : super(key: key);
+  const _Button(this.label, this.onTap, {this.colorBackground = const Color(0xfff84343), Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -192,7 +191,7 @@ class _Button extends StatelessWidget {
             padding: const EdgeInsets.only(top: 2),
             child: Text(
               label,
-              style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20),
+              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
             ),
           ),
         ),

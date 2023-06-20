@@ -23,7 +23,8 @@ class ItemCheckList extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         width: Get.width,
-        decoration: BoxDecoration(color: Colors.white, border: Border(bottom: BorderSide(width: 0.3 , color: Colors.blue))),
+        decoration:
+            BoxDecoration(color: Colors.white, border: Border(bottom: BorderSide(width: 0.3, color: Colors.blue))),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -41,9 +42,12 @@ class ItemCheckList extends StatelessWidget {
             ),
             Expanded(
                 child: Text(
-                  modelCheckList.name,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18,),
-                )),
+              modelCheckList.name,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+            )),
           ],
         ),
       ),

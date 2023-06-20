@@ -161,12 +161,13 @@ class _RouteSiteDetailState extends State<RouteSiteDetail> {
                 ),
 
                 Container(
-
                   padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
                   decoration: const BoxDecoration(
                     color: Colors.white,
-                    border: Border(bottom: BorderSide(width: 1.5 , color: Colors.black45,
-
+                    border: Border(
+                        bottom: BorderSide(
+                      width: 1.5,
+                      color: Colors.black45,
                     )),
                   ),
                   child: Row(

@@ -17,8 +17,7 @@ class ItemCheck extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 2),
-      height: Get.height/10,
-
+      height: Get.height / 10,
       child: Card(
         elevation: 2,
         child: Stack(
@@ -38,7 +37,7 @@ class ItemCheck extends StatelessWidget {
                       alignment: Alignment.center,
                       child: Text(
                         modelCheck.name,
-                        style: TextStyle(color: Colors.black,fontSize: 18,fontWeight: FontWeight.w700),
+                        style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w700),
                       ),
                     ),
                   )

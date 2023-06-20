@@ -43,9 +43,7 @@ class _RouteLoginState extends State<RouteLogin> {
                     alignment: Alignment.center,
                     width: 150,
                     height: 150,
-                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(20),
-                    color: Colors.yellow.shade700
-                    ),
+                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.yellow.shade700),
                     padding: EdgeInsets.all(30),
                     child: const FaIcon(
                       FontAwesomeIcons.helmetSafety,
@@ -102,8 +100,10 @@ class _RouteLoginState extends State<RouteLogin> {
                                 ValueListenableBuilder(
                                   valueListenable: valueNotifierIsProcessingLoginWithKakao,
                                   builder: (context, value, child) => value
+
                                       ///로딩 중 아이콘
                                       ? LoadingAnimationWidget.inkDrop(color: Colors.brown, size: 24)
+
                                       ///로딩 중 아님
                                       : const FaIcon(FontAwesomeIcons.solidComment, color: Colors.brown),
                                 ),

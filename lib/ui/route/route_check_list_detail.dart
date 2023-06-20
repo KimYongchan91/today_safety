@@ -169,7 +169,9 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                               ),
                             ),
 
-                            const SizedBox(height: 20,),
+                            const SizedBox(
+                              height: 20,
+                            ),
 
                             Row(
                               mainAxisAlignment: MainAxisAlignment.end,
@@ -185,7 +187,7 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                                     child: Text(
                                       '달력',
                                       style: btnTxtStyle.copyWith(
-                                        fontSize:  isViewCalendar == true ? 17 : 15,
+                                          fontSize: isViewCalendar == true ? 17 : 15,
                                           color: isViewCalendar == true ? Colors.black : Colors.black45),
                                     )),
                                 const SizedBox(
@@ -202,7 +204,7 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                                   child: Text(
                                     '그래프',
                                     style: btnTxtStyle.copyWith(
-                                        fontSize:  isViewChart == true ? 17 : 15,
+                                        fontSize: isViewChart == true ? 17 : 15,
                                         color: isViewChart == true ? Colors.black : Colors.black45),
                                   ),
                                 ),
@@ -342,7 +344,6 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                           ],
                         ),
                       ),
-
 
                       const SizedBox(
                         height: 10,
