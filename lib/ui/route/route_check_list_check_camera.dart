@@ -354,16 +354,15 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
                                           ),
 
                                           ///인증 완료 버튼
-                                          ///모든 촬영이 완료되었을 때만 보임
+                                          ///모든 촬영이 완료되었을 때는 초록색으로 강조
                                           Expanded(
                                             flex: 1,
-                                            child: ValueListenableBuilder(
-                                              valueListenable: valueNotifierIsUploadingToServer,
-                                              builder: (context, value, child) => InkWell(
-                                                onTap: () {
-                                                  completeCheck();
-                                                },
-                                                child: value
+                                            child: CustomValueListenableBuilder2(
+                                              a: valueNotifierIsUploadingToServer,
+                                              b: valueNotifierMapCheckImageLocal,
+                                              builder: (context, a, b, child) => InkWell(
+                                                onTap: completeCheck,
+                                                child: a
                                                     ? LoadingAnimationWidget.inkDrop(
                                                         color: Colors.white,
                                                         size: 20,
@@ -371,7 +370,12 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
                                                     : Container(
                                                         alignment: Alignment.center,
                                                         decoration: BoxDecoration(
-                                                          color: const Color(0x33ffffff),
+                                                          color: b.values.length ==
+                                                                  widget.modelCheckList.listModelCheck.length
+
+                                                              ///모든 인증이 완료되었을 때
+                                                              ? Colors.greenAccent
+                                                              : const Color(0x33ffffff),
                                                           borderRadius: BorderRadius.circular(20),
                                                         ),
                                                         child: const Text(
@@ -380,7 +384,8 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
                                                               fontSize: 18,
                                                               color: Colors.white,
                                                               fontWeight: FontWeight.bold),
-                                                        )),
+                                                        ),
+                                                      ),
                                               ),
                                             ),
                                           )
@@ -618,6 +623,11 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
 
   completeCheck() async {
     if (valueNotifierIsUploadingToServer.value) {
+      return;
+    }
+
+    if (valueNotifierMapCheckImageLocal.value.values.length != widget.modelCheckList.listModelCheck.length) {
+      showSnackBarOnRoute('아직 인증하지 않은 항목이 있어요.');
       return;
     }
 

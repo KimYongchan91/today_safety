@@ -21,18 +21,28 @@ class _ScreenCheckListCheckMainState extends State<ScreenCheckListCheckMain> {
     return SingleChildScrollView(
       child: Column(
         children: [
+          ///근무지 관련
+          const SizedBox(
+            height: 20,
+          ),
+          Text(
+            '${widget.modelCheckList.modelSite.name}',
+            style: const CustomTextStyle.bigBlackBold(),
+          ),
+
+          ///체크 리스트 관련
           const SizedBox(
             height: 20,
           ),
           Row(
             children: [
               Text(
-                '${widget.modelCheckList.name} 체크리스트 요약 페이지',
+                '${widget.modelCheckList.name} 체크리스트',
                 style: const CustomTextStyle.bigBlackBold(),
               ),
-
             ],
           ),
+
           const SizedBox(
             height: 20,
           ),

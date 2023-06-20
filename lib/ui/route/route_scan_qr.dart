@@ -72,7 +72,7 @@ class _RouteScanQrState extends State<RouteScanQr> {
           checkListId = checkListId.split('/').first;
         }
 
-        Get.offNamed('$keyRouteCheckListDetail/$checkListId');
+        Get.offNamed('$keyRouteCheckListDetail/$checkListId/$keyRouteCheckListCheckWithOutSlash');
         this.controller!.pauseCamera();
         streamSubscription?.cancel();
       }

@@ -117,8 +117,13 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                     Padding(
                       padding: const EdgeInsets.all(10),
                       child: InkWell(
-                        onTap: () {
-                          Get.to(()=>RouteScanQr());
+                        onTap: () async {
+                          bool isPermissionGranted = await requestPermission(Permission.camera);
+                          if (isPermissionGranted == false) {
+                            return;
+                          }
+
+                          Get.to(() => RouteScanQr());
                         },
                         child: const FaIcon(
                           FontAwesomeIcons.qrcode,
