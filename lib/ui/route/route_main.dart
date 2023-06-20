@@ -395,7 +395,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                             left: 5,
                             child: value != null
                                 ? Text(
-                                    value.modelLocationWeather.dong,
+                                    '${value.modelLocationWeather.gu} ${value.modelLocationWeather.dong}',
                                     style: CustomTextStyle.normalBlackBold(),
                                   )
                                 : Container()),
