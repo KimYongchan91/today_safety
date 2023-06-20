@@ -16,6 +16,7 @@ import 'package:today_safety/const/value/router.dart';
 import 'package:today_safety/const/value/value.dart';
 import 'package:today_safety/custom/custom_text_style.dart';
 import 'package:today_safety/service/provider/provider_user.dart';
+import 'package:today_safety/ui/route/route_scan_qr.dart';
 import 'package:today_safety/ui/route/route_weather_detail.dart';
 import 'package:today_safety/ui/route/test/route_test.dart';
 import 'package:today_safety/ui/item/item_banner.dart';
@@ -112,7 +113,25 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
 
                     const Spacer(),
 
-                    ///인증페이지
+                    ///qr 코드 인식 페이지
+                    Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: InkWell(
+                        onTap: () {
+                          Get.to(()=>RouteScanQr());
+                        },
+                        child: const FaIcon(
+                          FontAwesomeIcons.qrcode,
+                          size: 18,
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(
+                      width: 5,
+                    ),
+
+                    ///테스트 인증 페이지
                     Padding(
                       padding: const EdgeInsets.all(10),
                       child: InkWell(
@@ -481,10 +500,10 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                         color: Colors.white,
                         child: const Column(
                           children: [
-                            Text('전일 전국 사고자 현황',style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
-
-
-
+                            Text(
+                              '전일 전국 사고자 현황',
+                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
                           ],
                         ),
                       )),

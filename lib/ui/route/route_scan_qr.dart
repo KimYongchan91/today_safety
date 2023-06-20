@@ -1,8 +1,12 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:today_safety/custom/custom_text_style.dart';
 
+import '../../const/value/router.dart';
 import '../../my_app.dart';
 
 class RouteScanQr extends StatefulWidget {
@@ -15,6 +19,7 @@ class RouteScanQr extends StatefulWidget {
 class _RouteScanQrState extends State<RouteScanQr> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   QRViewController? controller;
+  StreamSubscription? streamSubscription;
   Barcode? result;
 
   @override
@@ -41,7 +46,14 @@ class _RouteScanQrState extends State<RouteScanQr> {
           Positioned.fill(
             child: QRView(
               key: qrKey,
+              overlay: QrScannerOverlayShape(),
               onQRViewCreated: _onQRViewCreated,
+            ),
+          ),
+          Center(
+            child: Text(
+              '인식됨. ${result?.code ?? '아직'}',
+              style: CustomTextStyle.normalRedBold(),
             ),
           )
         ],
@@ -49,16 +61,23 @@ class _RouteScanQrState extends State<RouteScanQr> {
     );
   }
 
-
-
   void _onQRViewCreated(QRViewController controller) {
     this.controller = controller;
-    controller.scannedDataStream.listen((scanData) {
-      MyApp.logger.d('스캔 데이터 : ${scanData.toString()}');
-      setState(() {
-        result = scanData;
-      });
+    streamSubscription = controller.scannedDataStream.listen((scanData) {
+      String urlBase = 'https://kayple.com/today_safety/check_list/';
+
+      if (scanData.code != null && scanData.code!.contains(urlBase)) {
+        String checkListId = scanData.code!.replaceAll(urlBase, '');
+        if (checkListId.contains('/')) {
+          checkListId = checkListId.split('/').first;
+        }
+
+        Get.offNamed('$keyRouteCheckListDetail/$checkListId');
+        this.controller!.pauseCamera();
+        streamSubscription?.cancel();
+      }
+
+      //https://kayple.com/today_safety/check_list/Y7eoaYJLn5v1YvolI0xW
     });
   }
-
 }
