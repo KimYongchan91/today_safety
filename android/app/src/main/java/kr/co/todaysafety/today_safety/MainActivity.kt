@@ -1,6 +1,8 @@
 package kr.co.todaysafety.today_safety
 
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Base64
@@ -31,5 +33,30 @@ class MainActivity : FlutterActivity() {
         } catch (e: Exception) {
             Log.e("Exception", e.toString())
         }
+
+
+        // ATTENTION: This was auto-generated to handle app links.
+        val appLinkIntent: Intent = intent
+        val appLinkAction: String? = appLinkIntent.action
+        val appLinkData: Uri? = appLinkIntent.data
+
+        Log.d(TAG, "onCreate: ${appLinkData.toString()}")
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        handleIntent(intent)
+    }
+
+    private fun handleIntent(intent: Intent) {
+        val appLinkAction = intent.action
+        val appLinkData: Uri? = intent.data
+        if (Intent.ACTION_VIEW == appLinkAction) {
+            Log.d(TAG, "handleIntent: $appLinkData");
+        }
+    }
+
+    companion object{
+        val TAG  = "MainActivity";
     }
 }

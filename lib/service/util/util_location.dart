@@ -80,7 +80,7 @@ Future<ModelLocationWeather?> getModelLocationWeatherFromLatLng(double lat, doub
   };
 
   String url = 'https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=$lng&y=$lat';
-  MyApp.logger.d('url : $url ');
+  //MyApp.logger.d('url : $url ');
 
   try {
     var response = await http.get(Uri.parse(url), headers: requestHeaders);
@@ -110,7 +110,7 @@ Future<ModelLocationWeather?> getModelLocationWeatherFromLatLng(double lat, doub
         code: docFirst[keyCode],
       );
 
-      MyApp.logger.d("행정 구역 코드 조회 결과 : ${modelLocationWeather.toString()}");
+      //MyApp.logger.d("행정 구역 코드 조회 결과 : ${modelLocationWeather.toString()}");
       return modelLocationWeather;
     }
   } on Exception catch (e) {

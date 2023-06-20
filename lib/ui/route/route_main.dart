@@ -494,7 +494,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
     Position? position;
     try {
       position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
-      MyApp.logger.d("위치 조회 성공 : ${position.latitude}, ${position.longitude}");
+     // MyApp.logger.d("위치 조회 성공 : ${position.latitude}, ${position.longitude}");
     } on Exception catch (e) {
       MyApp.logger.wtf("위치 조회 실패 : ${e.toString()}");
     }
@@ -504,7 +504,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
       return;
     }
 
-    //MyApp.logger.d("주소 받아오는 데 걸린 시간 : ${DateTime.now().millisecondsSinceEpoch-time}ms");
+    MyApp.logger.d("주소 받아오는 데 걸린 시간 : ${DateTime.now().millisecondsSinceEpoch-time}ms");
     time = dateTimeNow.millisecondsSinceEpoch;
 
     //행정 구역 코드 받아오기
