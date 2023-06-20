@@ -173,8 +173,7 @@ class _Button extends StatelessWidget {
   final void Function()? onTap;
   final Color colorBackground;
 
-  const _Button(this.label, this.onTap, {this.colorBackground = const Color(0xfff84343), Key? key})
-      : super(key: key);
+  const _Button(this.label, this.onTap, {this.colorBackground = const Color(0xfff84343), Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -182,17 +181,17 @@ class _Button extends StatelessWidget {
       onTap: onTap,
       child: Container(
         //width: 147,
-        height: 50,
+        height: 60,
         decoration: BoxDecoration(
-          color: colorBackground,
-          borderRadius: BorderRadius.circular(4),
+          color: Colors.blueAccent,
+          borderRadius: BorderRadius.circular(20),
         ),
         child: Center(
           child: Padding(
             padding: const EdgeInsets.only(top: 2),
             child: Text(
               label,
-              style: const CustomTextStyle.normalWhiteBold(),
+              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
             ),
           ),
         ),
