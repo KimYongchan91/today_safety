@@ -284,9 +284,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                                           child: Text(
                                             '근무지 만들기',
                                             style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.black45,
-                                                fontSize: 16),
+                                                fontWeight: FontWeight.bold, color: Colors.black45, fontSize: 16),
                                           ))
                                     ],
                                   )
@@ -311,8 +309,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                                           width: Get.width,
                                           height: Get.height / 4,
                                           decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(20),
-                                              color: Colors.redAccent),
+                                              borderRadius: BorderRadius.circular(20), color: Colors.redAccent),
                                           child:
                                               //todo ldj 근무지 로고 이미지 부분 수정
                                               ///근무지 로고 이미지
@@ -339,8 +336,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                                                   ///근무지 이름
                                                   Text(
                                                     value.modelSiteMy!.name,
-                                                    style: const TextStyle(
-                                                        fontSize: 20, fontWeight: FontWeight.w800),
+                                                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
                                                   ),
 
                                                   const SizedBox(
@@ -494,7 +490,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
     Position? position;
     try {
       position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
-     // MyApp.logger.d("위치 조회 성공 : ${position.latitude}, ${position.longitude}");
+      MyApp.logger.d("위치 조회 성공 : ${position.latitude}, ${position.longitude}");
     } on Exception catch (e) {
       MyApp.logger.wtf("위치 조회 실패 : ${e.toString()}");
     }
@@ -504,7 +500,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
       return;
     }
 
-    MyApp.logger.d("주소 받아오는 데 걸린 시간 : ${DateTime.now().millisecondsSinceEpoch-time}ms");
+    MyApp.logger.d("주소 받아오는 데 걸린 시간 : ${DateTime.now().millisecondsSinceEpoch - time}ms");
     time = dateTimeNow.millisecondsSinceEpoch;
 
     //행정 구역 코드 받아오기
@@ -519,6 +515,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
       controllerRefreshWeather.reset();
       return;
     }
+    MyApp.logger.d("카카오에서 행정구역 코드 받아옴 : ${modelLocationWeather.code}");
 
     //MyApp.logger.d("행정 구역 코드 받아오는 데 걸린 시간 : ${DateTime.now().millisecondsSinceEpoch-time}ms");
     time = dateTimeNow.millisecondsSinceEpoch;
@@ -529,18 +526,21 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
 
     try {
       final rawData = await rootBundle.loadString("assets/datas/address_code_simple.csv");
-      List<List<dynamic>> listData = const CsvToListConverter().convert(rawData);
+      //MyApp.logger.d("rawData : ${rawData}");
+      List<String> listDataPerLine = rawData.split('\n');
 
-      //MyApp.logger.d("파일 읽은 결과 : ${listData[0].toString()}");
+      //List<List<dynamic>> listData = const CsvToListConverter().convert(rawData);
+
+      //MyApp.logger.d("파일 읽은 결과 : ${listDataPerLine[0].toString()}");
       //MyApp.logger.d('data 타입 : ${listData[0].runtimeType.toString()}');
       //MyApp.logger.d('0 타입 : ${listData[0][0].runtimeType.toString()}');
 
       int codeH = int.parse(modelLocationWeather.code);
-      for (var data in listData) {
-        if (data[0] == codeH) {
-          codeX = data[1];
-          codeY = data[2];
-          listData.clear();
+      for (String data in listDataPerLine) {
+        if (data.substring(0, 10) == '$codeH') {
+          codeX = int.parse(data.split(',')[1]);
+          codeY = int.parse(data.split(',')[2]);
+          listDataPerLine.clear();
           break;
         }
       }
@@ -566,8 +566,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
 
     String baseTimeFormatted;
     //1시간 전
-    int hourCurrent =
-        DateTime.fromMillisecondsSinceEpoch(dateTimeNow.millisecondsSinceEpoch - millisecondHour).hour;
+    int hourCurrent = DateTime.fromMillisecondsSinceEpoch(dateTimeNow.millisecondsSinceEpoch - millisecondHour).hour;
     baseTimeFormatted = '$hourCurrent'.padLeft(2, '0');
 /*    if (hourCurrent < 3) {
       baseTimeFormatted = "00";
@@ -605,16 +604,14 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
         'Content-type': 'application/json',
         'Accept': 'application/json',
       };
-      var response =
-          await http.get(Uri.parse(url), headers: requestHeaders).timeout(const Duration(seconds: 5));
+      var response = await http.get(Uri.parse(url), headers: requestHeaders).timeout(const Duration(seconds: 5));
 
       if (response.statusCode != 200) {
         throw Exception("Request to $url failed with status ${response.statusCode}: ${response.body}");
       } else {
         //성공
         //MyApp.logger.d(response.body.toString());
-        List<dynamic> listMapAddressData =
-            jsonDecode(response.body)['response']?['body']?['items']?['item'] ?? [];
+        List<dynamic> listMapAddressData = jsonDecode(response.body)['response']?['body']?['items']?['item'] ?? [];
 
         //T1H : 기온(c)
         //RN1 : 강수량(mm/1h)
