@@ -1501,6 +1501,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "21.2.10"
+  syncfusion_flutter_sliders:
+    dependency: "direct main"
+    description:
+      name: syncfusion_flutter_sliders
+      sha256: d2ca75ac264d41bce6cafa412fa6a701ea85949727c79dfa7819f12c91c13f8e
+      url: "https://pub.dev"
+    source: hosted
+    version: "21.2.10"
   synchronized:
     dependency: transitive
     description:
