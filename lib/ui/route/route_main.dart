@@ -16,12 +16,14 @@ import 'package:today_safety/const/value/router.dart';
 import 'package:today_safety/const/value/value.dart';
 import 'package:today_safety/custom/custom_text_style.dart';
 import 'package:today_safety/service/provider/provider_user.dart';
+import 'package:today_safety/ui/dialog/dialog_open_external_web_browser.dart';
 import 'package:today_safety/ui/route/route_scan_qr.dart';
 import 'package:today_safety/ui/route/route_weather_detail.dart';
 import 'package:today_safety/ui/route/test/route_test.dart';
 import 'package:today_safety/ui/item/item_banner.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../const/value/color.dart';
 import '../../const/value/key.dart';
@@ -403,9 +405,16 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                     child: ValueListenableBuilder(
                       valueListenable: valueNotifierWeather,
                       builder: (context, value, child) => InkWell(
-                        onTap: () {
+                        onTap: () async {
                           if (value != null) {
-                            Get.to(() => RouteWeatherDetail(value));
+                            //%EC%9D%80%ED%8F%89%EA%B5%AC+%EB%B6%88%EA%B4%91%EB%8F%99+%EB%82%A0%EC%94%A8
+                            String urlBase = 'https://m.search.naver.com/search.naver?sm=mtp_hty.top&where=m&query=';
+                            String query =
+                                '${value.modelLocationWeather.si} ${value.modelLocationWeather.gu} ${value.modelLocationWeather.dong} 날씨';
+
+                            Get.dialog(DialogOpenExternalWebBrowser(urlBase + query));
+
+                            //Get.to(() => RouteWeatherDetail(value));
                           }
                         },
                         child: Container(
@@ -415,11 +424,12 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                           child: Column(
                             children: [
                               const Align(
-                                  alignment: Alignment.topLeft,
-                                  child: Text(
-                                    '날씨',
-                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                                  )),
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                  '날씨',
+                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                                ),
+                              ),
                               Row(
                                 children: [
                                   ///날씨 아이콘
@@ -435,12 +445,12 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                                       Row(
                                         children: [
                                           ///날씨 정보 받아온 시간
-                                          value != null
+                                          /*       value != null
                                               ? Text(
                                                   value.getTime(),
                                                   style: TextStyle(color: Colors.black45, fontWeight: FontWeight.w700),
                                                 )
-                                              : Container(),
+                                              : Container(),*/
 
                                           ///날씨 새로고침 아이콘
                                           InkWell(
@@ -459,12 +469,12 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                                       ///날씨 온도
                                       value != null
                                           ? Text(
-                                              '${value.t1h.toString()}°C',
+                                              '${value.t1h.toString()}°',
                                               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 35),
                                             )
                                           : Container(),
 
-                                      const SizedBox(
+                                      /* const SizedBox(
                                         height: 5,
                                       ),
 
@@ -474,7 +484,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                                               '강수량 ${value.rn1.toString()}mm/h',
                                               style: CustomTextStyle.normalBlackBold(),
                                             )
-                                          : Container(),
+                                          : Container(),*/
                                     ],
                                   ),
                                 ],
@@ -515,10 +525,8 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                 ],
               )),
 
-              ///날씨 정보 영역
-
               //const Spacer(),
-              const ItemMainBanner(),
+              //const ItemMainBanner(),
             ]),
           ),
         ),

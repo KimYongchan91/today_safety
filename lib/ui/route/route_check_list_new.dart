@@ -108,7 +108,7 @@ class _RouteCheckListNewState extends State<RouteCheckListNew> {
                         height: 20,
                       ),
 
-                      ///인증 위치 제한 on/off 토글
+                      /*///인증 위치 제한 on/off 토글
                       ValueListenableBuilder(
                           valueListenable: valueNotifierModelConstraintLocation,
                           builder: (context, value, _) => Row(
@@ -209,7 +209,7 @@ class _RouteCheckListNewState extends State<RouteCheckListNew> {
                         ),
                       ),
 
-                      ///카카오 맵
+                      ///카카오 맵*/
 
                       SizedBox(
                         height: 60,
