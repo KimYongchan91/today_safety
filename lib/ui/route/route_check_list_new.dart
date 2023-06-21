@@ -67,15 +67,15 @@ class _RouteCheckListNewState extends State<RouteCheckListNew> {
     return WillPopScope(
       onWillPop: onWillPop,
       child: Scaffold(
-        backgroundColor: colorBackground,
+
         body: SafeArea(
           child: isFucPresetSelected
               ?
 
               ///fuc 선택 단계를 지났으면
               Column(
-                children: [
-                  SingleChildScrollView(
+                  children: [
+                    SingleChildScrollView(
                       //physics: const NeverScrollableScrollPhysics(),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,19 +83,24 @@ class _RouteCheckListNewState extends State<RouteCheckListNew> {
                           Padding(
                             padding: const EdgeInsets.all(20),
                             child: InkWell(
-                              onTap: (){
+                              onTap: () {
                                 Get.back();
                               },
                               child: FaIcon(FontAwesomeIcons.angleLeft),
                             ),
                           ),
-
                           const SizedBox(
                             height: 20,
                           ),
                           const Padding(
                             padding: EdgeInsets.symmetric(horizontal: 20),
-                            child: Text('새로 작성할 \n체크리스트의 이름을 입력하세요.',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,),),
+                            child: Text(
+                              '새로 작성할 \n체크리스트의 이름을 입력하세요.',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                           const SizedBox(
                             height: 20,
@@ -105,17 +110,16 @@ class _RouteCheckListNewState extends State<RouteCheckListNew> {
                             child: TextField(
                               decoration: const InputDecoration(
                                 hintText: 'ex) 오전 근무조',
-
                               ),
                               controller: textEditingControllerName,
                             ),
                           ),
-
-
-
                           const SizedBox(
                             height: 20,
                           ),
+
+
+
                           ValueListenableBuilder(
                             valueListenable: valueNotifierListModelCheck,
                             builder: (context, value, child) => ListView.builder(
@@ -130,7 +134,6 @@ class _RouteCheckListNewState extends State<RouteCheckListNew> {
                               physics: const BouncingScrollPhysics(),
                             ),
                           ),
-
                           const SizedBox(
                             height: 20,
                           ),
@@ -237,55 +240,70 @@ class _RouteCheckListNewState extends State<RouteCheckListNew> {
                           ),
 
                           ///카카오 맵*/
-
-
-
                         ],
                       ),
                     ),
 
-const Spacer(),
-                  ///만들기 버튼
-                  InkWell(
-                    onTap: complete,
-                    child: Container(
-                      width: Get.width,
-                      height: 70,
-                      margin: const EdgeInsets.symmetric(horizontal: 10,vertical: 10),
-                      decoration: BoxDecoration(
-                        color:Colors.orangeAccent,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Center(
-                        child: ValueListenableBuilder(
-                          valueListenable: valueNotifierUpload,
-                          builder: (context, value, child) => value
-                              ? const CircularProgressIndicator()
-                              : const Padding(
-                            padding: EdgeInsets.only(top: 2),
-                            child: Text(
-                              '만들기',
-                              style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white,fontSize: 20),
-                            ),
+                    const Spacer(),
+
+                    ///만들기 버튼
+                    InkWell(
+                      onTap: complete,
+                      child: Container(
+                        width: Get.width,
+                        height: 70,
+                        margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        decoration: BoxDecoration(
+                          color: Colors.orangeAccent,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Center(
+                          child: ValueListenableBuilder(
+                            valueListenable: valueNotifierUpload,
+                            builder: (context, value, child) => value
+                                ? const CircularProgressIndicator()
+                                : const Padding(
+                                    padding: EdgeInsets.only(top: 2),
+                                    child: Text(
+                                      '만들기',
+                                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 20),
+                                    ),
+                                  ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-
-
-              )
+                  ],
+                )
               :
 
               ///fuc 선택 단계 진행 중
               Column(
+
                   children: [
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 20),
-                      child: Text(
-                        '어떤 작업과 관련되어 있나요?',
-                        style: CustomTextStyle.bigBlackBold(),
+
+                    Align(
+                        alignment: Alignment.centerLeft,
+                        child: InkWell(
+                            onTap: (){
+                              Get.back();
+                            },
+                            child: const Padding(
+
+                              padding: EdgeInsets.all(20),
+                              child: FaIcon(FontAwesomeIcons.angleLeft),
+                            ))),
+
+                    const SizedBox(height: 30,),
+                    const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        child: Text(
+                          '어떤 작업과 관련되어 있나요?',
+                          style: CustomTextStyle.bigBlackBold(),
+                        ),
                       ),
                     ),
                     Row(
@@ -296,34 +314,39 @@ const Spacer(),
                             setFuc(null);
                           },
                           child: const Padding(
-                            padding: EdgeInsets.all(10),
+                            padding: EdgeInsets.symmetric(vertical: 10 , horizontal: 20),
                             child: Text(
-                              '건너 뛰기',
+                              '건너뛰기',
                               style: CustomTextStyle.normalGreyBold(),
                             ),
                           ),
                         ),
                       ],
                     ),
-                    GridView.builder(
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 10,
-                        childAspectRatio: 4 / 5,
-                        mainAxisSpacing: 10,
-                      ),
-                      itemBuilder: (context, index) => InkWell(
-                        onTap: () {
-                          setFuc(getModelFucPreset(listAllFucPresetCode[index]));
-                        },
-                        child: ItemFucPreset(
-                          getModelFucPreset(
-                            listAllFucPresetCode[index],
+                    const SizedBox(height: 50,),
+
+                    Padding(
+                      padding:const EdgeInsets.symmetric(horizontal: 20),
+                      child: GridView.builder(
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          crossAxisSpacing: 5,
+
+
+                        ),
+                        itemBuilder: (context, index) => InkWell(
+                          onTap: () {
+                            setFuc(getModelFucPreset(listAllFucPresetCode[index]));
+                          },
+                          child: ItemFucPreset(
+                            getModelFucPreset(
+                              listAllFucPresetCode[index],
+                            ),
                           ),
                         ),
+                        itemCount: listAllFucPresetCode.length,
+                        shrinkWrap: true,
                       ),
-                      itemCount: listAllFucPresetCode.length,
-                      shrinkWrap: true,
                     )
                   ],
                 ),

@@ -12,22 +12,25 @@ class ItemFucPreset extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-          border: Border.all(
-        color: Colors.grey,
-      )),
-      child: Column(
-        children: [
-          AspectRatio(
-            aspectRatio: 1,
-            child: Image.asset(getPathFucPresetImage(modelFucPreset)),
-          ),
-          Text(
-            modelFucPreset.name,
-            style: const CustomTextStyle.bigBlackBold(),
-          )
-        ],
+    return Card(
+      elevation: 5,
+      child: Container(
+        alignment: Alignment.center,
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          children: [
+            Container(
+              width: 50,
+              alignment: Alignment.center,
+
+                child: Image.asset(getPathFucPresetImage(modelFucPreset))),
+            Spacer(),
+            Text(
+              modelFucPreset.name,
+              style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500,fontSize: 16),
+            )
+          ],
+        ),
       ),
     );
   }

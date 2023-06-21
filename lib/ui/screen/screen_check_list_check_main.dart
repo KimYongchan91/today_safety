@@ -24,45 +24,39 @@ class _ScreenCheckListCheckMainState extends State<ScreenCheckListCheckMain> {
       child: Column(
         children: [
           ///근무지 관련
-          const SizedBox(
-            height: 20,
-          ),
-          Text(
-            '${widget.modelCheckList.modelSite.name}',
-            style: const CustomTextStyle.bigBlackBold(),
-          ),
 
-          ///체크 리스트 관련
-          const SizedBox(
-            height: 30,
-          ),
-
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+          ///앱바
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            color: Colors.white,
+            width: Get.width,
+            height: 60,
             child: Row(
               children: [
-                InkWell(
-                    onTap: () {
-                      Get.back();
-                    },
-                    child: FaIcon(
-                      FontAwesomeIcons.angleLeft,
-                      color: Colors.black,
-                    )),
+                Padding(
+                  padding: EdgeInsets.all(10),
+                  child: InkWell(
+                      onTap: () {
+                        Get.back();
+                      },
+                      child: const FaIcon(
+                        FontAwesomeIcons.angleLeft,
+                        color: Colors.black,
+                      )),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
                 Expanded(
-                  child: Center(
-                    child: Text(
-                      '${widget.modelCheckList.name} 체크리스트 요약 페이지',
-                      style: const CustomTextStyle.bigBlackBold(),
-                    ),
+                  child: Text(
+                    '${widget.modelCheckList.modelSite.name}',
+                    style: const CustomTextStyle.bigBlackBold(),
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(
-            height: 30,
-          ),
+
           /*
           Text(
             '위치 제한 ${widget.modelCheckList.modelConstraintLocation?.range}m',
@@ -72,21 +66,32 @@ class _ScreenCheckListCheckMainState extends State<ScreenCheckListCheckMain> {
             '시간 제한 ${widget.modelCheckList.modelConstraintTime?.start} ~ ${widget.modelCheckList.modelConstraintTime?.end}, ${widget.modelCheckList.modelConstraintTime?.week.toString()}',
             style: const CustomTextStyle.bigBlackBold(),
           ), */
-          Text(
-            '${widget.modelCheckList.name} 체크리스트',
-            style: const CustomTextStyle.bigBlackBold(),
-          ),
 
-          const SizedBox(
-            height: 20,
-          ),
-          ListView.builder(
-            itemCount: widget.modelCheckList.listModelCheck.length,
-            itemBuilder: (context, index) => ItemCheck(
-              widget.modelCheckList.listModelCheck[index],
+          Container(
+            width: Get.width,
+            height: Get.height,
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+            margin: const EdgeInsets.symmetric(vertical: 10),
+            color: Colors.white,
+            child: Column(
+              children: [
+                Text(
+                  '${widget.modelCheckList.name} 체크리스트',
+                  style: TextStyle(color: Colors.black54, fontSize: 18, fontWeight: FontWeight.w700),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                ListView.builder(
+                  itemCount: widget.modelCheckList.listModelCheck.length,
+                  itemBuilder: (context, index) => ItemCheck(
+                    widget.modelCheckList.listModelCheck[index],
+                  ),
+                  shrinkWrap: true,
+                )
+              ],
             ),
-            shrinkWrap: true,
-          )
+          ),
         ],
       ),
     );
