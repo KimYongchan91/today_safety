@@ -10,7 +10,7 @@ const String _pathBaseFucPresetImage = 'assets/images/fuc_preset';
 const String keyWorkAtHeight = 'work_at_height';
 const String keyWorkWithElectric = 'work_with_electric';
 
-///fuc 프리셋 코드 리스트
+///fuc 프리셋 코드 전체 리스트
 ///바로 위의 모든 코드를 추가해야 함
 const List<String> listAllFucPresetCode = [
   keyWorkAtHeight,

@@ -63,6 +63,7 @@ class _ScreenCheckListCheckMainState extends State<ScreenCheckListCheckMain> {
           const SizedBox(
             height: 30,
           ),
+          /*
           Text(
             '위치 제한 ${widget.modelCheckList.modelConstraintLocation?.range}m',
             style: const CustomTextStyle.bigBlackBold(),
@@ -70,7 +71,7 @@ class _ScreenCheckListCheckMainState extends State<ScreenCheckListCheckMain> {
           Text(
             '시간 제한 ${widget.modelCheckList.modelConstraintTime?.start} ~ ${widget.modelCheckList.modelConstraintTime?.end}, ${widget.modelCheckList.modelConstraintTime?.week.toString()}',
             style: const CustomTextStyle.bigBlackBold(),
-          ),
+          ), */
           Text(
             '${widget.modelCheckList.name} 체크리스트',
             style: const CustomTextStyle.bigBlackBold(),
