@@ -14,14 +14,17 @@ import 'package:kakao_map_plugin/kakao_map_plugin.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:today_safety/const/model/model_emergency_sms.dart';
 import 'package:today_safety/const/model/model_location_weather.dart';
 import 'package:today_safety/const/model/model_weather.dart';
 import 'package:today_safety/const/value/router.dart';
 import 'package:today_safety/const/value/value.dart';
 import 'package:today_safety/custom/custom_text_style.dart';
 import 'package:today_safety/service/provider/provider_user.dart';
+import 'package:today_safety/service/util/util_address.dart';
 import 'package:today_safety/ui/dialog/dialog_open_external_web_browser.dart';
 import 'package:today_safety/ui/item/item_article.dart';
+import 'package:today_safety/ui/item/item_emergency_sms.dart';
 import 'package:today_safety/ui/route/route_scan_qr.dart';
 import 'package:today_safety/ui/route/route_weather_detail.dart';
 import 'package:today_safety/ui/route/route_webview.dart';
@@ -51,6 +54,10 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
 
   //사건 사고 기사
   ValueNotifier<List<ModelArticle>?> valueNotifierListModelArticle = ValueNotifier(null);
+
+  //재난 문자
+  ValueNotifier<List<ModelEmergencySms>?> valueNotifierListModelEmergencySmsDisaster = ValueNotifier(null); //재난
+  ValueNotifier<List<ModelEmergencySms>?> valueNotifierListModelEmergencySmsMissing = ValueNotifier(null); //실종
 
   @override
   void initState() {
@@ -206,7 +213,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
 
                     ///기사가 로딩되었을 때
                     ? ListView.builder(
-                        itemCount: min(value.length, 100), //최대 5개
+                        itemCount: min(value.length, 5), //최대 5개
                         itemBuilder: (context, index) => ItemArticle(value[index]),
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
@@ -215,6 +222,53 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                     ///기사 로딩 중
                     : LoadingAnimationWidget.inkDrop(color: Colors.green, size: 32),
               ),
+
+
+              const Text(
+                '긴급 재난 문자',
+                style: CustomTextStyle.bigBlackBold(),
+              ),
+
+              ///재난 문자 (재난 관련)
+              ValueListenableBuilder(
+                valueListenable: valueNotifierListModelEmergencySmsDisaster,
+                builder: (context, value, child) => value != null
+
+                    ///데이터가 로딩되었을 때
+                    ? ListView.builder(
+                        itemCount: min(value.length, 5), //최대 5개
+                        itemBuilder: (context, index) => ItemEmergencySms(value[index]),
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                      )
+
+                    ///데이터 로딩 중
+                    : LoadingAnimationWidget.inkDrop(color: Colors.green, size: 32),
+              ),
+
+
+              const Text(
+                '실종자 찾기',
+                style: CustomTextStyle.bigBlackBold(),
+              ),
+
+              ///재난 문자 (실종 관련)
+              ValueListenableBuilder(
+                valueListenable: valueNotifierListModelEmergencySmsMissing,
+                builder: (context, value, child) => value != null
+
+                ///데이터가 로딩되었을 때
+                    ? ListView.builder(
+                  itemCount: min(value.length, 5), //최대 5개
+                  itemBuilder: (context, index) => ItemEmergencySms(value[index]),
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                )
+
+                ///데이터 로딩 중
+                    : LoadingAnimationWidget.inkDrop(color: Colors.green, size: 32),
+              ),
+
 
               ///로그인 정보 영역
               /* Consumer<ProviderUser>(
@@ -269,8 +323,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                 builder: (context, value, child) => InkWell(
                   onTap: () async {
                     if (value != null) {
-                      String urlBase =
-                          'https://m.search.naver.com/search.naver?sm=mtp_hty.top&where=m&query=';
+                      String urlBase = 'https://m.search.naver.com/search.naver?sm=mtp_hty.top&where=m&query=';
                       String query =
                           '${value.modelLocationWeather.si} ${value.modelLocationWeather.gu} ${value.modelLocationWeather.dong} 날씨';
 
@@ -311,8 +364,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                                     value != null
                                         ? Text(
                                             value.getTime(),
-                                            style: const TextStyle(
-                                                color: Colors.black45, fontWeight: FontWeight.w700),
+                                            style: const TextStyle(color: Colors.black45, fontWeight: FontWeight.w700),
                                           )
                                         : Container(),
 
@@ -324,8 +376,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                                       child: Padding(
                                         padding: const EdgeInsets.all(5),
                                         child: RotationTransition(
-                                          turns:
-                                              Tween(begin: 0.0, end: 1.0).animate(controllerRefreshWeather),
+                                          turns: Tween(begin: 0.0, end: 1.0).animate(controllerRefreshWeather),
                                           child: const Icon(Icons.refresh),
                                         ),
                                       ),
@@ -528,16 +579,14 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
         'Content-type': 'application/json',
         'Accept': 'application/json',
       };
-      var response =
-          await http.get(Uri.parse(url), headers: requestHeaders).timeout(const Duration(seconds: 5));
+      var response = await http.get(Uri.parse(url), headers: requestHeaders).timeout(const Duration(seconds: 5));
 
       if (response.statusCode != 200) {
         throw Exception("Request to $url failed with status ${response.statusCode}: ${response.body}");
       } else {
         //성공
         //MyApp.logger.d(response.body.toString());
-        List<dynamic> listMapAddressData =
-            jsonDecode(response.body)['response']?['body']?['items']?['item'] ?? [];
+        List<dynamic> listMapAddressData = jsonDecode(response.body)['response']?['body']?['items']?['item'] ?? [];
 
         //T1H : 기온(c)
         //RN1 : 강수량(mm/1h)
@@ -641,8 +690,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
       try {
         String? href = element.href;
         String? date = regExpDate.stringMatch(innerHtmlFormatted)?.replaceAll('[', '').replaceAll(',', '');
-        String? region =
-            regExpRegion.stringMatch(innerHtmlFormatted)?.replaceAll(']', '').replaceAll(',', '').trim();
+        String? region = regExpRegion.stringMatch(innerHtmlFormatted)?.replaceAll(']', '').replaceAll(',', '').trim();
         String? title = innerHtmlFormatted.substring(innerHtmlFormatted.indexOf(']') + 1).trim();
 
         //https://www.kosha.or.kr/kosha/report/kosha_news.do?mode=view&articleNo=442620
@@ -713,6 +761,54 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
       } else {
         //성공
         MyApp.logger.d(response.body.toString());
+
+        List<ModelEmergencySms> listModelEmergencySmsDisasterNew = [];
+        List<ModelEmergencySms> listModelEmergencySmsMissingNew = [];
+        List<String> listKeyWordMissing = ['실종', '찾습니다'];
+
+        DateFormat dateFormat = DateFormat('yyyy/MM/dd hh:mm:ss');
+
+        List<dynamic> listEmergencySmsDataContainer = jsonDecode(response.body)['DisasterMsg'] ?? [];
+        if (listEmergencySmsDataContainer.isNotEmpty &&
+            listEmergencySmsDataContainer.length >= 2 &&
+            listEmergencySmsDataContainer[1]['row'] != null) {
+          List<dynamic> listEmergencySmsData = listEmergencySmsDataContainer[1]['row'];
+
+          for (var element in listEmergencySmsData) {
+            try {
+              ModelEmergencySms modelEmergencySms = ModelEmergencySms(
+                dateTime: dateFormat.parse(element['create_date']),
+                //DateTime.parse(element['create_date']),
+                id: element['md101_sn'] ?? '',
+                locaionId: element['location_id'] ?? '',
+                locaionName: formatAddressSi(element['location_name'] ?? ''),
+                msg: element['msg'] ?? '',
+              );
+
+              bool isContainMissingKeyword = false;
+              for (var element in listKeyWordMissing) {
+                if (modelEmergencySms.msg.contains(element)) {
+                  isContainMissingKeyword = true;
+                  break;
+                }
+              }
+
+              if (isContainMissingKeyword) {
+                listModelEmergencySmsMissingNew.add(modelEmergencySms);
+              } else {
+                listModelEmergencySmsDisasterNew.add(modelEmergencySms);
+              }
+            } catch (e) {
+              MyApp.logger.wtf('재난문자 데이터 추가 실패 : ${e.toString()}');
+            }
+          }
+
+          MyApp.logger.d(
+              "재난문자 응답 결과 개수. 재난 : ${listModelEmergencySmsDisasterNew.length}, 실종 : ${listModelEmergencySmsMissingNew.length}");
+          valueNotifierListModelEmergencySmsDisaster.value = listModelEmergencySmsDisasterNew;
+          valueNotifierListModelEmergencySmsMissing.value = listModelEmergencySmsMissingNew;
+        }
+
         /*List<dynamic> listMapAddressData =
             jsonDecode(response.body)['response']?['body']?['items']?['item'] ?? [];
 
@@ -782,7 +878,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
 
         controllerRefreshWeather.reset();*/
       }
-    } on Exception catch (e) {
+    } catch (e) {
       MyApp.logger.wtf("재난 문자 api 요청 실패 : ${e.toString()}");
       return null;
     }
