@@ -45,11 +45,6 @@ class RouteMain extends StatefulWidget {
 }
 
 class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMixin {
-  BoxDecoration mainButton = BoxDecoration(
-    borderRadius: BorderRadius.circular(10),
-    color: Colors.white,
-    border: Border.all(width: 2, color: Colors.black45),
-  );
 
   ValueNotifier<ModelWeather?> valueNotifierWeather = ValueNotifier(null);
   late AnimationController controllerRefreshWeather;
@@ -137,7 +132,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                             return;
                           }
 
-                          Get.to(() => RouteScanQr());
+                          Get.to(() => const RouteScanQr());
                         },
                         child: const FaIcon(
                           FontAwesomeIcons.qrcode,
@@ -194,9 +189,13 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                 color: Colors.black45,
               ),
 
-              Text(
-                '최근 사망 사고',
+              const Text(
+                '최근 사망 사고 기사',
                 style: CustomTextStyle.bigBlackBold(),
+              ),
+              const Text(
+                '한국산업안전보건공단 제공',
+                style: CustomTextStyle.normalGrey(),
               ),
 
               ///사건 사고 기사
@@ -206,10 +205,10 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
 
                     ///기사가 로딩되었을 때
                     ? ListView.builder(
-                        itemCount: min(value.length, 5), //최대 5개
+                        itemCount: min(value.length, 100), //최대 5개
                         itemBuilder: (context, index) => ItemArticle(value[index]),
                         shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                       )
 
                     ///기사 로딩 중
@@ -263,175 +262,6 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                       ),
               ),*/
 
-              ///근무지 정보 영역
-              /*  Consumer<ProviderUser>(
-                builder: (context, value, child) => value.modelUser == null
-
-                    ///로그인 안됐을때
-                    ? const UnLoginUserArea()
-
-                    ///로그인 상태일때
-                    : Container(
-                        color: Colors.white,
-                        margin: const EdgeInsets.only(bottom: 10),
-                        padding: const EdgeInsets.all(20),
-                        width: MediaQuery.of(context).size.width,
-                        child:
-
-                            ///로그인이 된 후 근무지 작성 안했을때
-                            value.modelSiteMy == null
-                                ? Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          const Expanded(
-                                            child: Text(
-                                              '나의 근무지를 등록하세요.',
-                                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                                            ),
-                                          ),
-                                          InkWell(
-                                            onTap: () {
-                                              Get.toNamed(
-                                                keyRouteSiteSearch,
-                                                arguments: {
-                                                  //'keyword': 'sex',
-                                                },
-                                              );
-                                            },
-                                            child: const Padding(
-                                              padding: EdgeInsets.all(5),
-                                              child: FaIcon(FontAwesomeIcons.search),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-
-                                      const SizedBox(
-                                        height: 40,
-                                      ),
-
-                                      ///근무지 만들기 버튼
-                                      InkWell(
-                                        onTap: () {
-                                          Get.toNamed(
-                                            keyRouteSiteNew,
-                                            arguments: {
-                                              //'keyword': 'sex',
-                                            },
-                                          );
-                                        },
-                                        child: Container(
-                                          padding: const EdgeInsets.all(10),
-                                          height: MediaQuery.of(context).size.height / 4,
-                                          decoration: mainButton,
-                                          child: const Expanded(
-                                              child: Center(
-                                                  child: FaIcon(
-                                            FontAwesomeIcons.add,
-                                            size: 35,
-                                            color: Colors.black45,
-                                          ))),
-                                        ),
-                                      ),
-
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      const Align(
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            '근무지 만들기',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold, color: Colors.black45, fontSize: 16),
-                                          ))
-                                    ],
-                                  )
-
-                                ///로그인 되어있고, 내가 관리하는 근무지가 있을 때
-                                : InkWell(
-                                    onTap: goRouteSiteDetail,
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        const Text(
-                                          '내가 관리하는 근무지',
-                                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                                        ),
-
-                                        const SizedBox(
-                                          height: 30,
-                                        ),
-
-                                        ///이미지 영역
-                                        Container(
-                                          width: Get.width,
-                                          height: Get.height / 4,
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(20), color: Colors.redAccent),
-                                          child:
-                                              //todo ldj 근무지 로고 이미지 부분 수정
-                                              ///근무지 로고 이미지
-
-                                              ClipRRect(
-                                            borderRadius: BorderRadius.circular(20),
-                                            child: CachedNetworkImage(
-                                              imageUrl: value.modelSiteMy!.urlLogoImage,
-                                              fit: BoxFit.cover,
-                                            ),
-                                          ),
-                                        ),
-
-                                        const SizedBox(
-                                          height: 20,
-                                        ),
-
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  ///근무지 이름
-                                                  Text(
-                                                    value.modelSiteMy!.name,
-                                                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
-                                                  ),
-
-                                                  const SizedBox(
-                                                    height: 10,
-                                                  ),
-
-                                                  ///주소
-                                                  const Row(
-                                                    children: [
-                                                      FaIcon(
-                                                        FontAwesomeIcons.locationDot,
-                                                        size: 16,
-                                                      ),
-                                                      SizedBox(
-                                                        width: 5,
-                                                      ),
-                                                      Text('서울시 은평구 불광동 32번 가길'),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            const Padding(
-                                              padding: EdgeInsets.all(10),
-                                              child: FaIcon(FontAwesomeIcons.angleRight),
-                                            )
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                      ),
-              ),*/
 
               ///날씨 정보 영역
               ValueListenableBuilder(
@@ -480,7 +310,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                                     value != null
                                         ? Text(
                                             value.getTime(),
-                                            style: TextStyle(color: Colors.black45, fontWeight: FontWeight.w700),
+                                            style: const TextStyle(color: Colors.black45, fontWeight: FontWeight.w700),
                                           )
                                         : Container(),
 
@@ -488,10 +318,10 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                                     InkWell(
                                       onTap: refreshWeather,
                                       child: Padding(
-                                        padding: EdgeInsets.all(5),
+                                        padding: const EdgeInsets.all(5),
                                         child: RotationTransition(
                                           turns: Tween(begin: 0.0, end: 1.0).animate(controllerRefreshWeather),
-                                          child: Icon(Icons.refresh),
+                                          child: const Icon(Icons.refresh),
                                         ),
                                       ),
                                     ),
@@ -514,7 +344,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                                 value != null
                                     ? Text(
                                         '강수량 ${value.rn1.toString()}mm/h',
-                                        style: CustomTextStyle.normalBlackBold(),
+                                        style: const CustomTextStyle.normalBlackBold(),
                                       )
                                     : Container(),
                               ],
@@ -769,7 +599,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
 
     final chaleno = await Chaleno().load('https://www.kosha.or.kr/kosha/index.do');
 
-    List<Result> results = chaleno?.querySelectorAll('.articleTitle') ?? [];
+    List<Result> results = chaleno?.querySelectorAll('.example1 ul li .articleTitle') ?? [];
     print('크롤 결과 : ${results.length}');
     RegExp regExpDate = RegExp(r'^\[[0-9]\/[0-9]*\,');
     RegExp regExpRegion = RegExp(r',[ 가-힣]*\]');
@@ -823,13 +653,12 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
       }
     }
 
+    listModelArticleNew.sort((a, b) => b.dateTime.millisecondsSinceEpoch.compareTo(a.dateTime.millisecondsSinceEpoch),);
+
     valueNotifierListModelArticle.value = listModelArticleNew;
   }
 
-  goRouteSiteDetail() {
-    Get.toNamed('$keyRouteSiteDetail/${MyApp.providerUser.modelSiteMy?.docId ?? ''}',
-        arguments: {keyModelSite: MyApp.providerUser.modelSiteMy});
-  }
+
 }
 
 ///로그인 안됐을때
