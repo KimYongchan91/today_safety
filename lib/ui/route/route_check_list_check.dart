@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:today_safety/const/model/model_check_list.dart';
+import 'package:today_safety/const/value/color.dart';
 import 'package:today_safety/ui/route/route_check_list_check_camera.dart';
 import 'package:today_safety/ui/route/test/route_test_animation_container.dart';
 import 'package:today_safety/ui/route/test/route_test_animation_hero.dart';
@@ -61,48 +62,48 @@ class _RouteCheckListCheckState extends State<RouteCheckListCheck> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: colorBackground,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: FutureBuilder<bool>(
-            future: completerGetModelCheckList.future,
-            builder: (context, snapshot) {
-              if (snapshot.hasData == false) {
+        child: FutureBuilder<bool>(
+          future: completerGetModelCheckList.future,
+          builder: (context, snapshot) {
+            if (snapshot.hasData == false) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (snapshot.data == true) {
+              if (modelCheckList == null) {
                 return const Center(
-                  child: CircularProgressIndicator(),
+                  child: Icon(
+                    Icons.error,
+                    color: Colors.red,
+                  ),
                 );
-              } else if (snapshot.data == true) {
-                if (modelCheckList == null) {
-                  return const Center(
-                    child: Icon(
-                      Icons.error,
-                      color: Colors.red,
-                    ),
-                  );
-                }
+              }
 
-                return Column(
-                  children: [
-                    Expanded(
-                      child: ScreenCheckListCheckMain(modelCheckList!),
-                    ),
-                    _Button(
+              return Column(
+                children: [
+                  Expanded(
+                    child: ScreenCheckListCheckMain(modelCheckList!),
+                  ),
+
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+                    child: _Button(
                       indexCheck == 0 ? '인증 시작' : '다음 인증',
                       startCheck,
                     ),
-                    const SizedBox(
-                      height: 10,
-                    )
-                  ],
-                );
-              } else {
-                return Icon(
-                  Icons.error,
-                  color: Colors.red,
-                );
-              }
-            },
-          ),
+                  ),
+
+                ],
+              );
+            } else {
+              return Icon(
+                Icons.error,
+                color: Colors.red,
+              );
+            }
+          },
         ),
       ),
     );

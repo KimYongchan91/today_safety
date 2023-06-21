@@ -15,49 +15,47 @@ class ItemCheck extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 2),
-      height: Get.height / 10,
-      child: Card(
-        elevation: 2,
-        child: Stack(
+    return Card(
+      elevation: 5,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        margin: const EdgeInsets.symmetric(vertical: 2),
+        height: Get.height / 12,
+        child: Row(
           children: [
-            Positioned.fill(
-              child: Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: AspectRatio(
-                      aspectRatio: 1,
-                      child: Image.asset(getPathCheckImage(modelCheck)),
-                    ),
-                  ),
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        modelCheck.name,
-                        style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w700),
-                      ),
-                    ),
-                  )
-                ],
+            Container(
+                padding: const EdgeInsets.all(10),
+                decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xffbbd6fd)),
+                child: Image.asset(getPathCheckImage(modelCheck))),
+            const SizedBox(
+              width: 20,
+            ),
+            Expanded(
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  modelCheck.name,
+                  style: const TextStyle(color: Colors.black54, fontSize: 17, fontWeight: FontWeight.w700),
+                ),
               ),
             ),
-            Positioned(
-              top: 5,
-              right: 5,
-              child: Visibility(
-                visible: onDelete != null,
-                child: InkWell(
-                  onTap: onDelete,
-                  child: const Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Icon(Icons.close),
+            Visibility(
+              visible: onDelete != null,
+              child: InkWell(
+                onTap: onDelete,
+                child: const Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Icon(
+                    Icons.close,
+                    color: Colors.black54,
                   ),
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),

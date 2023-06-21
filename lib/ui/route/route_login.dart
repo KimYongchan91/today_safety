@@ -171,24 +171,65 @@ class _RouteLoginState extends State<RouteLogin> {
                     ///로그인 됨
                     : Column(
                         children: [
-                          Text('로그인되어 있는 계정 : ${value.modelUser!.id}'),
-
-                          ///로그아웃
-                          InkWell(
-                            onTap: () async {
-                              MyApp.providerUser.clearProvider();
-                            },
-                            child: Container(
-                              alignment: Alignment.center,
-                              margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                              width: double.infinity,
-                              height: 50,
-                              child: const Text(
-                                '로그아웃',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
+                          ///앱바
+                          Container(
+                            alignment: Alignment.center,
+                            width: Get.width,
+                            height: 60,
+                            color: Colors.white,
+                            child: Row(
+                              children: [
+                                InkWell(
+                                    onTap: () {
+                                      Get.back();
+                                    },
+                                    child: const Padding(
+                                        padding: EdgeInsets.all(20),
+                                        child: FaIcon(
+                                          FontAwesomeIcons.angleLeft,
+                                          color: Colors.black,
+                                        ))),
+                                const Text(
+                                  '내 정보',
+                                  style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
+                                ),
+                              ],
                             ),
                           ),
+
+                          ///로그인 정보
+                          Container(
+                              margin: const EdgeInsets.symmetric(vertical: 10),
+                              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                              width: Get.width,
+                              color: Colors.white,
+                              child: Row(children: [
+                                const FaIcon(
+                                  FontAwesomeIcons.solidUserCircle,
+                                  color: Colors.grey,
+                                  size: 40,
+                                ),
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                                Expanded(
+                                    child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      '관리자',
+                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 17),
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Text(
+                                      value.modelUser!.id,
+                                      style: const TextStyle(color: Colors.black54, fontWeight: FontWeight.w700),
+                                    ),
+                                  ],
+                                ))
+                              ])),
 
                           ///관리하는 근무지 정보 영역
                           ///로그인이 된 후 근무지 작성 안했을때
@@ -266,83 +307,105 @@ class _RouteLoginState extends State<RouteLogin> {
                               ///로그인 되어있고, 내가 관리하는 근무지가 있을 때
                               : InkWell(
                                   onTap: goRouteSiteDetail,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      const Text(
-                                        '내가 관리하는 근무지',
-                                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                                      ),
-
-                                      const SizedBox(
-                                        height: 30,
-                                      ),
-
-                                      ///이미지 영역
-                                      Container(
-                                        width: Get.width,
-                                        height: Get.height / 4,
-                                        decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(20), color: Colors.redAccent),
-                                        child:
-                                            //todo ldj 근무지 로고 이미지 부분 수정
-                                            ///근무지 로고 이미지
-
-                                            ClipRRect(
-                                          borderRadius: BorderRadius.circular(20),
-                                          child: CachedNetworkImage(
-                                            imageUrl: value.modelSiteMy!.urlLogoImage,
-                                            fit: BoxFit.cover,
-                                          ),
+                                  child: Container(
+                                    padding: EdgeInsets.all(20),
+                                    color: Colors.white,
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const Text(
+                                          '내가 관리하는 근무지',
+                                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                                         ),
-                                      ),
 
-                                      const SizedBox(
-                                        height: 20,
-                                      ),
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
 
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                ///근무지 이름
-                                                Text(
-                                                  value.modelSiteMy!.name,
-                                                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
-                                                ),
+                                        ///이미지 영역
+                                        Container(
+                                          width: Get.width,
+                                          height: Get.height / 4,
+                                          decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(20), color: Colors.redAccent),
+                                          child:
+                                              //todo ldj 근무지 로고 이미지 부분 수정
+                                              ///근무지 로고 이미지
 
-                                                const SizedBox(
-                                                  height: 10,
-                                                ),
-
-                                                ///주소
-                                                const Row(
-                                                  children: [
-                                                    FaIcon(
-                                                      FontAwesomeIcons.locationDot,
-                                                      size: 16,
-                                                    ),
-                                                    SizedBox(
-                                                      width: 5,
-                                                    ),
-                                                    Text('서울시 은평구 불광동 32번 가길'),
-                                                  ],
-                                                ),
-                                              ],
+                                              ClipRRect(
+                                            borderRadius: BorderRadius.circular(20),
+                                            child: CachedNetworkImage(
+                                              imageUrl: value.modelSiteMy!.urlLogoImage,
+                                              fit: BoxFit.cover,
                                             ),
                                           ),
-                                          const Padding(
-                                            padding: EdgeInsets.all(10),
-                                            child: FaIcon(FontAwesomeIcons.angleRight),
-                                          )
-                                        ],
-                                      ),
-                                    ],
+                                        ),
+
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
+
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  ///근무지 이름
+                                                  Text(
+                                                    value.modelSiteMy!.name,
+                                                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
+                                                  ),
+
+                                                  const SizedBox(
+                                                    height: 10,
+                                                  ),
+
+                                                  ///주소
+                                                  const Row(
+                                                    children: [
+                                                      FaIcon(
+                                                        FontAwesomeIcons.locationDot,
+                                                        size: 16,
+                                                      ),
+                                                      SizedBox(
+                                                        width: 5,
+                                                      ),
+                                                      Text('서울시 은평구 불광동 32번 가길'),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            const Padding(
+                                              padding: EdgeInsets.all(10),
+                                              child: FaIcon(FontAwesomeIcons.angleRight),
+                                            )
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
+                          Spacer(),
+
+                          ///로그아웃
+                          InkWell(
+                            onTap: () async {
+                              MyApp.providerUser.clearProvider();
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                              width: double.infinity,
+                              height: 50,
+                              child: const Text(
+                                '로그아웃',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ),
                         ],
                       ),
           ),
