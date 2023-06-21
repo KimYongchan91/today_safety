@@ -19,7 +19,7 @@ class _DialogOpenExternalWebBrowserState extends State<DialogOpenExternalWebBrow
     return AlertDialog(
       backgroundColor: const Color(0xffffffff),
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 14),
+      contentPadding: EdgeInsets.zero,
       insetPadding: EdgeInsets.zero,
       content: Container(
         width: Get.width * 0.8,
@@ -29,15 +29,42 @@ class _DialogOpenExternalWebBrowserState extends State<DialogOpenExternalWebBrow
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const SizedBox(
-              height: 24,
+            ///타이틀
+            SizedBox(
+              width: Get.width,
+              height: 48,
+              child: Stack(
+                children: [
+                  const Align(
+                    alignment: Alignment.topCenter,
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 20),
+                      child: Text(
+                        '날씨',
+                        style: CustomTextStyle.bigBlackBold(),
+                      ),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: InkWell(
+                      onTap: () {
+                        Get.back(result: false);
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Icon(
+                          Icons.close,
+                          size: 32,
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
-            const Text(
-              '날씨',
-              style: CustomTextStyle.bigBlackBold(),
-            ),
             const SizedBox(
-              height: 32,
+              height: 20,
             ),
             const Text('외부 인터넷 브라우저로 연결돼요.', textAlign: TextAlign.center, style: CustomTextStyle.normalBlack()),
             const SizedBox(

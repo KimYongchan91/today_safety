@@ -407,7 +407,6 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                       builder: (context, value, child) => InkWell(
                         onTap: () async {
                           if (value != null) {
-                            //%EC%9D%80%ED%8F%89%EA%B5%AC+%EB%B6%88%EA%B4%91%EB%8F%99+%EB%82%A0%EC%94%A8
                             String urlBase = 'https://m.search.naver.com/search.naver?sm=mtp_hty.top&where=m&query=';
                             String query =
                                 '${value.modelLocationWeather.si} ${value.modelLocationWeather.gu} ${value.modelLocationWeather.dong} 날씨';
