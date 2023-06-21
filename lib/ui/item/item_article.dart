@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:today_safety/const/model/model_article.dart';
 import 'package:today_safety/custom/custom_text_style.dart';
+import 'package:today_safety/ui/route/route_webview.dart';
 
 import '../dialog/dialog_open_external_web_browser.dart';
 
@@ -33,11 +34,15 @@ class ItemArticle extends StatelessWidget {
               ],
             ),
             Row(
-              ///제목
               children: [
-                Text(
-                  modelArticle.title,
-                  style: CustomTextStyle.normalBlackBold(),
+                ///제목
+                Expanded(
+                  child: Text(
+                    modelArticle.title,
+                    style: CustomTextStyle.normalBlackBold(),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 )
               ],
             ),
@@ -47,10 +52,10 @@ class ItemArticle extends StatelessWidget {
     );
   }
 
-  onTap(){
+  onTap() {
     print(modelArticle.href);
     //https://www.kosha.or.kr/kosha/report/kosha_news.do?mode=view&articleNo=442620
-    Get.dialog(DialogOpenExternalWebBrowser(modelArticle.href));
-
+    //Get.dialog(DialogOpenExternalWebBrowser(modelArticle.href));
+    Get.to(() => RouteWebView(modelArticle.href));
   }
 }
