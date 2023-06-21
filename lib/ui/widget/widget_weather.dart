@@ -28,7 +28,7 @@ class WidgetWeather extends StatelessWidget {
           if (value != null) {
             String urlBase = 'https://m.search.naver.com/search.naver?sm=mtp_hty.top&where=m&query=';
             String query =
-                '${value.modelLocationWeather.si} ${value.modelLocationWeather.gu} ${value.modelLocationWeather.dong} 날씨';
+                '${value.modelLocation.si} ${value.modelLocation.gu} ${value.modelLocation.dong} 날씨';
 
             Get.to(() => RouteWebView(urlBase + query));
           }
@@ -134,7 +134,7 @@ class WidgetWeather extends StatelessWidget {
                 ),*/
                 value != null
                     ? Text(
-                        '${value.modelLocationWeather.gu} ${value.modelLocationWeather.dong}',
+                        '${value.modelLocation.gu} ${value.modelLocation.dong}',
                         style: const TextStyle(color: Colors.black45, fontWeight: FontWeight.w700),
                       )
                     : Container(),

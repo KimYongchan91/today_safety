@@ -107,7 +107,7 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
       return;
     }
 
-    modelLocation = await getModelLocationFromLatLng(
+    modelLocation = await getModelLocationWeatherFromLatLng(
       position.latitude,
       position.longitude,
     );

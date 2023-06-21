@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:dart_geohash/dart_geohash.dart';
-import 'package:today_safety/const/model/model_location_weather.dart';
 import 'package:today_safety/const/value/key.dart';
 import 'package:today_safety/my_app.dart';
 import 'package:today_safety/service/util/util_snackbar.dart';
@@ -9,6 +8,7 @@ import 'package:today_safety/service/util/util_snackbar.dart';
 import '../../const/model/model_location.dart';
 import 'package:http/http.dart' as http;
 
+/*
 Future<ModelLocation?> getModelLocationFromLatLng(double lat, double lng) async {
   ModelLocation modelLocation = ModelLocation.fromJson({});
   modelLocation.lat = lat;
@@ -71,18 +71,20 @@ Future<ModelLocation?> getModelLocationFromLatLng(double lat, double lng) async 
 
   return modelLocation;
 }
+*/
 
-Future<ModelLocationWeather?> getModelLocationWeatherFromLatLng(double lat, double lng) async {
-  Map<String, String> requestHeaders = {
-    'Content-type': 'application/json',
-    'Accept': 'application/json',
-    'Authorization': 'KakaoAK de2c9d30f737be6f897916c21f92c156'
-  };
-
-  String url = 'https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=$lng&y=$lat';
-  //MyApp.logger.d('url : $url ');
-
+Future<ModelLocation?> getModelLocationWeatherFromLatLng(double lat, double lng,
+    {bool isIncludeCodeH = true}) async {
   try {
+    Map<String, String> requestHeaders = {
+      'Content-type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'KakaoAK de2c9d30f737be6f897916c21f92c156'
+    };
+
+    String url = 'https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=$lng&y=$lat';
+    //MyApp.logger.d('url : $url ');
+
     var response = await http.get(Uri.parse(url), headers: requestHeaders);
 
     if (response.statusCode != 200) {
@@ -101,21 +103,35 @@ Future<ModelLocationWeather?> getModelLocationWeatherFromLatLng(double lat, doub
 
       dynamic docFirst = listMapAddressData.where((element) => element['region_type'] == 'H').first;
 
-      ModelLocationWeather modelLocationWeather = ModelLocationWeather(
+      GeoHash geoHash7 = GeoHash.fromDecimalDegrees(lng, lat, precision: 7);
+
+      String gh7 = geoHash7.geohash;
+      String gh6 = geoHash7.geohash.substring(0, 6);
+      String gh5 = geoHash7.geohash.substring(0, 5);
+      String gh4 = geoHash7.geohash.substring(0, 4);
+
+      ModelLocation modelLocation = ModelLocation(
         lat: lat,
         lng: lng,
         si: docFirst['region_1depth_name'],
         gu: docFirst['region_2depth_name'],
         dong: docFirst['region_3depth_name'],
         code: docFirst[keyCode],
+        gh4: gh4,
+        gh5: gh5,
+        gh6: gh6,
+        gh7: gh7,
       );
 
+      if (isIncludeCodeH && modelLocation.code == null) {
+        throw Exception('isIncludeCodeH && modelLocation.code ==null');
+      }
+
       //MyApp.logger.d("행정 구역 코드 조회 결과 : ${modelLocationWeather.toString()}");
-      return modelLocationWeather;
+      return modelLocation;
     }
   } on Exception catch (e) {
     MyApp.logger.wtf("카카오 rest api 요청 실패 : ${e.toString()}");
     return null;
   }
-
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:today_safety/const/model/model_location_weather.dart';
 import 'package:weather_icons/weather_icons.dart';
+
+import 'model_location.dart';
 
 class ModelWeather {
   //{baseDate: 20230620, baseTime: 0800, category: PTY, nx: 59, ny: 128, obsrValue: 0}
@@ -24,7 +25,7 @@ class ModelWeather {
   final String baseDate;
   final String baseTime;
 
-  final ModelLocationWeather modelLocationWeather;
+  final ModelLocation modelLocation;
 
   int pty;
   int reh;
@@ -38,7 +39,7 @@ class ModelWeather {
   ModelWeather({
     required this.baseDate,
     required this.baseTime,
-    required this.modelLocationWeather,
+    required this.modelLocation,
     this.pty = 0,
     this.reh = 0,
     this.rn1 = 0,

@@ -20,12 +20,14 @@ import 'package:today_safety/const/model/model_location.dart';
 import 'package:today_safety/const/model/model_site.dart';
 import 'package:today_safety/const/value/color.dart';
 import 'package:today_safety/const/value/router.dart';
+import 'package:today_safety/service/util/util_location.dart';
 import 'package:today_safety/service/util/util_snackbar.dart';
 import 'package:today_safety/ui/dialog/dialog_close_route.dart';
 import 'package:today_safety/ui/item/item_site_search.dart';
 import 'package:http/http.dart' as http;
 
 import '../../const/value/key.dart';
+import '../../const/value/value.dart';
 import '../../custom/custom_text_field.dart';
 import '../../custom/custom_text_style.dart';
 import '../../my_app.dart';
@@ -129,7 +131,7 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
                             alignment: Alignment.center,
                             child: Container(
                               width: Get.width,
-                              height: Get.height/4,
+                              height: Get.height / 4,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
                                 border: Border.all(
@@ -144,23 +146,23 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
                                         Positioned.fill(
                                           child: (modelSiteNew.urlLogoImage.startsWith('/data')
                                               ? ClipRRect(
-                                            borderRadius: BorderRadius.circular(20),
-                                                child: Image.file(
+                                                  borderRadius: BorderRadius.circular(20),
+                                                  child: Image.file(
                                                     File(modelSiteNew.urlLogoImage),
-                                                  width: Get.width,
-                                                  height: Get.height/4,
+                                                    width: Get.width,
+                                                    height: Get.height / 4,
                                                     fit: BoxFit.cover,
                                                   ),
-                                              )
+                                                )
                                               : ClipRRect(
-                                            borderRadius: BorderRadius.circular(20),
-                                                child: CachedNetworkImage(
-                                            width: Get.width,
-                                            height: Get.height/4,
+                                                  borderRadius: BorderRadius.circular(20),
+                                                  child: CachedNetworkImage(
+                                                    width: Get.width,
+                                                    height: Get.height / 4,
                                                     imageUrl: modelSiteNew.urlLogoImage,
                                                     fit: BoxFit.cover,
                                                   ),
-                                              )),
+                                                )),
                                         ),
 
                                         //로고 이미지 제거 버튼
@@ -170,9 +172,14 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
                                           child: InkWell(
                                             onTap: deleteImage,
                                             child: Container(
-                                              padding: const EdgeInsets.all(5),
-                                                decoration: const BoxDecoration(shape: BoxShape.circle,color: Color(0x55000000)),
-                                                child: const Icon(Icons.close,color: Colors.white,size: 20,)),
+                                                padding: const EdgeInsets.all(5),
+                                                decoration: const BoxDecoration(
+                                                    shape: BoxShape.circle, color: Color(0x55000000)),
+                                                child: const Icon(
+                                                  Icons.close,
+                                                  color: Colors.white,
+                                                  size: 20,
+                                                )),
                                           ),
                                         )
                                       ],
@@ -182,12 +189,22 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
                                         onTap: pickImage,
                                         child: const Padding(
                                           padding: EdgeInsets.all(20),
-                                          child:Column(
+                                          child: Column(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
-                                              FaIcon(FontAwesomeIcons.images,color: Colors.grey,size: 30,),
-                                              SizedBox(height: 10,),
-                                              Text('이미지를 등록하세요.',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.grey),)
+                                              FaIcon(
+                                                FontAwesomeIcons.images,
+                                                color: Colors.grey,
+                                                size: 30,
+                                              ),
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              Text(
+                                                '이미지를 등록하세요.',
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold, color: Colors.grey),
+                                              )
                                             ],
                                           ),
                                         ),
@@ -243,17 +260,22 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
                               margin: const EdgeInsets.symmetric(horizontal: 20),
                               padding: const EdgeInsets.all(15),
                               width: MediaQuery.of(context).size.width,
-                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: colorBackground),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5), color: colorBackground),
                               child: modelSiteNew.modelLocation.addressLoad != null
                                   ? Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                                       const FaIcon(
-                                        FontAwesomeIcons.locationDot,color: Colors.blue,
+                                        FontAwesomeIcons.locationDot,
+                                        color: Colors.blue,
                                         size: 14,
                                       ),
                                       const SizedBox(
                                         width: 5,
                                       ),
-                                      Text('${modelSiteNew.modelLocation.addressLoad}',style: const TextStyle(color: Colors.blue),)
+                                      Text(
+                                        '${modelSiteNew.modelLocation.addressLoad}',
+                                        style: const TextStyle(color: Colors.blue),
+                                      )
                                     ])
                                   : const Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
@@ -342,8 +364,6 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
                         ),
                       ),
                     ),
-
-
                   ],
                 ),
               ),
@@ -449,74 +469,77 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
 
   _setLocationByKpostalResult(Kpostal result) async {
     print(result.address);
+    MyApp.logger.d("kpostal 결과\n"
+        "address : ${result.address}\n"
+        "si : ${result.sido}\n"
+        "gu : ${result.sigungu}\n"
+        "dong : ${result.bname}\n"
+        "code : ${result.bcode}");
 
     ModelLocation modelLocationNew = ModelLocation.fromJson({});
 
-    if (result.latitude == null || result.longitude == null) {
-      //추가적으로 카카오맵 로컬 api를 이용해 위도 경도 받아옴.
-
+    ///여기서바로 h_code를 받도록하자
+    try {
       Map<String, String> requestHeaders = {
         'Content-type': 'application/json',
         'Accept': 'application/json',
         'Authorization': 'KakaoAK de2c9d30f737be6f897916c21f92c156'
       };
 
-      String url = 'https://dapi.kakao.com/v2/local/search/address.json?analyze_type=similar&page=1&size=20&query=';
+      String url =
+          'https://dapi.kakao.com/v2/local/search/address.json?analyze_type=similar&page=1&size=20&query=';
       String query = result.address;
 
-      //MyApp.logger.d('url : ${url + query}');
-      //MyApp.logger.d('인코딩 url : ${Uri.encodeFull(url + query)}');
+      var response = await http.get(Uri.parse(Uri.encodeFull(url + query)), headers: requestHeaders);
 
-      try {
-        var response = await http.get(Uri.parse(Uri.encodeFull(url + query)), headers: requestHeaders);
-
-        if (response.statusCode != 200) {
-          throw Exception("Request to $url failed with status ${response.statusCode}: ${response.body}");
-        } else {
-          //성공
-          //MyApp.logger.d('${response.body.toString()}');
-          List<dynamic> listMapAddressData = jsonDecode(response.body)['documents'] ?? [];
-          if (listMapAddressData.isEmpty) {
-            throw Exception("empty listMapAddressData");
-          }
-          modelLocationNew.lat = listMapAddressData.first['x'];
-          modelLocationNew.lng = listMapAddressData.first['y'];
+      if (response.statusCode != 200) {
+        throw Exception("Request to $url failed with status ${response.statusCode}: ${response.body}");
+      } else {
+        //성공
+        //MyApp.logger.d('${response.body.toString()}');
+        List<dynamic> listMapAddressData = jsonDecode(response.body)['documents'] ?? [];
+        if (listMapAddressData.isEmpty) {
+          throw Exception("empty listMapAddressData");
         }
-      } on Exception catch (e) {
-        MyApp.logger.wtf("카카오 rest api 요청 실패 : ${e.toString()}");
+        modelLocationNew.lat = double.parse(listMapAddressData.first['y'] ?? '${result.latitude}');
+        modelLocationNew.lng = double.parse(listMapAddressData.first['x'] ?? '${result.longitude}');
 
-        return;
+        //지번 주소
+        modelLocationNew.code = listMapAddressData.first['address']['h_code'];
+        modelLocationNew.si = listMapAddressData.first['address']['region_1depth_name'];
+        modelLocationNew.gu = listMapAddressData.first['address']['region_2depth_name'];
+        modelLocationNew.dong = listMapAddressData.first['address']['region_3depth_name'];
+        modelLocationNew.addressJibun = listMapAddressData.first['address']['address_name'];
+
+        //도로명 주소
+        modelLocationNew.addressLoad = listMapAddressData.first['road_address']['address_name'];
+        modelLocationNew.addressBuildingName = listMapAddressData.first['road_address']['building_name'];
       }
-    } else {
-      MyApp.logger.d("lat, lng kpostal에서 받아옴 ${result.latitude}, ${result.latitude}");
-      modelLocationNew.lat = result.latitude;
-      modelLocationNew.lng = result.longitude;
+    } on Exception catch (e) {
+      MyApp.logger.wtf("카카오 rest api 요청 실패 : ${e.toString()}");
+      return;
     }
 
-    //lat, lng까지 모두 끝난 상태
-    modelLocationNew.si = result.sido;
-    modelLocationNew.gu = result.sigungu;
-    modelLocationNew.dong = result.bname;
-    modelLocationNew.addressLoad = result.roadAddress;
-    modelLocationNew.addressJibun = result.jibunAddress;
-    modelLocationNew.addressJibun = result.buildingName;
-
-    // widget.routeSaleNewState.sido = kpostal.sido;
-    // widget.routeSaleNewState.sigungu = kpostal.sigungu;
-    // widget.routeSaleNewState.bname = kpostal.bname;
-    // widget.routeSaleNewState.bname1 = kpostal.bname1;
-    // widget.routeSaleNewState.roadAddress = kpostal.roadAddress;
-    // widget.routeSaleNewState.jibunAddress = kpostal.jibunAddress;
-    // widget.routeSaleNewState.buildingName = kpostal.buildingName;
-
-    GeoHash geoHash7 = GeoHash.fromDecimalDegrees(modelLocationNew.lng!, modelLocationNew.lat!, precision: 7);
+    GeoHash geoHash7 = GeoHash.fromDecimalDegrees(modelLocationNew.lng, modelLocationNew.lat, precision: 7);
 
     modelLocationNew.gh7 = geoHash7.geohash;
     modelLocationNew.gh6 = geoHash7.geohash.substring(0, 6);
     modelLocationNew.gh5 = geoHash7.geohash.substring(0, 5);
     modelLocationNew.gh4 = geoHash7.geohash.substring(0, 4);
 
+    if (modelLocationNew.code == null || modelLocationNew.code!.isEmpty) {
+      MyApp.logger.wtf('modelLocationNew.code == null || modelLocationNew.code!.isEmpty');
+      ModelLocation? modelLocationIncludeCodeH =
+          await getModelLocationWeatherFromLatLng(modelLocationNew.lat, modelLocationNew.lng);
+      if (modelLocationIncludeCodeH == null) {
+        throw Exception('modelLocationNew.code ==null && modelLocationIncludeCodeH ==null');
+      }
+
+      modelLocationNew.code = modelLocationIncludeCodeH.code;
+    }
+
     MyApp.logger.d("주소 최종 결과 : ${modelLocationNew.toJson()}");
+
     setState(() {
       modelSiteNew.modelLocation = modelLocationNew;
     });
@@ -529,10 +552,6 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
   }
 
   _moveKaKaoMapToCenterAndAddMarker() {
-    if (modelSiteNew.modelLocation.lat == null) {
-      MyApp.logger.wtf("modelSiteNew.modelLocation.lat ==null 이라 중단함");
-      return;
-    }
     kakaoMapController?.panTo(LatLng(modelSiteNew.modelLocation.lat!, modelSiteNew.modelLocation.lng!));
     kakaoMapController?.setLevel(3);
     valueNotifierMarkers.value = {
@@ -583,7 +602,8 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
 
         //이미지 전송
         TaskSnapshot uploadTask = await FirebaseStorage.instance
-            .ref("$keyImages/$keySites/${documentReference.id}/${pt.basename(File(modelSiteNew.urlLogoImage).path)}")
+            .ref(
+                "$keyImages/$keySites/${documentReference.id}/${pt.basename(File(modelSiteNew.urlLogoImage).path)}")
             .putFile(File(modelSiteNew.urlLogoImage));
 
         String downloadURL = await uploadTask.ref.getDownloadURL();

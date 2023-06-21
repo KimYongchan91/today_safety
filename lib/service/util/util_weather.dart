@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:today_safety/const/model/model_location_weather.dart';
+import 'package:today_safety/const/model/model_location.dart';
 
 import '../../const/model/model_weather.dart';
 import '../../const/value/value.dart';
@@ -14,14 +14,14 @@ Future<ModelWeather?> getWeatherFromLatLng(double lat, double lng) async {
   DateTime dateTimeNow = DateTime.now();
 
   //행정 구역 코드 받아오기
-  ModelLocationWeather? modelLocationWeather;
+  ModelLocation? modelLocation;
   try {
-    modelLocationWeather = await getModelLocationWeatherFromLatLng(lat, lng);
+    modelLocation = await getModelLocationWeatherFromLatLng(lat, lng);
   } on Exception catch (e) {
     MyApp.logger.wtf("행정 구역 코드 조회 실패 : ${e.toString()}");
   }
 
-  if (modelLocationWeather == null) {
+  if (modelLocation == null) {
     return null;
   }
   //MyApp.logger.d("카카오에서 행정구역 코드 받아옴 : ${modelLocationWeather.code}");
@@ -44,7 +44,11 @@ Future<ModelWeather?> getWeatherFromLatLng(double lat, double lng) async {
     //MyApp.logger.d('data 타입 : ${listData[0].runtimeType.toString()}');
     //MyApp.logger.d('0 타입 : ${listData[0][0].runtimeType.toString()}');
 
-    int codeH = int.parse(modelLocationWeather.code);
+    if (modelLocation.code == null) {
+      throw Exception('modelLocation.code ==null');
+    }
+
+    int codeH = int.parse(modelLocation.code!);
     for (String data in listDataPerLine) {
       if (data.substring(0, 10) == '$codeH') {
         codeX = int.parse(data.split(',')[1]);
@@ -84,6 +88,7 @@ Future<ModelWeather?> getWeatherFromLatLng(double lat, double lng) async {
       baseTimeFormatted = "03";
     } else if (hourCurrent < 9) {
       baseTimeFormatted = "06";
+
     } else if (hourCurrent < 12) {
       baseTimeFormatted = "09";
     } else if (hourCurrent < 15) {
@@ -141,7 +146,7 @@ Future<ModelWeather?> getWeatherFromLatLng(double lat, double lng) async {
       ModelWeather modelWeather = ModelWeather(
         baseDate: baseDateFormatted,
         baseTime: baseTimeFormatted,
-        modelLocationWeather: modelLocationWeather,
+        modelLocation: modelLocation,
       );
       for (dynamic weather in listMapAddressData) {
         if (weather is Map && weather['category'] != null && weather['obsrValue'] != null) {
