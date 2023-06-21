@@ -210,7 +210,7 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
                                               height: 10,
                                             ),
                                             Text(
-                                              '로고 이미지를 추가해 주세요.',
+                                              '로고 이미지',
                                               style:
                                                   TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
                                             )
@@ -697,7 +697,12 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
       return;
     }
 
-    if (modelSiteNew.modelLocation.lat == null) {
+    if (modelSiteNew.urlSiteImage.isEmpty) {
+      showSnackBarOnRoute('근무지의 현장 이미지를 추가해 주세요.');
+      return;
+    }
+
+    if (modelSiteNew.modelLocation.lat == defaultLat) {
       showSnackBarOnRoute('근무지의 주소를 입력해 주세요.');
       return;
     }
@@ -712,16 +717,40 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
         documentReference = await FirebaseFirestore.instance.collection(keySites).add(modelSiteNew.toJson());
 
         //이미지 전송
-        TaskSnapshot uploadTask = await FirebaseStorage.instance
+
+        List<Completer<String>> listCompleter = [];
+        Completer<String> completerLogo = Completer();
+        Completer<String> completerSite = Completer();
+        listCompleter.add(completerLogo);
+        listCompleter.add(completerSite);
+
+        Map<String, dynamic> mapUrlImage = {};
+
+        FirebaseStorage.instance
             .ref(
                 "$keyImages/$keySites/${documentReference.id}/${pt.basename(File(modelSiteNew.urlLogoImage).path)}")
-            .putFile(File(modelSiteNew.urlLogoImage));
-
-        String downloadURL = await uploadTask.ref.getDownloadURL();
-
-        await documentReference.update({
-          keyUrlLogoImage: downloadURL,
+            .putFile(File(modelSiteNew.urlLogoImage))
+            .then((uploadTaskLogo) {
+          uploadTaskLogo.ref.getDownloadURL().then((downloadURLLogo) {
+            mapUrlImage[keyUrlLogoImage] = downloadURLLogo;
+            completerLogo.complete(downloadURLLogo);
+          });
         });
+
+        FirebaseStorage.instance
+            .ref(
+                "$keyImages/$keySites/${documentReference.id}/${pt.basename(File(modelSiteNew.urlSiteImage).path)}")
+            .putFile(File(modelSiteNew.urlSiteImage))
+            .then((uploadTaskSite) {
+          uploadTaskSite.ref.getDownloadURL().then((downloadURLSite) {
+            mapUrlImage[keyUrlSiteImage] = downloadURLSite;
+            completerSite.complete(downloadURLSite);
+          });
+        });
+
+        await Future.wait([...listCompleter.map((e) => e.future)]);
+
+        await documentReference.update(mapUrlImage);
 
         valueNotifierUpload.value = false;
 
