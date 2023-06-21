@@ -63,6 +63,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
     WidgetsBinding.instance.addPostFrameCallback((_) {
       refreshWeather();
       getArticle();
+      getEmergencySMS();
     });
 
     super.initState();
@@ -414,7 +415,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
     if (isPermissionGranted) {
       try {
         Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
-        MyApp.logger.d("위치 조회 성공 : ${position.latitude}, ${position.longitude}");
+        //MyApp.logger.d("위치 조회 성공 : ${position.latitude}, ${position.longitude}");
         latLng = LatLng(position.latitude, position.longitude);
       } on Exception catch (e) {
         MyApp.logger.wtf("위치 조회 실패 : ${e.toString()}");
@@ -488,7 +489,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
     String baseTimeFormatted;
     //1시간 전
     int hourCurrent = DateTime.fromMillisecondsSinceEpoch(
-            dateTimeNow.millisecondsSinceEpoch - millisecondHour * (dateTimeNow.minute < 15 ? 1 : 0))
+            dateTimeNow.millisecondsSinceEpoch - millisecondHour * (dateTimeNow.minute < 30 ? 1 : 0))
         .hour;
     baseTimeFormatted = '$hourCurrent'.padLeft(2, '0');
 /*    if (hourCurrent < 3) {
@@ -612,13 +613,13 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
   }
 
   getArticle() async {
-    print('getArticle() 시작');
+    //print('getArticle() 시작');
     List<ModelArticle> listModelArticleNew = [];
 
     final chaleno = await Chaleno().load('https://www.kosha.or.kr/kosha/index.do');
 
     List<Result> results = chaleno?.querySelectorAll('.example1 ul li .articleTitle') ?? [];
-    print('크롤 결과 : ${results.length}');
+    //print('크롤 결과 : ${results.length}');
     RegExp regExpDate = RegExp(r'^\[[0-9]\/[0-9]*\,');
     RegExp regExpRegion = RegExp(r',[ 가-힣]*\]');
 
@@ -677,6 +678,114 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
     );
 
     valueNotifierListModelArticle.value = listModelArticleNew;
+  }
+
+  getEmergencySMS() async {
+    String urlBase = 'http://apis.data.go.kr/1741000/DisasterMsg3/getDisasterMsg1List';
+    String keyService =
+        '%2B%2BaANJW%2BGmM22jn4uU%2FTCiFfH58TiKg9euCqOwFAm%2FHNtf4K%2FlQ6zPxgMmXiuj7pPzt2LMOhS5yQBBFhm5IUrA%3D%3D';
+
+    String url = "$urlBase?serviceKey=$keyService"
+        "&type=json"
+        "&pageNo=1"
+        "&numOfRows=100";
+
+    MyApp.logger.d('url : $url ');
+
+    try {
+      Map<String, String> requestHeaders = {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+      };
+/*      Uri uri =  Uri.http('apis.data.go.kr','/1741000/DisasterMsg3/getDisasterMsg1List',{
+        'serviceKey' : keyService,
+        'type' : 'json',
+        'pageNo' : '1',
+        'numOfRows' : '20',
+      });
+
+      MyApp.logger.d("uri : ${uri.toString()}");
+*/
+      var response = await http.get(Uri.parse(url)).timeout(const Duration(seconds: 10));
+
+      if (response.statusCode != 200) {
+        throw Exception("Request to $url failed with status ${response.statusCode}: ${response.body}");
+      } else {
+        //성공
+        MyApp.logger.d(response.body.toString());
+        /*List<dynamic> listMapAddressData =
+            jsonDecode(response.body)['response']?['body']?['items']?['item'] ?? [];
+
+        //T1H : 기온(c)
+        //RN1 : 강수량(mm/1h)
+        //REH : 습도 (%)
+        //VEC : 풍향 (deg)
+        //WSD : 풍속 (m/s)
+        //PTY : 강수 형태 (안 옴(0), 비(1), 비/눈(2), 눈(3), 소나기(4), 빗방울(5), 빗방울/눈날림(6), 눈날림(7))
+        //UUU : 동서 바람 성분 (m/s)
+        //VVV : 남북 바람 성분 (m/s)
+
+        if (listMapAddressData.isEmpty) {
+          throw Exception('list weather is empty');
+        }
+
+        ModelWeather modelWeather = ModelWeather(
+          baseDate: baseDateFormatted,
+          baseTime: baseTimeFormatted,
+          modelLocationWeather: modelLocationWeather,
+        );
+        for (dynamic weather in listMapAddressData) {
+          if (weather is Map && weather['category'] != null && weather['obsrValue'] != null) {
+            var value = weather['obsrValue'];
+            num valueParsed = 0;
+            try {
+              valueParsed = num.parse(value);
+            } catch (e) {
+              MyApp.logger.wtf('num.parse 실패 : ${e.toString()}');
+            }
+
+            switch (weather['category']) {
+              case 'PTY':
+                modelWeather.pty = valueParsed.toInt();
+                break;
+              case 'REH':
+                modelWeather.reh = valueParsed.toInt();
+                break;
+              case 'RN1':
+                modelWeather.rn1 = valueParsed.toInt();
+                break;
+              case 'T1H':
+                modelWeather.t1h = valueParsed.toInt();
+                break;
+              case 'UUU':
+                modelWeather.uuu = valueParsed.toDouble();
+                break;
+              case 'VEC':
+                modelWeather.vec = valueParsed.toInt();
+                break;
+              case 'VVV':
+                modelWeather.vvv = valueParsed.toDouble();
+                break;
+              case 'WSD':
+                modelWeather.wsd = valueParsed.toDouble();
+                break;
+              default:
+                break;
+            }
+          }
+        }
+        //MyApp.logger.d('조회된 날씨 정보 : ${modelWeather.toString()}');
+        valueNotifierWeather.value = modelWeather;
+
+        //MyApp.logger.d("기상청에서 날씨 정보 받아오는 데 걸린 시간 : ${DateTime.now().millisecondsSinceEpoch-time}ms");
+        time = DateTime.now().millisecondsSinceEpoch;
+
+        controllerRefreshWeather.reset();*/
+      }
+    } on Exception catch (e) {
+      MyApp.logger.wtf("재난 문자 api 요청 실패 : ${e.toString()}");
+      return null;
+    }
   }
 }
 
