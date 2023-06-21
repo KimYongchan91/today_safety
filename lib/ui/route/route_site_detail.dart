@@ -2,15 +2,20 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:kakao_map_plugin/kakao_map_plugin.dart';
 import 'package:provider/provider.dart';
 import 'package:today_safety/const/model/model_site.dart';
 import 'package:today_safety/const/value/color.dart';
 import 'package:today_safety/service/provider/provider_check_list.dart';
+import 'package:today_safety/ui/route/route_webview.dart';
+import 'package:today_safety/ui/widget/widget_weather.dart';
 
+import '../../const/model/model_weather.dart';
 import '../../const/value/label.dart';
 import '../../const/value/router.dart';
 import '../../custom/custom_text_style.dart';
 import '../../my_app.dart';
+import '../../service/util/util_weather.dart';
 import '../item/item_check_list.dart';
 
 const double _sizeLogoImage = 120;
@@ -22,9 +27,14 @@ class RouteSiteDetail extends StatefulWidget {
   State<RouteSiteDetail> createState() => _RouteSiteDetailState();
 }
 
-class _RouteSiteDetailState extends State<RouteSiteDetail> {
+class _RouteSiteDetailState extends State<RouteSiteDetail> with SingleTickerProviderStateMixin {
   late ModelSite modelSite;
   late ProviderCheckList providerCheckList;
+
+  //날씨
+  //날씨
+  ValueNotifier<ModelWeather?> valueNotifierWeather = ValueNotifier(null);
+  late AnimationController controllerRefreshWeather;
 
   BoxDecoration btnDecoration = const BoxDecoration(
     shape: BoxShape.circle,
@@ -35,8 +45,17 @@ class _RouteSiteDetailState extends State<RouteSiteDetail> {
   void initState() {
     //MyApp.logger.d("사이트 id : ${Get.parameters[keySiteId]}");
     modelSite = Get.arguments[keyModelSite];
-
     providerCheckList = ProviderCheckList(modelSite);
+
+    controllerRefreshWeather = AnimationController(
+      duration: const Duration(milliseconds: 1000),
+      vsync: this,
+    );
+
+    ///날씨 자동 새로고침
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _refreshWeather();
+    });
 
     super.initState();
   }
@@ -160,6 +179,121 @@ class _RouteSiteDetailState extends State<RouteSiteDetail> {
                   height: 10,
                 ),
 
+                ///날씨 정보 영역
+                WidgetWeather(
+                  valueNotifierModelWeather: valueNotifierWeather,
+                  onRefreshWeather: _refreshWeather,
+                  controllerRefreshWeather: controllerRefreshWeather,
+                ),
+
+                /*ValueListenableBuilder(
+                  valueListenable: valueNotifierWeather,
+                  builder: (context, value, child) => InkWell(
+                    onTap: () async {
+                      if (value != null) {
+                        String urlBase = 'https://m.search.naver.com/search.naver?sm=mtp_hty.top&where=m&query=';
+                        String query =
+                            '${value.modelLocationWeather.si} ${value.modelLocationWeather.gu} ${value.modelLocationWeather.dong} 날씨';
+
+                        Get.to(() => RouteWebView(urlBase + query));
+
+                        //Get.to(() => RouteWeatherDetail(value));
+                      }
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      color: Colors.white,
+                      width: Get.width,
+                      height: 240,
+                      child: Column(
+                        children: [
+                          const Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              '날씨',
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              ///날씨 아이콘
+                              value != null
+                                  ? Icon(
+                                      value.getIcon(),
+                                      size: 60,
+                                    )
+                                  : Container(),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Row(
+                                    children: [
+                                      ///날씨 정보 받아온 시간
+                                      value != null
+                                          ? Text(
+                                              value.getTime(),
+                                              style:
+                                                  const TextStyle(color: Colors.black45, fontWeight: FontWeight.w700),
+                                            )
+                                          : Container(),
+
+                                      ///날씨 새로고침 아이콘
+                                      InkWell(
+                                        onTap: _refreshWeather,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(5),
+                                          child: RotationTransition(
+                                            turns: Tween(begin: 0.0, end: 1.0).animate(controllerRefreshWeather),
+                                            child: const Icon(Icons.refresh),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+
+                                  ///날씨 온도
+                                  value != null
+                                      ? Text(
+                                          '${value.t1h.toString()}°',
+                                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 35),
+                                        )
+                                      : Container(),
+
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+
+                                  ///날씨 온도
+                                  value != null
+                                      ? Text(
+                                          '강수량 ${value.rn1.toString()}mm/h',
+                                          style: const CustomTextStyle.normalBlackBold(),
+                                        )
+                                      : Container(),
+                                ],
+                              ),
+                            ],
+                          ),
+                          const Spacer(),
+                          value != null
+                              ? Align(
+                                  alignment: Alignment.bottomLeft,
+                                  child: Text(
+                                    '${value.modelLocationWeather.gu} ${value.modelLocationWeather.dong}',
+                                    style: const TextStyle(color: Colors.black45, fontWeight: FontWeight.w700),
+                                  ),
+                                )
+                              : Container(),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),*/
+
+                const SizedBox(
+                  height: 10,
+                ),
+
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
                   decoration: const BoxDecoration(
@@ -221,5 +355,37 @@ class _RouteSiteDetailState extends State<RouteSiteDetail> {
 
   addCheckList() {
     Get.toNamed(keyRouteCheckListNew, arguments: {keyModelSite: modelSite});
+  }
+
+  _refreshWeather() async {
+    if (controllerRefreshWeather.isAnimating) {
+      MyApp.logger.d("이미 실행 중");
+      return;
+    }
+
+    controllerRefreshWeather.repeat();
+    final DateTime dateTimeNow = DateTime.now();
+    int time = dateTimeNow.millisecondsSinceEpoch;
+
+    if (modelSite.modelLocation.lat == null || modelSite.modelLocation.lng == null) {
+      MyApp.logger.d("lat, lng == null");
+      controllerRefreshWeather.reset();
+      return;
+    }
+
+    LatLng latLng = LatLng(modelSite.modelLocation.lat!, modelSite.modelLocation.lng!);
+
+    MyApp.logger.d("주소 받아오는 데 걸린 시간 : ${DateTime.now().millisecondsSinceEpoch - time}ms");
+    time = dateTimeNow.millisecondsSinceEpoch;
+
+    ModelWeather? modelWeather = await getWeatherFromLatLng(latLng.latitude, latLng.longitude);
+    //MyApp.logger.d('조회된 날씨 정보 : ${modelWeather.toString()}');
+
+    //MyApp.logger.d("기상청에서 날씨 정보 받아오는 데 걸린 시간 : ${DateTime.now().millisecondsSinceEpoch-time}ms");
+    //time = DateTime.now().millisecondsSinceEpoch;
+
+    valueNotifierWeather.value = modelWeather;
+
+    controllerRefreshWeather.reset();
   }
 }

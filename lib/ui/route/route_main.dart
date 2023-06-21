@@ -22,6 +22,7 @@ import 'package:today_safety/const/value/value.dart';
 import 'package:today_safety/custom/custom_text_style.dart';
 import 'package:today_safety/service/provider/provider_user.dart';
 import 'package:today_safety/service/util/util_address.dart';
+import 'package:today_safety/service/util/util_weather.dart';
 import 'package:today_safety/ui/dialog/dialog_open_external_web_browser.dart';
 import 'package:today_safety/ui/item/item_article.dart';
 import 'package:today_safety/ui/item/item_emergency_sms.dart';
@@ -40,6 +41,7 @@ import '../../const/value/key.dart';
 import '../../my_app.dart';
 import '../../service/util/util_location.dart';
 import '../../service/util/util_permission.dart';
+import '../widget/widget_weather.dart';
 
 class RouteMain extends StatefulWidget {
   const RouteMain({Key? key}) : super(key: key);
@@ -49,6 +51,7 @@ class RouteMain extends StatefulWidget {
 }
 
 class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMixin {
+  //날씨
   ValueNotifier<ModelWeather?> valueNotifierWeather = ValueNotifier(null);
   late AnimationController controllerRefreshWeather;
 
@@ -68,7 +71,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
 
     ///날씨 자동 새로고침
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      refreshWeather();
+      _refreshWeather();
       getArticle();
       getEmergencySMS();
     });
@@ -92,186 +95,184 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
             ChangeNotifierProvider.value(value: MyApp.providerUser),
           ],
           builder: (context, child) => SingleChildScrollView(
-            child: Column(children: [
-              ///앱바
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                width: MediaQuery.of(context).size.width,
-                height: 65,
-                color: Colors.white,
-                child: Row(
-                  children: [
-                    ///아이콘
-                    InkWell(
-                      onTap: () {
-                        Get.to(() => const RouteTest());
-                      },
-                      child: Container(
-                        alignment: Alignment.center,
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: Colors.yellow.shade700,
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: const FaIcon(
-                          FontAwesomeIcons.helmetSafety,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    const Text(
-                      '오늘안전',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-
-                    const Spacer(),
-
-                    ///qr 코드 인식 페이지
-                    Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: InkWell(
-                        onTap: () async {
-                          bool isPermissionGranted = await requestPermission(Permission.camera);
-                          if (isPermissionGranted == false) {
-                            return;
-                          }
-
-                          Get.to(() => const RouteScanQr());
-                        },
-                        child: const FaIcon(
-                          FontAwesomeIcons.qrcode,
-                          size: 18,
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(
-                      width: 5,
-                    ),
-
-                    ///테스트 인증 페이지
-                    Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: InkWell(
+            child: Column(
+              children: [
+                ///앱바
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  width: MediaQuery.of(context).size.width,
+                  height: 65,
+                  color: Colors.white,
+                  child: Row(
+                    children: [
+                      ///아이콘
+                      InkWell(
                         onTap: () {
-                          Get.toNamed(
-                              '$keyRouteCheckListDetail/Y7eoaYJLn5v1YvolI0xW/$keyRouteCheckListCheckWithOutSlash',
-                              arguments: {keyUrl: 'test'});
+                          Get.to(() => const RouteTest());
                         },
-                        child: const FaIcon(
-                          FontAwesomeIcons.camera,
-                          size: 18,
+                        child: Container(
+                          alignment: Alignment.center,
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: Colors.yellow.shade700,
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: const FaIcon(
+                            FontAwesomeIcons.helmetSafety,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
-                    ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      const Text(
+                        '오늘안전',
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
 
-                    const SizedBox(
-                      width: 5,
-                    ),
+                      const Spacer(),
 
-                    ///로그인페이지
-                    Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: InkWell(
-                        onTap: () {
-                          Get.toNamed(keyRouteLogin);
-                        },
-                        child: const FaIcon(
-                          FontAwesomeIcons.user,
-                          size: 18,
+                      ///qr 코드 인식 페이지
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: InkWell(
+                          onTap: () async {
+                            bool isPermissionGranted = await requestPermission(Permission.camera);
+                            if (isPermissionGranted == false) {
+                              return;
+                            }
+
+                            Get.to(() => const RouteScanQr());
+                          },
+                          child: const FaIcon(
+                            FontAwesomeIcons.qrcode,
+                            size: 18,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+
+                      const SizedBox(
+                        width: 5,
+                      ),
+
+                      ///테스트 인증 페이지
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: InkWell(
+                          onTap: () {
+                            Get.toNamed(
+                                '$keyRouteCheckListDetail/Y7eoaYJLn5v1YvolI0xW/$keyRouteCheckListCheckWithOutSlash',
+                                arguments: {keyUrl: 'test'});
+                          },
+                          child: const FaIcon(
+                            FontAwesomeIcons.camera,
+                            size: 18,
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(
+                        width: 5,
+                      ),
+
+                      ///로그인페이지
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: InkWell(
+                          onTap: () {
+                            Get.toNamed(keyRouteLogin);
+                          },
+                          child: const FaIcon(
+                            FontAwesomeIcons.user,
+                            size: 18,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
 
-              ///앱바 구분선
-              Container(
-                width: MediaQuery.of(context).size.width,
-                height: 0.5,
-                color: Colors.black45,
-              ),
+                ///앱바 구분선
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 0.5,
+                  color: Colors.black45,
+                ),
 
-              const Text(
-                '최근 사망 사고 기사',
-                style: CustomTextStyle.bigBlackBold(),
-              ),
-              const Text(
-                '한국산업안전보건공단 제공',
-                style: CustomTextStyle.normalGrey(),
-              ),
+                const Text(
+                  '최근 사망 사고 기사',
+                  style: CustomTextStyle.bigBlackBold(),
+                ),
+                const Text(
+                  '한국산업안전보건공단 제공',
+                  style: CustomTextStyle.normalGrey(),
+                ),
 
-              ///사건 사고 기사
-              ValueListenableBuilder(
-                valueListenable: valueNotifierListModelArticle,
-                builder: (context, value, child) => value != null
+                ///사건 사고 기사
+                ValueListenableBuilder(
+                  valueListenable: valueNotifierListModelArticle,
+                  builder: (context, value, child) => value != null
 
-                    ///기사가 로딩되었을 때
-                    ? ListView.builder(
-                        itemCount: min(value.length, 5), //최대 5개
-                        itemBuilder: (context, index) => ItemArticle(value[index]),
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                      )
+                      ///기사가 로딩되었을 때
+                      ? ListView.builder(
+                          itemCount: min(value.length, 5), //최대 5개
+                          itemBuilder: (context, index) => ItemArticle(value[index]),
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                        )
 
-                    ///기사 로딩 중
-                    : LoadingAnimationWidget.inkDrop(color: Colors.green, size: 32),
-              ),
+                      ///기사 로딩 중
+                      : LoadingAnimationWidget.inkDrop(color: Colors.green, size: 32),
+                ),
 
+                const Text(
+                  '긴급 재난 문자',
+                  style: CustomTextStyle.bigBlackBold(),
+                ),
 
-              const Text(
-                '긴급 재난 문자',
-                style: CustomTextStyle.bigBlackBold(),
-              ),
+                ///재난 문자 (재난 관련)
+                ValueListenableBuilder(
+                  valueListenable: valueNotifierListModelEmergencySmsDisaster,
+                  builder: (context, value, child) => value != null
 
-              ///재난 문자 (재난 관련)
-              ValueListenableBuilder(
-                valueListenable: valueNotifierListModelEmergencySmsDisaster,
-                builder: (context, value, child) => value != null
+                      ///데이터가 로딩되었을 때
+                      ? ListView.builder(
+                          itemCount: min(value.length, 5), //최대 5개
+                          itemBuilder: (context, index) => ItemEmergencySms(value[index]),
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                        )
 
-                    ///데이터가 로딩되었을 때
-                    ? ListView.builder(
-                        itemCount: min(value.length, 5), //최대 5개
-                        itemBuilder: (context, index) => ItemEmergencySms(value[index]),
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                      )
+                      ///데이터 로딩 중
+                      : LoadingAnimationWidget.inkDrop(color: Colors.green, size: 32),
+                ),
 
-                    ///데이터 로딩 중
-                    : LoadingAnimationWidget.inkDrop(color: Colors.green, size: 32),
-              ),
+                const Text(
+                  '실종자 찾기',
+                  style: CustomTextStyle.bigBlackBold(),
+                ),
 
+                ///재난 문자 (실종 관련)
+                ValueListenableBuilder(
+                  valueListenable: valueNotifierListModelEmergencySmsMissing,
+                  builder: (context, value, child) => value != null
 
-              const Text(
-                '실종자 찾기',
-                style: CustomTextStyle.bigBlackBold(),
-              ),
+                      ///데이터가 로딩되었을 때
+                      ? ListView.builder(
+                          itemCount: min(value.length, 5), //최대 5개
+                          itemBuilder: (context, index) => ItemEmergencySms(value[index]),
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                        )
 
-              ///재난 문자 (실종 관련)
-              ValueListenableBuilder(
-                valueListenable: valueNotifierListModelEmergencySmsMissing,
-                builder: (context, value, child) => value != null
+                      ///데이터 로딩 중
+                      : LoadingAnimationWidget.inkDrop(color: Colors.green, size: 32),
+                ),
 
-                ///데이터가 로딩되었을 때
-                    ? ListView.builder(
-                  itemCount: min(value.length, 5), //최대 5개
-                  itemBuilder: (context, index) => ItemEmergencySms(value[index]),
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                )
-
-                ///데이터 로딩 중
-                    : LoadingAnimationWidget.inkDrop(color: Colors.green, size: 32),
-              ),
-
-
-              ///로그인 정보 영역
-              /* Consumer<ProviderUser>(
+                ///로그인 정보 영역
+                /* Consumer<ProviderUser>(
                 builder: (context, value, child) => value.modelUser == null
 
                     ///로그인 정보 없을때
@@ -317,122 +318,27 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                       ),
               ),*/
 
-              ///날씨 정보 영역
-              ValueListenableBuilder(
-                valueListenable: valueNotifierWeather,
-                builder: (context, value, child) => InkWell(
-                  onTap: () async {
-                    if (value != null) {
-                      String urlBase = 'https://m.search.naver.com/search.naver?sm=mtp_hty.top&where=m&query=';
-                      String query =
-                          '${value.modelLocationWeather.si} ${value.modelLocationWeather.gu} ${value.modelLocationWeather.dong} 날씨';
-
-                      Get.to(() => RouteWebView(urlBase + query));
-
-                      //Get.to(() => RouteWeatherDetail(value));
-                    }
+                ///날씨 정보 영역
+                ///날씨 정보 영역
+                WidgetWeather(
+                  valueNotifierModelWeather: valueNotifierWeather,
+                  onRefreshWeather: () {
+                    _refreshWeather(refreshForce: true);
                   },
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    color: Colors.white,
-                    width: Get.width,
-                    height: 240,
-                    child: Column(
-                      children: [
-                        const Align(
-                          alignment: Alignment.topLeft,
-                          child: Text(
-                            '날씨',
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            ///날씨 아이콘
-                            value != null
-                                ? Icon(
-                                    value.getIcon(),
-                                    size: 60,
-                                  )
-                                : Container(),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Row(
-                                  children: [
-                                    ///날씨 정보 받아온 시간
-                                    value != null
-                                        ? Text(
-                                            value.getTime(),
-                                            style: const TextStyle(color: Colors.black45, fontWeight: FontWeight.w700),
-                                          )
-                                        : Container(),
-
-                                    ///날씨 새로고침 아이콘
-                                    InkWell(
-                                      onTap: () {
-                                        refreshWeather(refreshForce: true);
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(5),
-                                        child: RotationTransition(
-                                          turns: Tween(begin: 0.0, end: 1.0).animate(controllerRefreshWeather),
-                                          child: const Icon(Icons.refresh),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-
-                                ///날씨 온도
-                                value != null
-                                    ? Text(
-                                        '${value.t1h.toString()}°',
-                                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 35),
-                                      )
-                                    : Container(),
-
-                                const SizedBox(
-                                  height: 5,
-                                ),
-
-                                ///날씨 온도
-                                value != null
-                                    ? Text(
-                                        '강수량 ${value.rn1.toString()}mm/h',
-                                        style: const CustomTextStyle.normalBlackBold(),
-                                      )
-                                    : Container(),
-                              ],
-                            ),
-                          ],
-                        ),
-                        const Spacer(),
-                        value != null
-                            ? Align(
-                                alignment: Alignment.bottomLeft,
-                                child: Text(
-                                  '${value.modelLocationWeather.gu} ${value.modelLocationWeather.dong}',
-                                  style: const TextStyle(color: Colors.black45, fontWeight: FontWeight.w700),
-                                ),
-                              )
-                            : Container(),
-                      ],
-                    ),
-                  ),
+                  controllerRefreshWeather: controllerRefreshWeather,
                 ),
-              ),
 
-              //const Spacer(),
-              //const ItemMainBanner(),
-            ]),
+                //const Spacer(),
+                //const ItemMainBanner(),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  refreshWeather({bool refreshForce = false}) async {
+  _refreshWeather({bool refreshForce = false}) async {
     if (controllerRefreshWeather.isAnimating) {
       MyApp.logger.d("이미 실행 중");
       return;
@@ -476,189 +382,15 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
     MyApp.logger.d("주소 받아오는 데 걸린 시간 : ${DateTime.now().millisecondsSinceEpoch - time}ms");
     time = dateTimeNow.millisecondsSinceEpoch;
 
-    //행정 구역 코드 받아오기
-    ModelLocationWeather? modelLocationWeather;
-    try {
-      modelLocationWeather = await getModelLocationWeatherFromLatLng(latLng.latitude, latLng.longitude);
-    } on Exception catch (e) {
-      MyApp.logger.wtf("행정 구역 코드 조회 실패 : ${e.toString()}");
-    }
+    ModelWeather? modelWeather = await getWeatherFromLatLng(latLng.latitude, latLng.longitude);
+    //MyApp.logger.d('조회된 날씨 정보 : ${modelWeather.toString()}');
 
-    if (modelLocationWeather == null) {
-      controllerRefreshWeather.reset();
-      return;
-    }
-    //MyApp.logger.d("카카오에서 행정구역 코드 받아옴 : ${modelLocationWeather.code}");
+    //MyApp.logger.d("기상청에서 날씨 정보 받아오는 데 걸린 시간 : ${DateTime.now().millisecondsSinceEpoch-time}ms");
+    //time = DateTime.now().millisecondsSinceEpoch;
 
-    //MyApp.logger.d("행정 구역 코드 받아오는 데 걸린 시간 : ${DateTime.now().millisecondsSinceEpoch-time}ms");
-    time = dateTimeNow.millisecondsSinceEpoch;
+    valueNotifierWeather.value = modelWeather;
 
-    //행정 구역 코드를 이용해 CSV 파일에서 x, y좌표 구해오기.
-    int? codeX;
-    int? codeY;
-
-    try {
-      final rawData = await rootBundle.loadString("assets/datas/address_code_simple.csv");
-      //MyApp.logger.d("rawData : ${rawData}");
-      List<String> listDataPerLine = rawData.split('\n');
-
-      //List<List<dynamic>> listData = const CsvToListConverter().convert(rawData);
-
-      //MyApp.logger.d("파일 읽은 결과 : ${listDataPerLine[0].toString()}");
-      //MyApp.logger.d('data 타입 : ${listData[0].runtimeType.toString()}');
-      //MyApp.logger.d('0 타입 : ${listData[0][0].runtimeType.toString()}');
-
-      int codeH = int.parse(modelLocationWeather.code);
-      for (String data in listDataPerLine) {
-        if (data.substring(0, 10) == '$codeH') {
-          codeX = int.parse(data.split(',')[1]);
-          codeY = int.parse(data.split(',')[2]);
-          listDataPerLine.clear();
-          break;
-        }
-      }
-    } catch (e) {
-      MyApp.logger.wtf("CSV 파일에서 행정 구역 코드 조회 실패 : ${e.toString()}");
-      controllerRefreshWeather.reset();
-    }
-
-    if (codeX == null || codeY == null) {
-      MyApp.logger.wtf("CSV 파일에서 행정 구역 코드 찾을 수 없음");
-      controllerRefreshWeather.reset();
-      return;
-    }
-
-    //MyApp.logger.d("CSV에서 x, y값 받아오는 데 걸린 시간 : ${DateTime.now().millisecondsSinceEpoch-time}ms");
-    time = dateTimeNow.millisecondsSinceEpoch;
-
-    //MyApp.logger.d("찾은 결과 $codeX, $codeY");
-
-    String urlBase = 'http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst';
-    String keyService =
-        '%2B%2BaANJW%2BGmM22jn4uU%2FTCiFfH58TiKg9euCqOwFAm%2FHNtf4K%2FlQ6zPxgMmXiuj7pPzt2LMOhS5yQBBFhm5IUrA%3D%3D';
-
-    String baseTimeFormatted;
-    //1시간 전
-    int hourCurrent = DateTime.fromMillisecondsSinceEpoch(
-            dateTimeNow.millisecondsSinceEpoch - millisecondHour * (dateTimeNow.minute < 30 ? 1 : 0))
-        .hour;
-    baseTimeFormatted = '$hourCurrent'.padLeft(2, '0');
-/*    if (hourCurrent < 3) {
-      baseTimeFormatted = "00";
-    } else if (hourCurrent < 6) {
-      baseTimeFormatted = "03";
-    } else if (hourCurrent < 9) {
-      baseTimeFormatted = "06";
-    } else if (hourCurrent < 12) {
-      baseTimeFormatted = "09";
-    } else if (hourCurrent < 15) {
-      baseTimeFormatted = "12";
-    } else if (hourCurrent < 18) {
-      baseTimeFormatted = "15";
-    } else if (hourCurrent < 21) {
-      baseTimeFormatted = "18";
-    } else {
-      baseTimeFormatted = "21";
-    }*/
-
-    baseTimeFormatted += "00";
-
-    String baseDateFormatted = DateFormat('yyyyMMdd').format(dateTimeNow);
-    String url = "$urlBase?serviceKey=$keyService"
-        "&pageNo=1"
-        "&numOfRows=10&dataType=JSON"
-        "&base_date=$baseDateFormatted"
-        "&base_time=$baseTimeFormatted"
-        "&nx=$codeX"
-        "&ny=$codeY";
-
-    MyApp.logger.d('url : $url ');
-
-    try {
-      Map<String, String> requestHeaders = {
-        'Content-type': 'application/json',
-        'Accept': 'application/json',
-      };
-      var response = await http.get(Uri.parse(url), headers: requestHeaders).timeout(const Duration(seconds: 5));
-
-      if (response.statusCode != 200) {
-        throw Exception("Request to $url failed with status ${response.statusCode}: ${response.body}");
-      } else {
-        //성공
-        //MyApp.logger.d(response.body.toString());
-        List<dynamic> listMapAddressData = jsonDecode(response.body)['response']?['body']?['items']?['item'] ?? [];
-
-        //T1H : 기온(c)
-        //RN1 : 강수량(mm/1h)
-        //REH : 습도 (%)
-        //VEC : 풍향 (deg)
-        //WSD : 풍속 (m/s)
-        //PTY : 강수 형태 (안 옴(0), 비(1), 비/눈(2), 눈(3), 소나기(4), 빗방울(5), 빗방울/눈날림(6), 눈날림(7))
-        //UUU : 동서 바람 성분 (m/s)
-        //VVV : 남북 바람 성분 (m/s)
-
-        if (listMapAddressData.isEmpty) {
-          throw Exception('list weather is empty');
-        }
-
-        ModelWeather modelWeather = ModelWeather(
-          baseDate: baseDateFormatted,
-          baseTime: baseTimeFormatted,
-          modelLocationWeather: modelLocationWeather,
-        );
-        for (dynamic weather in listMapAddressData) {
-          if (weather is Map && weather['category'] != null && weather['obsrValue'] != null) {
-            var value = weather['obsrValue'];
-            num valueParsed = 0;
-            try {
-              valueParsed = num.parse(value);
-            } catch (e) {
-              MyApp.logger.wtf('num.parse 실패 : ${e.toString()}');
-            }
-
-            switch (weather['category']) {
-              case 'PTY':
-                modelWeather.pty = valueParsed.toInt();
-                break;
-              case 'REH':
-                modelWeather.reh = valueParsed.toInt();
-                break;
-              case 'RN1':
-                modelWeather.rn1 = valueParsed.toInt();
-                break;
-              case 'T1H':
-                modelWeather.t1h = valueParsed.toInt();
-                break;
-              case 'UUU':
-                modelWeather.uuu = valueParsed.toDouble();
-                break;
-              case 'VEC':
-                modelWeather.vec = valueParsed.toInt();
-                break;
-              case 'VVV':
-                modelWeather.vvv = valueParsed.toDouble();
-                break;
-              case 'WSD':
-                modelWeather.wsd = valueParsed.toDouble();
-                break;
-              default:
-                break;
-            }
-          }
-        }
-        //MyApp.logger.d('조회된 날씨 정보 : ${modelWeather.toString()}');
-        valueNotifierWeather.value = modelWeather;
-
-        //MyApp.logger.d("기상청에서 날씨 정보 받아오는 데 걸린 시간 : ${DateTime.now().millisecondsSinceEpoch-time}ms");
-        time = DateTime.now().millisecondsSinceEpoch;
-
-        controllerRefreshWeather.reset();
-      }
-    } on Exception catch (e) {
-      controllerRefreshWeather.reset();
-      MyApp.logger.wtf("날씨 api 요청 실패 : ${e.toString()}");
-      return null;
-    }
+    controllerRefreshWeather.reset();
   }
 
   getArticle() async {
@@ -808,75 +540,6 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
           valueNotifierListModelEmergencySmsDisaster.value = listModelEmergencySmsDisasterNew;
           valueNotifierListModelEmergencySmsMissing.value = listModelEmergencySmsMissingNew;
         }
-
-        /*List<dynamic> listMapAddressData =
-            jsonDecode(response.body)['response']?['body']?['items']?['item'] ?? [];
-
-        //T1H : 기온(c)
-        //RN1 : 강수량(mm/1h)
-        //REH : 습도 (%)
-        //VEC : 풍향 (deg)
-        //WSD : 풍속 (m/s)
-        //PTY : 강수 형태 (안 옴(0), 비(1), 비/눈(2), 눈(3), 소나기(4), 빗방울(5), 빗방울/눈날림(6), 눈날림(7))
-        //UUU : 동서 바람 성분 (m/s)
-        //VVV : 남북 바람 성분 (m/s)
-
-        if (listMapAddressData.isEmpty) {
-          throw Exception('list weather is empty');
-        }
-
-        ModelWeather modelWeather = ModelWeather(
-          baseDate: baseDateFormatted,
-          baseTime: baseTimeFormatted,
-          modelLocationWeather: modelLocationWeather,
-        );
-        for (dynamic weather in listMapAddressData) {
-          if (weather is Map && weather['category'] != null && weather['obsrValue'] != null) {
-            var value = weather['obsrValue'];
-            num valueParsed = 0;
-            try {
-              valueParsed = num.parse(value);
-            } catch (e) {
-              MyApp.logger.wtf('num.parse 실패 : ${e.toString()}');
-            }
-
-            switch (weather['category']) {
-              case 'PTY':
-                modelWeather.pty = valueParsed.toInt();
-                break;
-              case 'REH':
-                modelWeather.reh = valueParsed.toInt();
-                break;
-              case 'RN1':
-                modelWeather.rn1 = valueParsed.toInt();
-                break;
-              case 'T1H':
-                modelWeather.t1h = valueParsed.toInt();
-                break;
-              case 'UUU':
-                modelWeather.uuu = valueParsed.toDouble();
-                break;
-              case 'VEC':
-                modelWeather.vec = valueParsed.toInt();
-                break;
-              case 'VVV':
-                modelWeather.vvv = valueParsed.toDouble();
-                break;
-              case 'WSD':
-                modelWeather.wsd = valueParsed.toDouble();
-                break;
-              default:
-                break;
-            }
-          }
-        }
-        //MyApp.logger.d('조회된 날씨 정보 : ${modelWeather.toString()}');
-        valueNotifierWeather.value = modelWeather;
-
-        //MyApp.logger.d("기상청에서 날씨 정보 받아오는 데 걸린 시간 : ${DateTime.now().millisecondsSinceEpoch-time}ms");
-        time = DateTime.now().millisecondsSinceEpoch;
-
-        controllerRefreshWeather.reset();*/
       }
     } catch (e) {
       MyApp.logger.wtf("재난 문자 api 요청 실패 : ${e.toString()}");
