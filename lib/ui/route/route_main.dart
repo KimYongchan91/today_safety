@@ -10,6 +10,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:kakao_map_plugin/kakao_map_plugin.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -45,7 +46,6 @@ class RouteMain extends StatefulWidget {
 }
 
 class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMixin {
-
   ValueNotifier<ModelWeather?> valueNotifierWeather = ValueNotifier(null);
   late AnimationController controllerRefreshWeather;
 
@@ -262,14 +262,14 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                       ),
               ),*/
 
-
               ///날씨 정보 영역
               ValueListenableBuilder(
                 valueListenable: valueNotifierWeather,
                 builder: (context, value, child) => InkWell(
                   onTap: () async {
                     if (value != null) {
-                      String urlBase = 'https://m.search.naver.com/search.naver?sm=mtp_hty.top&where=m&query=';
+                      String urlBase =
+                          'https://m.search.naver.com/search.naver?sm=mtp_hty.top&where=m&query=';
                       String query =
                           '${value.modelLocationWeather.si} ${value.modelLocationWeather.gu} ${value.modelLocationWeather.dong} 날씨';
 
@@ -310,17 +310,21 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                                     value != null
                                         ? Text(
                                             value.getTime(),
-                                            style: const TextStyle(color: Colors.black45, fontWeight: FontWeight.w700),
+                                            style: const TextStyle(
+                                                color: Colors.black45, fontWeight: FontWeight.w700),
                                           )
                                         : Container(),
 
                                     ///날씨 새로고침 아이콘
                                     InkWell(
-                                      onTap: refreshWeather,
+                                      onTap: () {
+                                        refreshWeather(refreshForce: true);
+                                      },
                                       child: Padding(
                                         padding: const EdgeInsets.all(5),
                                         child: RotationTransition(
-                                          turns: Tween(begin: 0.0, end: 1.0).animate(controllerRefreshWeather),
+                                          turns:
+                                              Tween(begin: 0.0, end: 1.0).animate(controllerRefreshWeather),
                                           child: const Icon(Icons.refresh),
                                         ),
                                       ),
@@ -376,35 +380,45 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
     );
   }
 
-  refreshWeather() async {
+  refreshWeather({bool refreshForce = false}) async {
     if (controllerRefreshWeather.isAnimating) {
       MyApp.logger.d("이미 실행 중");
       return;
     }
 
     controllerRefreshWeather.repeat();
-
-    bool isPermissionGranted = await requestPermission(Permission.locationWhenInUse);
-    if (isPermissionGranted == false) {
-      controllerRefreshWeather.reset();
-      return;
-    }
-
     final DateTime dateTimeNow = DateTime.now();
     int time = dateTimeNow.millisecondsSinceEpoch;
 
-    //현재 주소 받아오기
-    Position? position;
-    try {
-      position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
-      MyApp.logger.d("위치 조회 성공 : ${position.latitude}, ${position.longitude}");
-    } on Exception catch (e) {
-      MyApp.logger.wtf("위치 조회 실패 : ${e.toString()}");
+    //현재 위치 권한 있는지?
+    bool isPermissionGranted;
+    PermissionStatus permissionStatus = await Permission.locationWhenInUse.status;
+
+    if (permissionStatus == PermissionStatus.granted || permissionStatus == PermissionStatus.limited) {
+      isPermissionGranted = true;
+    } else {
+      isPermissionGranted = false;
     }
 
-    if (position == null) {
-      controllerRefreshWeather.reset();
-      return;
+    //강제로 새로고침 하는지
+    //즉 위치 권한을 요청 하는지
+    if (refreshForce) {
+      isPermissionGranted = await requestPermission(Permission.locationWhenInUse);
+    }
+
+    //기본 위치값 = 서울 시청
+    LatLng latLng = LatLng(37.566, 126.978);
+
+    //최종적으로 위치 권한이 있다면
+    //실시간 위치 확인
+    if (isPermissionGranted) {
+      try {
+        Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
+        MyApp.logger.d("위치 조회 성공 : ${position.latitude}, ${position.longitude}");
+        latLng = LatLng(position.latitude, position.longitude);
+      } on Exception catch (e) {
+        MyApp.logger.wtf("위치 조회 실패 : ${e.toString()}");
+      }
     }
 
     MyApp.logger.d("주소 받아오는 데 걸린 시간 : ${DateTime.now().millisecondsSinceEpoch - time}ms");
@@ -413,7 +427,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
     //행정 구역 코드 받아오기
     ModelLocationWeather? modelLocationWeather;
     try {
-      modelLocationWeather = await getModelLocationWeatherFromLatLng(position.latitude, position.longitude);
+      modelLocationWeather = await getModelLocationWeatherFromLatLng(latLng.latitude, latLng.longitude);
     } on Exception catch (e) {
       MyApp.logger.wtf("행정 구역 코드 조회 실패 : ${e.toString()}");
     }
@@ -422,7 +436,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
       controllerRefreshWeather.reset();
       return;
     }
-    MyApp.logger.d("카카오에서 행정구역 코드 받아옴 : ${modelLocationWeather.code}");
+    //MyApp.logger.d("카카오에서 행정구역 코드 받아옴 : ${modelLocationWeather.code}");
 
     //MyApp.logger.d("행정 구역 코드 받아오는 데 걸린 시간 : ${DateTime.now().millisecondsSinceEpoch-time}ms");
     time = dateTimeNow.millisecondsSinceEpoch;
@@ -473,7 +487,9 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
 
     String baseTimeFormatted;
     //1시간 전
-    int hourCurrent = DateTime.fromMillisecondsSinceEpoch(dateTimeNow.millisecondsSinceEpoch - millisecondHour).hour;
+    int hourCurrent = DateTime.fromMillisecondsSinceEpoch(
+            dateTimeNow.millisecondsSinceEpoch - millisecondHour * (dateTimeNow.minute < 15 ? 1 : 0))
+        .hour;
     baseTimeFormatted = '$hourCurrent'.padLeft(2, '0');
 /*    if (hourCurrent < 3) {
       baseTimeFormatted = "00";
@@ -504,21 +520,23 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
         "&nx=$codeX"
         "&ny=$codeY";
 
-    //MyApp.logger.d('url : $url ');
+    MyApp.logger.d('url : $url ');
 
     try {
       Map<String, String> requestHeaders = {
         'Content-type': 'application/json',
         'Accept': 'application/json',
       };
-      var response = await http.get(Uri.parse(url), headers: requestHeaders).timeout(const Duration(seconds: 5));
+      var response =
+          await http.get(Uri.parse(url), headers: requestHeaders).timeout(const Duration(seconds: 5));
 
       if (response.statusCode != 200) {
         throw Exception("Request to $url failed with status ${response.statusCode}: ${response.body}");
       } else {
         //성공
         //MyApp.logger.d(response.body.toString());
-        List<dynamic> listMapAddressData = jsonDecode(response.body)['response']?['body']?['items']?['item'] ?? [];
+        List<dynamic> listMapAddressData =
+            jsonDecode(response.body)['response']?['body']?['items']?['item'] ?? [];
 
         //T1H : 기온(c)
         //RN1 : 강수량(mm/1h)
@@ -578,7 +596,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
             }
           }
         }
-        MyApp.logger.d('조회된 날씨 정보 : ${modelWeather.toString()}');
+        //MyApp.logger.d('조회된 날씨 정보 : ${modelWeather.toString()}');
         valueNotifierWeather.value = modelWeather;
 
         //MyApp.logger.d("기상청에서 날씨 정보 받아오는 데 걸린 시간 : ${DateTime.now().millisecondsSinceEpoch-time}ms");
@@ -622,7 +640,8 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
       try {
         String? href = element.href;
         String? date = regExpDate.stringMatch(innerHtmlFormatted)?.replaceAll('[', '').replaceAll(',', '');
-        String? region = regExpRegion.stringMatch(innerHtmlFormatted)?.replaceAll(']', '').replaceAll(',', '').trim();
+        String? region =
+            regExpRegion.stringMatch(innerHtmlFormatted)?.replaceAll(']', '').replaceAll(',', '').trim();
         String? title = innerHtmlFormatted.substring(innerHtmlFormatted.indexOf(']') + 1).trim();
 
         //https://www.kosha.or.kr/kosha/report/kosha_news.do?mode=view&articleNo=442620
@@ -633,11 +652,11 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
           throw Exception('href == null || date == null || region == null');
         }
 
-        MyApp.logger.d("정규 표현식 결과\n"
+        /*   MyApp.logger.d("정규 표현식 결과\n"
             "href : $href\n"
             "date : $date\n"
             "region : $region\n"
-            "title : $title\n");
+            "title : $title\n");*/
 
         int month = int.parse(date.split("/")[0]);
         int day = int.parse(date.split("/")[1]);
@@ -653,12 +672,12 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
       }
     }
 
-    listModelArticleNew.sort((a, b) => b.dateTime.millisecondsSinceEpoch.compareTo(a.dateTime.millisecondsSinceEpoch),);
+    listModelArticleNew.sort(
+      (a, b) => b.dateTime.millisecondsSinceEpoch.compareTo(a.dateTime.millisecondsSinceEpoch),
+    );
 
     valueNotifierListModelArticle.value = listModelArticleNew;
   }
-
-
 }
 
 ///로그인 안됐을때
