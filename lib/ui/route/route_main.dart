@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chaleno/chaleno.dart';
 import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -17,6 +18,7 @@ import 'package:today_safety/const/value/value.dart';
 import 'package:today_safety/custom/custom_text_style.dart';
 import 'package:today_safety/service/provider/provider_user.dart';
 import 'package:today_safety/ui/dialog/dialog_open_external_web_browser.dart';
+import 'package:today_safety/ui/item/item_article.dart';
 import 'package:today_safety/ui/route/route_scan_qr.dart';
 import 'package:today_safety/ui/route/route_weather_detail.dart';
 import 'package:today_safety/ui/route/test/route_test.dart';
@@ -25,6 +27,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../const/model/model_article.dart';
 import '../../const/value/color.dart';
 import '../../const/value/key.dart';
 import '../../my_app.dart';
@@ -48,6 +51,9 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
   ValueNotifier<ModelWeather?> valueNotifierWeather = ValueNotifier(null);
   late AnimationController controllerRefreshWeather;
 
+  //사건 사고 기사
+  ValueNotifier<List<ModelArticle>> valueNotifierListModelArticle = ValueNotifier([]);
+
   @override
   void initState() {
     controllerRefreshWeather = AnimationController(
@@ -56,7 +62,10 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
     );
 
     ///날씨 자동 새로고침
-    WidgetsBinding.instance.addPostFrameCallback((_) => refreshWeather());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      refreshWeather();
+      getArticle();
+    });
 
     super.initState();
   }
@@ -76,7 +85,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
           providers: [
             ChangeNotifierProvider.value(value: MyApp.providerUser),
           ],
-          builder: (context, child) => Center(
+          builder: (context, child) => SingleChildScrollView(
             child: Column(children: [
               ///앱바
               Container(
@@ -182,8 +191,24 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                 color: Colors.black45,
               ),
 
+              Text(
+                '사건 사고',
+                style: CustomTextStyle.bigBlackBold(),
+              ),
+
+              ///사건 사고 기사
+              ValueListenableBuilder(
+                valueListenable: valueNotifierListModelArticle,
+                builder: (context, value, child) => ListView.builder(
+                  itemCount: value.length,
+                  itemBuilder: (context, index) => ItemArticle(value[index]),
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                ),
+              ),
+
               ///로그인 정보 영역
-              Consumer<ProviderUser>(
+              /* Consumer<ProviderUser>(
                 builder: (context, value, child) => value.modelUser == null
 
                     ///로그인 정보 없을때
@@ -227,10 +252,10 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                           ),
                         ]),
                       ),
-              ),
+              ),*/
 
               ///근무지 정보 영역
-              Consumer<ProviderUser>(
+              /*  Consumer<ProviderUser>(
                 builder: (context, value, child) => value.modelUser == null
 
                     ///로그인 안됐을때
@@ -248,6 +273,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                             value.modelSiteMy == null
                                 ? Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Row(
                                         children: [
@@ -320,6 +346,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                                     onTap: goRouteSiteDetail,
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.min,
                                       children: [
                                         const Text(
                                           '내가 관리하는 근무지',
@@ -395,10 +422,9 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                                     ),
                                   ),
                       ),
-              ),
+              ),*/
 
-              Expanded(
-                  child: Row(
+              /*  Row(
                 children: [
                   Expanded(
                     flex: 1,
@@ -444,12 +470,12 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                                       Row(
                                         children: [
                                           ///날씨 정보 받아온 시간
-                                          /*       value != null
-                                              ? Text(
-                                                  value.getTime(),
-                                                  style: TextStyle(color: Colors.black45, fontWeight: FontWeight.w700),
-                                                )
-                                              : Container(),*/
+                                          */ /*       value != null
+                                          ? Text(
+                                              value.getTime(),
+                                              style: TextStyle(color: Colors.black45, fontWeight: FontWeight.w700),
+                                            )
+                                          : Container(),*/ /*
 
                                           ///날씨 새로고침 아이콘
                                           InkWell(
@@ -473,17 +499,17 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                                             )
                                           : Container(),
 
-                                      /* const SizedBox(
-                                        height: 5,
-                                      ),
+                                      */ /* const SizedBox(
+                                    height: 5,
+                                  ),
 
-                                      ///날씨 온도
-                                      value != null
-                                          ? Text(
-                                              '강수량 ${value.rn1.toString()}mm/h',
-                                              style: CustomTextStyle.normalBlackBold(),
-                                            )
-                                          : Container(),*/
+                                  ///날씨 온도
+                                  value != null
+                                      ? Text(
+                                          '강수량 ${value.rn1.toString()}mm/h',
+                                          style: CustomTextStyle.normalBlackBold(),
+                                        )
+                                      : Container(),*/ /*
                                     ],
                                   ),
                                 ],
@@ -522,7 +548,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                         ),
                       )),
                 ],
-              )),
+              ),*/
 
               //const Spacer(),
               //const ItemMainBanner(),
@@ -748,6 +774,69 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
       MyApp.logger.wtf("날씨 api 요청 실패 : ${e.toString()}");
       return null;
     }
+  }
+
+  getArticle() async {
+    print('getArticle() 시작');
+    List<ModelArticle> listModelArticleNew = [];
+
+    final chaleno = await Chaleno().load('https://www.kosha.or.kr/kosha/index.do');
+
+    List<Result> results = chaleno?.querySelectorAll('.articleTitle') ?? [];
+    print('크롤 결과 : ${results.length}');
+    RegExp regExpDate = RegExp(r'^\[[0-9]\/[0-9]*\,');
+    RegExp regExpRegion = RegExp(r',[ 가-힣]*\]');
+
+    for (var element in results) {
+      String innerHtmlFormatted = element.innerHTML?.trim() ?? '';
+      if (innerHtmlFormatted.contains('[') == true) {
+        innerHtmlFormatted = innerHtmlFormatted.substring(innerHtmlFormatted.indexOf('['));
+      } else {
+        continue;
+      }
+
+      //print('###${element.href} $innerHtmlFormatted###');
+
+      if (element.href == null || innerHtmlFormatted.isEmpty) {
+        continue;
+      }
+
+      //정규표현식 적용
+      try {
+        String? href = element.href;
+        String? date = regExpDate.stringMatch(innerHtmlFormatted)?.replaceAll('[', '').replaceAll(',', '');
+        String? region = regExpRegion.stringMatch(innerHtmlFormatted)?.replaceAll(']', '').replaceAll(',', '').trim();
+        String? title = innerHtmlFormatted.substring(innerHtmlFormatted.indexOf(']') + 1).trim();
+
+        //https://www.kosha.or.kr/kosha/report/kosha_news.do?mode=view&articleNo=442620
+
+        String hrefBase = 'https://www.kosha.or.kr';
+
+        if (href == null || date == null || region == null) {
+          throw Exception('href == null || date == null || region == null');
+        }
+
+        MyApp.logger.d("정규 표현식 결과\n"
+            "href : $href\n"
+            "date : $date\n"
+            "region : $region\n"
+            "title : $title\n");
+
+        int month = int.parse(date.split("/")[0]);
+        int day = int.parse(date.split("/")[1]);
+
+        listModelArticleNew.add(ModelArticle(
+          dateTime: DateTime(DateTime.now().year, month, day),
+          region: region,
+          href: (hrefBase + href).replaceAll('&amp;', '&'),
+          title: title,
+        ));
+      } catch (e) {
+        MyApp.logger.wtf('정규 표현식 에러 : ${e.toString()}');
+      }
+    }
+
+    valueNotifierListModelArticle.value = listModelArticleNew;
   }
 
   goRouteSiteDetail() {

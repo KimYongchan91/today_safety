@@ -68,6 +68,8 @@ dependencies:
   loading_animation_widget: ^1.2.0+4
   table_calendar: ^3.0.9
   qr_code_scanner: ^1.0.1
+  chaleno: ^0.0.6
+  flutter_inappwebview: ^5.7.2+3
 
   kakao_flutter_sdk: ^1.4.3
   kakao_map_plugin: ^0.1.4

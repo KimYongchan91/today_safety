@@ -75,6 +75,7 @@ class _DialogOpenExternalWebBrowserState extends State<DialogOpenExternalWebBrow
                 Get.back(result: true);
 
                 String urlEncoded = Uri.encodeFull(widget.url);
+                print("urlEncoded : ${urlEncoded}");
                 final Uri uri = Uri.parse(urlEncoded);
                 if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
                   throw Exception('Could not launch $uri');

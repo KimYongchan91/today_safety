@@ -5,7 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="98fa0513-41ad-4790-9a6a-cfc9a2afd20c" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../lib/ui/dialog/dialog_open_external_web_browser.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/ui/dialog/dialog_open_external_web_browser.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/ui/route/route_main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/ui/route/route_main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/ui/route/test/route_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/ui/route/test/route_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../pubspec.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
