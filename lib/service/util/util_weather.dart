@@ -74,9 +74,9 @@ Future<ModelWeather?> getWeatherFromLatLng(double lat, double lng) async {
 
   String baseTimeFormatted;
   //1시간 전
-  int hourCurrent = DateTime.fromMillisecondsSinceEpoch(
-          dateTimeNow.millisecondsSinceEpoch - millisecondHour * (dateTimeNow.minute < 30 ? 1 : 0))
-      .hour;
+  DateTime dateTimeForServer = DateTime.fromMillisecondsSinceEpoch(
+      dateTimeNow.millisecondsSinceEpoch - millisecondHour * (dateTimeNow.minute < 30 ? 1 : 0));
+  int hourCurrent = dateTimeForServer.hour;
   baseTimeFormatted = '$hourCurrent'.padLeft(2, '0');
 /*    if (hourCurrent < 3) {
       baseTimeFormatted = "00";
@@ -98,7 +98,7 @@ Future<ModelWeather?> getWeatherFromLatLng(double lat, double lng) async {
 
   baseTimeFormatted += "00";
 
-  String baseDateFormatted = DateFormat('yyyyMMdd').format(dateTimeNow);
+  String baseDateFormatted = DateFormat('yyyyMMdd').format(dateTimeForServer);
   String url = "$urlBase?serviceKey=$keyService"
       "&pageNo=1"
       "&numOfRows=10&dataType=JSON"
@@ -114,14 +114,16 @@ Future<ModelWeather?> getWeatherFromLatLng(double lat, double lng) async {
       'Content-type': 'application/json',
       'Accept': 'application/json',
     };
-    var response = await http.get(Uri.parse(url), headers: requestHeaders).timeout(const Duration(seconds: 5));
+    var response =
+        await http.get(Uri.parse(url), headers: requestHeaders).timeout(const Duration(seconds: 5));
 
     if (response.statusCode != 200) {
       throw Exception("Request to $url failed with status ${response.statusCode}: ${response.body}");
     } else {
       //성공
       //MyApp.logger.d(response.body.toString());
-      List<dynamic> listMapAddressData = jsonDecode(response.body)['response']?['body']?['items']?['item'] ?? [];
+      List<dynamic> listMapAddressData =
+          jsonDecode(response.body)['response']?['body']?['items']?['item'] ?? [];
 
       //T1H : 기온(c)
       //RN1 : 강수량(mm/1h)

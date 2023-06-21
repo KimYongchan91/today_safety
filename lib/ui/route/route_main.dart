@@ -1,10 +1,7 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:math';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chaleno/chaleno.dart';
-import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
@@ -15,31 +12,22 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:today_safety/const/model/model_emergency_sms.dart';
-import 'package:today_safety/const/model/model_location_weather.dart';
 import 'package:today_safety/const/model/model_weather.dart';
 import 'package:today_safety/const/value/router.dart';
-import 'package:today_safety/const/value/value.dart';
 import 'package:today_safety/custom/custom_text_style.dart';
-import 'package:today_safety/service/provider/provider_user.dart';
 import 'package:today_safety/service/util/util_address.dart';
 import 'package:today_safety/service/util/util_weather.dart';
-import 'package:today_safety/ui/dialog/dialog_open_external_web_browser.dart';
 import 'package:today_safety/ui/item/item_article.dart';
 import 'package:today_safety/ui/item/item_emergency_sms.dart';
 import 'package:today_safety/ui/route/route_scan_qr.dart';
-import 'package:today_safety/ui/route/route_weather_detail.dart';
-import 'package:today_safety/ui/route/route_webview.dart';
 import 'package:today_safety/ui/route/test/route_test.dart';
-import 'package:today_safety/ui/item/item_banner.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../const/model/model_article.dart';
 import '../../const/value/color.dart';
 import '../../const/value/key.dart';
 import '../../my_app.dart';
-import '../../service/util/util_location.dart';
 import '../../service/util/util_permission.dart';
 import '../widget/widget_weather.dart';
 
@@ -59,8 +47,10 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
   ValueNotifier<List<ModelArticle>?> valueNotifierListModelArticle = ValueNotifier(null);
 
   //재난 문자
-  ValueNotifier<List<ModelEmergencySms>?> valueNotifierListModelEmergencySmsDisaster = ValueNotifier(null); //재난
-  ValueNotifier<List<ModelEmergencySms>?> valueNotifierListModelEmergencySmsMissing = ValueNotifier(null); //실종
+  ValueNotifier<List<ModelEmergencySms>?> valueNotifierListModelEmergencySmsDisaster =
+      ValueNotifier(null); //재난
+  ValueNotifier<List<ModelEmergencySms>?> valueNotifierListModelEmergencySmsMissing =
+      ValueNotifier(null); //실종
 
   @override
   void initState() {
@@ -422,7 +412,8 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
       try {
         String? href = element.href;
         String? date = regExpDate.stringMatch(innerHtmlFormatted)?.replaceAll('[', '').replaceAll(',', '');
-        String? region = regExpRegion.stringMatch(innerHtmlFormatted)?.replaceAll(']', '').replaceAll(',', '').trim();
+        String? region =
+            regExpRegion.stringMatch(innerHtmlFormatted)?.replaceAll(']', '').replaceAll(',', '').trim();
         String? title = innerHtmlFormatted.substring(innerHtmlFormatted.indexOf(']') + 1).trim();
 
         //https://www.kosha.or.kr/kosha/report/kosha_news.do?mode=view&articleNo=442620
@@ -543,7 +534,8 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
       }
     } catch (e) {
       MyApp.logger.wtf("재난 문자 api 요청 실패 : ${e.toString()}");
-      return null;
+      valueNotifierListModelEmergencySmsDisaster.value = [];
+      valueNotifierListModelEmergencySmsMissing.value = [];
     }
   }
 }
