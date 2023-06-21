@@ -54,6 +54,7 @@ const String keyLocation = 'location';
 const String keyUserCount = 'user_count';
 const String keyName = 'name';
 const String keyUrlLogoImage = 'url_logo_image';
+const String keyUrlSiteImage = 'url_site_image';
 
 const String keyFac = 'fac';
 const String keyCheckList = 'check_list';

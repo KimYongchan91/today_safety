@@ -281,13 +281,12 @@ class _RouteLoginState extends State<RouteLogin> {
                                         padding: const EdgeInsets.all(10),
                                         height: MediaQuery.of(context).size.height / 4,
                                         decoration: mainButton,
-                                        child: const Expanded(
-                                            child: Center(
-                                                child: FaIcon(
+                                        child: Center(
+                                            child: FaIcon(
                                           FontAwesomeIcons.add,
                                           size: 35,
                                           color: Colors.black45,
-                                        ))),
+                                        )),
                                       ),
                                     ),
 

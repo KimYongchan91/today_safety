@@ -3,6 +3,7 @@ import 'package:quiver/core.dart';
 import 'package:today_safety/const/model/model_company.dart';
 import 'package:today_safety/const/model/model_location.dart';
 import 'package:today_safety/const/value/key.dart';
+import 'package:today_safety/const/value/value.dart';
 import 'package:today_safety/my_app.dart';
 
 import '../../service/util/util_firestore.dart';
@@ -15,6 +16,7 @@ class ModelSite {
   ModelLocation modelLocation;
   int userCount;
   String urlLogoImage;
+  String urlSiteImage;
 
   ModelSite.fromJson(Map map, this.docId)
 
@@ -24,7 +26,8 @@ class ModelSite {
         master = map[keyMaster] ?? '',
         modelLocation = ModelLocation.fromJson(map[keyLocation] ?? {}),
         userCount = map[keyUserCount] ?? 1,
-        urlLogoImage = map[keyUrlLogoImage] ?? '';
+        urlLogoImage = map[keyUrlLogoImage] ?? '',
+        urlSiteImage = map[keyUrlSiteImage] ?? '';
 
   Map<String, dynamic> toJson({bool isIncludeDocID = false, bool isForServerForm = false}) {
     Map<String, dynamic> result = {
@@ -35,6 +38,7 @@ class ModelSite {
       keyLocation: modelLocation.toJson(),
       keyUserCount: userCount,
       keyUrlLogoImage: urlLogoImage,
+      keyUrlSiteImage: urlSiteImage,
     };
 
     if (isIncludeDocID) {
@@ -47,10 +51,10 @@ class ModelSite {
   bool getIsEmpty() {
     MyApp.logger.d(""
         "name.isNotEmpty : ${name.isNotEmpty}"
-        "modelLocation.lat != null : ${modelLocation.lat != null}"
+        "modelLocation.lat != null : ${modelLocation.lat == defaultLat}"
         "modelLocation.lat != 0 : ${modelLocation.lat != 0}"
         "urlLogoImage.isNotEmpty : ${urlLogoImage.isNotEmpty}");
-    return name.isEmpty && modelLocation.lat == null && urlLogoImage.isEmpty;
+    return name.isEmpty && modelLocation.lat == defaultLat && urlLogoImage.isEmpty && urlSiteImage.isEmpty;
   }
 
   @override
