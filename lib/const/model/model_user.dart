@@ -12,7 +12,7 @@ class ModelUser {
   final String loginType;
   final String state;
   final Timestamp dateJoin;
-  List<dynamic> listToken;
+  List<dynamic> listToken = [];
 
   ModelUser({
     this.docId = '',
@@ -22,7 +22,6 @@ class ModelUser {
     required this.loginType,
     required this.state,
     required this.dateJoin,
-    this.listToken = const [],
   });
 
   ModelUser.fromJson(Map map, this.docId)
