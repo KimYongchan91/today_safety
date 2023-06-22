@@ -56,6 +56,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
 
   //앱 종료 방지용
   int timeBackButtonPressed = 0;
+  FToast fToast = FToast();
 
   @override
   void initState() {
@@ -63,6 +64,8 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
       duration: const Duration(milliseconds: 1000),
       vsync: this,
     );
+
+    fToast.init(context);
 
     ///날씨 자동 새로고침
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -555,16 +558,11 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
     int timeNow = DateTime.now().millisecondsSinceEpoch;
 
     if (timeNow - timeBackButtonPressed > 2000) {
-      Fluttertoast.cancel();
+      ///기존 토스트 날리기
+      fToast.removeCustomToast();
 
-      Fluttertoast.showToast(
-          msg: "한번 더 누르면 종료돼요.",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0);
+      ///토스트 띄우기
+      _showToast();
 
       timeBackButtonPressed = timeNow;
 
@@ -573,6 +571,33 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
       SystemNavigator.pop();
       return false;
     }
+  }
+
+  _showToast() {
+    Widget toast = Container(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(25.0),
+        color: Colors.greenAccent,
+      ),
+      child: const Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.close),
+          SizedBox(
+            width: 12.0,
+          ),
+          Text("한 번 더 누르면 종료돼요."),
+        ],
+      ),
+    );
+
+    // Custom Toast Position
+    fToast.showToast(
+      child: toast,
+      gravity: ToastGravity.BOTTOM,
+      toastDuration: const Duration(seconds: 2),
+    );
   }
 }
 
