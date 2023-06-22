@@ -602,6 +602,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
 }
 
 ///로그인 안됐을때
+/*
 class UnLoginUserArea extends StatefulWidget {
   const UnLoginUserArea({Key? key}) : super(key: key);
 
@@ -646,3 +647,4 @@ class _UnLoginUserAreaState extends State<UnLoginUserArea> {
     );
   }
 }
+*/
