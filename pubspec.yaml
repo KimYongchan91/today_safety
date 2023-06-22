@@ -83,13 +83,13 @@ dependencies:
   circular_countdown_timer: ^0.2.3
   hero_animation: ^1.0.0+3
   local_hero: ^0.2.0
-  location: ^4.4.0
+  #location: ^4.4.0
   fl_chart: ^0.63.0
   easy_image_viewer: ^1.2.1
   csv: ^5.0.2
   weather_icons: ^3.0.0
   syncfusion_flutter_sliders: ^21.2.10
-
+  fluttertoast: ^8.2.2
 
 
   firebase_analytics: ^10.4.2

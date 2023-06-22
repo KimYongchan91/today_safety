@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:chaleno/chaleno.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -22,7 +24,7 @@ import 'package:today_safety/ui/item/item_emergency_sms.dart';
 import 'package:today_safety/ui/route/route_scan_qr.dart';
 import 'package:today_safety/ui/route/test/route_test.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/services.dart' show SystemNavigator, rootBundle;
 
 import '../../const/model/model_article.dart';
 import '../../const/value/color.dart';
@@ -52,6 +54,9 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
   ValueNotifier<List<ModelEmergencySms>?> valueNotifierListModelEmergencySmsMissing =
       ValueNotifier(null); //실종
 
+  //앱 종료 방지용
+  int timeBackButtonPressed = 0;
+
   @override
   void initState() {
     controllerRefreshWeather = AnimationController(
@@ -77,250 +82,253 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: colorBackground,
-      body: SafeArea(
-        child: MultiProvider(
-          providers: [
-            ChangeNotifierProvider.value(value: MyApp.providerUser),
-          ],
-          builder: (context, child) => SingleChildScrollView(
-            child: Column(
-              children: [
-                ///앱바
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  width: MediaQuery.of(context).size.width,
-                  height: 65,
-                  color: Colors.white,
-                  child: Row(
-                    children: [
-                      ///아이콘
-                      InkWell(
-                        onTap: () {
-                          Get.to(() => const RouteTest());
-                        },
-                        child: Container(
-                          alignment: Alignment.center,
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            color: Colors.yellow.shade700,
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: const FaIcon(
-                            FontAwesomeIcons.helmetSafety,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      const Text(
-                        '오늘안전',
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-
-                      const Spacer(),
-
-                      ///qr 코드 인식 페이지
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: InkWell(
-                          onTap: () async {
-                            bool isPermissionGranted = await requestPermission(Permission.camera);
-                            if (isPermissionGranted == false) {
-                              return;
-                            }
-
-                            Get.to(() => const RouteScanQr());
-                          },
-                          child: const FaIcon(
-                            FontAwesomeIcons.qrcode,
-                            size: 18,
-                          ),
-                        ),
-                      ),
-
-                      const SizedBox(
-                        width: 5,
-                      ),
-
-                      ///테스트 인증 페이지
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: InkWell(
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        backgroundColor: colorBackground,
+        body: SafeArea(
+          child: MultiProvider(
+            providers: [
+              ChangeNotifierProvider.value(value: MyApp.providerUser),
+            ],
+            builder: (context, child) => SingleChildScrollView(
+              child: Column(
+                children: [
+                  ///앱바
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    width: MediaQuery.of(context).size.width,
+                    height: 65,
+                    color: Colors.white,
+                    child: Row(
+                      children: [
+                        ///아이콘
+                        InkWell(
                           onTap: () {
-                            Get.toNamed(
-                                '$keyRouteCheckListDetail/Y7eoaYJLn5v1YvolI0xW/$keyRouteCheckListCheckWithOutSlash',
-                                arguments: {keyUrl: 'test'});
+                            Get.to(() => const RouteTest());
                           },
-                          child: const FaIcon(
-                            FontAwesomeIcons.camera,
-                            size: 18,
-                          ),
-                        ),
-                      ),
-
-                      const SizedBox(
-                        width: 5,
-                      ),
-
-                      ///로그인페이지
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: InkWell(
-                          onTap: () {
-                            Get.toNamed(keyRouteLogin);
-                          },
-                          child: const FaIcon(
-                            FontAwesomeIcons.user,
-                            size: 18,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                ///앱바 구분선
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 0.5,
-                  color: Colors.black45,
-                ),
-
-                const Text(
-                  '최근 사망 사고 기사',
-                  style: CustomTextStyle.bigBlackBold(),
-                ),
-                const Text(
-                  '한국산업안전보건공단 제공',
-                  style: CustomTextStyle.normalGrey(),
-                ),
-
-                ///사건 사고 기사
-                ValueListenableBuilder(
-                  valueListenable: valueNotifierListModelArticle,
-                  builder: (context, value, child) => value != null
-
-                      ///기사가 로딩되었을 때
-                      ? ListView.builder(
-                          itemCount: min(value.length, 5), //최대 5개
-                          itemBuilder: (context, index) => ItemArticle(value[index]),
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                        )
-
-                      ///기사 로딩 중
-                      : LoadingAnimationWidget.inkDrop(color: Colors.green, size: 32),
-                ),
-
-                const Text(
-                  '긴급 재난 문자',
-                  style: CustomTextStyle.bigBlackBold(),
-                ),
-
-                ///재난 문자 (재난 관련)
-                ValueListenableBuilder(
-                  valueListenable: valueNotifierListModelEmergencySmsDisaster,
-                  builder: (context, value, child) => value != null
-
-                      ///데이터가 로딩되었을 때
-                      ? ListView.builder(
-                          itemCount: min(value.length, 5), //최대 5개
-                          itemBuilder: (context, index) => ItemEmergencySms(value[index]),
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                        )
-
-                      ///데이터 로딩 중
-                      : LoadingAnimationWidget.inkDrop(color: Colors.green, size: 32),
-                ),
-
-                const Text(
-                  '실종자 찾기',
-                  style: CustomTextStyle.bigBlackBold(),
-                ),
-
-                ///재난 문자 (실종 관련)
-                ValueListenableBuilder(
-                  valueListenable: valueNotifierListModelEmergencySmsMissing,
-                  builder: (context, value, child) => value != null
-
-                      ///데이터가 로딩되었을 때
-                      ? ListView.builder(
-                          itemCount: min(value.length, 5), //최대 5개
-                          itemBuilder: (context, index) => ItemEmergencySms(value[index]),
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                        )
-
-                      ///데이터 로딩 중
-                      : LoadingAnimationWidget.inkDrop(color: Colors.green, size: 32),
-                ),
-
-                ///로그인 정보 영역
-                /* Consumer<ProviderUser>(
-                builder: (context, value, child) => value.modelUser == null
-
-                    ///로그인 정보 없을때
-                    ? const SizedBox()
-
-                    ///로그인 중일때
-                    : Container(
-                        margin: const EdgeInsets.only(bottom: 10),
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                        color: Colors.white,
-                        width: MediaQuery.of(context).size.width,
-                        child: Row(children: [
-                          const FaIcon(
-                            FontAwesomeIcons.solidUserCircle,
-                            color: Colors.grey,
-                            size: 40,
-                          ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          Consumer<ProviderUser>(
-                            builder: (context, value, child) => Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ///이름
-                                Text(
-                                  value.modelUser?.name ?? "이름",
-                                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-
-                                ///아이디
-                                Text(
-                                  value.modelUser?.idExceptLT ?? '로그인을 해주세요.',
-                                  style: const TextStyle(fontSize: 12),
-                                ),
-                              ],
+                          child: Container(
+                            alignment: Alignment.center,
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: Colors.yellow.shade700,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: const FaIcon(
+                              FontAwesomeIcons.helmetSafety,
+                              color: Colors.white,
                             ),
                           ),
-                        ]),
-                      ),
-              ),*/
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        const Text(
+                          '오늘안전',
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
 
-                ///날씨 정보 영역
-                ///날씨 정보 영역
-                WidgetWeather(
-                  valueNotifierModelWeather: valueNotifierWeather,
-                  onRefreshWeather: () {
-                    _refreshWeather(refreshForce: true);
-                  },
-                  controllerRefreshWeather: controllerRefreshWeather,
-                ),
+                        const Spacer(),
 
-                //const Spacer(),
-                //const ItemMainBanner(),
-              ],
+                        ///qr 코드 인식 페이지
+                        Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: InkWell(
+                            onTap: () async {
+                              bool isPermissionGranted = await requestPermission(Permission.camera);
+                              if (isPermissionGranted == false) {
+                                return;
+                              }
+
+                              Get.to(() => const RouteScanQr());
+                            },
+                            child: const FaIcon(
+                              FontAwesomeIcons.qrcode,
+                              size: 18,
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(
+                          width: 5,
+                        ),
+
+                        ///테스트 인증 페이지
+                        Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: InkWell(
+                            onTap: () {
+                              Get.toNamed(
+                                  '$keyRouteCheckListDetail/Y7eoaYJLn5v1YvolI0xW/$keyRouteCheckListCheckWithOutSlash',
+                                  arguments: {keyUrl: 'test'});
+                            },
+                            child: const FaIcon(
+                              FontAwesomeIcons.camera,
+                              size: 18,
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(
+                          width: 5,
+                        ),
+
+                        ///로그인페이지
+                        Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: InkWell(
+                            onTap: () {
+                              Get.toNamed(keyRouteLogin);
+                            },
+                            child: const FaIcon(
+                              FontAwesomeIcons.user,
+                              size: 18,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  ///앱바 구분선
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 0.5,
+                    color: Colors.black45,
+                  ),
+
+                  const Text(
+                    '최근 사망 사고 기사',
+                    style: CustomTextStyle.bigBlackBold(),
+                  ),
+                  const Text(
+                    '한국산업안전보건공단 제공',
+                    style: CustomTextStyle.normalGrey(),
+                  ),
+
+                  ///사건 사고 기사
+                  ValueListenableBuilder(
+                    valueListenable: valueNotifierListModelArticle,
+                    builder: (context, value, child) => value != null
+
+                        ///기사가 로딩되었을 때
+                        ? ListView.builder(
+                            itemCount: min(value.length, 5), //최대 5개
+                            itemBuilder: (context, index) => ItemArticle(value[index]),
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                          )
+
+                        ///기사 로딩 중
+                        : LoadingAnimationWidget.inkDrop(color: Colors.green, size: 32),
+                  ),
+
+                  const Text(
+                    '긴급 재난 문자',
+                    style: CustomTextStyle.bigBlackBold(),
+                  ),
+
+                  ///재난 문자 (재난 관련)
+                  ValueListenableBuilder(
+                    valueListenable: valueNotifierListModelEmergencySmsDisaster,
+                    builder: (context, value, child) => value != null
+
+                        ///데이터가 로딩되었을 때
+                        ? ListView.builder(
+                            itemCount: min(value.length, 5), //최대 5개
+                            itemBuilder: (context, index) => ItemEmergencySms(value[index]),
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                          )
+
+                        ///데이터 로딩 중
+                        : LoadingAnimationWidget.inkDrop(color: Colors.green, size: 32),
+                  ),
+
+                  const Text(
+                    '실종자 찾기',
+                    style: CustomTextStyle.bigBlackBold(),
+                  ),
+
+                  ///재난 문자 (실종 관련)
+                  ValueListenableBuilder(
+                    valueListenable: valueNotifierListModelEmergencySmsMissing,
+                    builder: (context, value, child) => value != null
+
+                        ///데이터가 로딩되었을 때
+                        ? ListView.builder(
+                            itemCount: min(value.length, 5), //최대 5개
+                            itemBuilder: (context, index) => ItemEmergencySms(value[index]),
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                          )
+
+                        ///데이터 로딩 중
+                        : LoadingAnimationWidget.inkDrop(color: Colors.green, size: 32),
+                  ),
+
+                  ///로그인 정보 영역
+                  /* Consumer<ProviderUser>(
+                  builder: (context, value, child) => value.modelUser == null
+
+                      ///로그인 정보 없을때
+                      ? const SizedBox()
+
+                      ///로그인 중일때
+                      : Container(
+                          margin: const EdgeInsets.only(bottom: 10),
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                          color: Colors.white,
+                          width: MediaQuery.of(context).size.width,
+                          child: Row(children: [
+                            const FaIcon(
+                              FontAwesomeIcons.solidUserCircle,
+                              color: Colors.grey,
+                              size: 40,
+                            ),
+                            const SizedBox(
+                              width: 20,
+                            ),
+                            Consumer<ProviderUser>(
+                              builder: (context, value, child) => Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ///이름
+                                  Text(
+                                    value.modelUser?.name ?? "이름",
+                                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                                  ),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+
+                                  ///아이디
+                                  Text(
+                                    value.modelUser?.idExceptLT ?? '로그인을 해주세요.',
+                                    style: const TextStyle(fontSize: 12),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ]),
+                        ),
+                ),*/
+
+                  ///날씨 정보 영역
+                  ///날씨 정보 영역
+                  WidgetWeather(
+                    valueNotifierModelWeather: valueNotifierWeather,
+                    onRefreshWeather: () {
+                      _refreshWeather(refreshForce: true);
+                    },
+                    controllerRefreshWeather: controllerRefreshWeather,
+                  ),
+
+                  //const Spacer(),
+                  //const ItemMainBanner(),
+                ],
+              ),
             ),
           ),
         ),
@@ -536,6 +544,34 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
       MyApp.logger.wtf("재난 문자 api 요청 실패 : ${e.toString()}");
       valueNotifierListModelEmergencySmsDisaster.value = [];
       valueNotifierListModelEmergencySmsMissing.value = [];
+    }
+  }
+
+  Future<bool> _onWillPop() async {
+    if (Platform.isIOS) {
+      return true;
+    }
+
+    int timeNow = DateTime.now().millisecondsSinceEpoch;
+
+    if (timeNow - timeBackButtonPressed > 2000) {
+      Fluttertoast.cancel();
+
+      Fluttertoast.showToast(
+          msg: "한번 더 누르면 종료돼요.",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+
+      timeBackButtonPressed = timeNow;
+
+      return false;
+    } else {
+      SystemNavigator.pop();
+      return false;
     }
   }
 }
