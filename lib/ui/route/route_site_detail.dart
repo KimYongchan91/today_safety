@@ -79,17 +79,17 @@ class _RouteSiteDetailState extends State<RouteSiteDetail> with SingleTickerProv
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ///이미지 영역
+                ///현장 이미지 영역
                 SizedBox(
                   width: Get.width,
                   height: Get.height / 3,
                   child: Stack(
                     children: [
-                      ///이미지
+                      ///현장 이미지
                       CachedNetworkImage(
                         width: Get.width,
                         height: Get.height / 3,
-                        imageUrl: modelSite.urlLogoImage,
+                        imageUrl: modelSite.urlSiteImage,
                         fit: BoxFit.cover,
                       ),
 
@@ -120,6 +120,14 @@ class _RouteSiteDetailState extends State<RouteSiteDetail> with SingleTickerProv
                   padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
                   child: Row(
                     children: [
+                      ///로고 이미지
+                      CachedNetworkImage(
+                        width: 60,
+                        height: 60,
+                        imageUrl: modelSite.urlLogoImage,
+                        fit: BoxFit.cover,
+                      ),
+
                       Expanded(
                           child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
