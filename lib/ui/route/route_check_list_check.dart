@@ -6,17 +6,11 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:today_safety/const/model/model_check_list.dart';
 import 'package:today_safety/const/value/color.dart';
 import 'package:today_safety/ui/route/route_check_list_check_camera.dart';
-import 'package:today_safety/ui/route/test/route_test_animation_container.dart';
-import 'package:today_safety/ui/route/test/route_test_animation_hero.dart';
-import 'package:today_safety/ui/route/test/route_test_check_sequence.dart';
-import 'package:today_safety/ui/screen/screen_check_list_check_detail.dart';
 
 import '../../const/value/router.dart';
-import '../../custom/custom_text_style.dart';
 import '../../my_app.dart';
 import '../../service/util/util_check_list.dart';
 import '../../service/util/util_permission.dart';
-import '../item/item_check.dart';
 import '../screen/screen_check_list_check_main.dart';
 
 ///실제로 인증하는 페이지(카메라)
@@ -98,7 +92,7 @@ class _RouteCheckListCheckState extends State<RouteCheckListCheck> {
                 ],
               );
             } else {
-              return Icon(
+              return const Icon(
                 Icons.error,
                 color: Colors.red,
               );
@@ -192,7 +186,7 @@ class _Button extends StatelessWidget {
             padding: const EdgeInsets.only(top: 2),
             child: Text(
               label,
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
+              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
             ),
           ),
         ),

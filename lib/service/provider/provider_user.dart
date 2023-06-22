@@ -474,7 +474,7 @@ class ProviderUser extends ChangeNotifier {
             notifyListeners();
             break;
           case DocumentChangeType.removed:
-            modelSiteMy == null;
+            modelSiteMy = null;
             notifyListeners();
             break;
         }
