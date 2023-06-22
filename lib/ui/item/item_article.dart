@@ -16,7 +16,7 @@ class ItemArticle extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      child: SizedBox(
+      child: Container(
         width: Get.width,
         child: Column(
           mainAxisSize: MainAxisSize.min,

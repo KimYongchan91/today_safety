@@ -20,6 +20,7 @@ import 'package:today_safety/const/model/model_location.dart';
 import 'package:today_safety/const/model/model_site.dart';
 import 'package:today_safety/const/value/color.dart';
 import 'package:today_safety/const/value/router.dart';
+import 'package:today_safety/service/util/util_address.dart';
 import 'package:today_safety/service/util/util_location.dart';
 import 'package:today_safety/service/util/util_snackbar.dart';
 import 'package:today_safety/ui/dialog/dialog_close_route.dart';
@@ -617,7 +618,7 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
 
         //지번 주소
         modelLocationNew.code = listMapAddressData.first['address']['h_code'];
-        modelLocationNew.si = listMapAddressData.first['address']['region_1depth_name'];
+        modelLocationNew.si = formatAddressSi(listMapAddressData.first['address']['region_1depth_name']);
         modelLocationNew.gu = listMapAddressData.first['address']['region_2depth_name'];
         modelLocationNew.dong = listMapAddressData.first['address']['region_3depth_name'];
         modelLocationNew.addressJibun = listMapAddressData.first['address']['address_name'];

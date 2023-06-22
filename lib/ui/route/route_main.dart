@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
@@ -16,6 +17,7 @@ import 'package:provider/provider.dart';
 import 'package:today_safety/const/model/model_emergency_sms.dart';
 import 'package:today_safety/const/model/model_weather.dart';
 import 'package:today_safety/const/value/router.dart';
+import 'package:today_safety/const/value/value.dart';
 import 'package:today_safety/custom/custom_text_style.dart';
 import 'package:today_safety/service/util/util_address.dart';
 import 'package:today_safety/service/util/util_weather.dart';
@@ -44,6 +46,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
   //날씨
   ValueNotifier<ModelWeather?> valueNotifierWeather = ValueNotifier(null);
   late AnimationController controllerRefreshWeather;
+  late Completer completerRefreshWeather;
 
   //사건 사고 기사
   ValueNotifier<List<ModelArticle>?> valueNotifierListModelArticle = ValueNotifier(null);
@@ -66,6 +69,8 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
     );
 
     fToast.init(context);
+
+    completerRefreshWeather = Completer();
 
     ///날씨 자동 새로고침
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -383,7 +388,11 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
     MyApp.logger.d("주소 받아오는 데 걸린 시간 : ${DateTime.now().millisecondsSinceEpoch - time}ms");
     time = dateTimeNow.millisecondsSinceEpoch;
 
-    ModelWeather? modelWeather = await getWeatherFromLatLng(latLng.latitude, latLng.longitude);
+    ModelWeather? modelWeather = await getWeatherFromLatLng(latLng.latitude, latLng.longitude).then((value) {
+      ///
+      completerRefreshWeather.complete();
+      return value;
+    });
     //MyApp.logger.d('조회된 날씨 정보 : ${modelWeather.toString()}');
 
     //MyApp.logger.d("기상청에서 날씨 정보 받아오는 데 걸린 시간 : ${DateTime.now().millisecondsSinceEpoch-time}ms");
@@ -472,7 +481,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
         "&pageNo=1"
         "&numOfRows=100";
 
-    MyApp.logger.d('url : $url ');
+    //MyApp.logger.d('url : $url ');
 
     try {
       Map<String, String> requestHeaders = {
@@ -510,13 +519,29 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
 
           for (var element in listEmergencySmsData) {
             try {
+              String locationName = formatAddressSi(element['location_name'] ?? '');
+
+              bool isNearRegion = false;
+              if (completerRefreshWeather.isCompleted && valueNotifierWeather.value != null) {
+                if (locationName.contains(valueNotifierWeather.value!.modelLocation.si) == true) {
+                  if (valueNotifierWeather.value!.modelLocation.lat == defaultLat &&
+                      valueNotifierWeather.value!.modelLocation.lng == defaultLng) {
+                    //기본지역 이라면
+                  } else {
+                    //기본지역이 아니라면
+                    isNearRegion = true;
+                  }
+                }
+              }
+
               ModelEmergencySms modelEmergencySms = ModelEmergencySms(
                 dateTime: dateFormat.parse(element['create_date']),
                 //DateTime.parse(element['create_date']),
                 id: element['md101_sn'] ?? '',
-                locaionId: element['location_id'] ?? '',
-                locaionName: formatAddressSi(element['location_name'] ?? ''),
+                locationId: element['location_id'] ?? '',
+                locationName: locationName,
                 msg: element['msg'] ?? '',
+                isNearRegion: isNearRegion,
               );
 
               bool isContainMissingKeyword = false;
@@ -537,10 +562,48 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
             }
           }
 
-          MyApp.logger.d(
-              "재난문자 응답 결과 개수. 재난 : ${listModelEmergencySmsDisasterNew.length}, 실종 : ${listModelEmergencySmsMissingNew.length}");
+          //MyApp.logger.d(
+          //    "재난문자 응답 결과 개수. 재난 : ${listModelEmergencySmsDisasterNew.length}, 실종 : ${listModelEmergencySmsMissingNew.length}");
+
           valueNotifierListModelEmergencySmsDisaster.value = listModelEmergencySmsDisasterNew;
           valueNotifierListModelEmergencySmsMissing.value = listModelEmergencySmsMissingNew;
+
+          //만약 아직 날씨를 받아오지 않았다면, 콜백 등록
+          completerRefreshWeather.future.then((_) {
+            if (valueNotifierWeather.value!.modelLocation.lat == defaultLat &&
+                valueNotifierWeather.value!.modelLocation.lng == defaultLng) {
+              return;
+            }
+
+            List<ModelEmergencySms> listModelEmergencySmsDisasterNew = [
+              ...(valueNotifierListModelEmergencySmsDisaster.value ?? [])
+            ];
+
+            List<ModelEmergencySms> listModelEmergencySmsMissingNew = [
+              ...(valueNotifierListModelEmergencySmsMissing.value ?? [])
+            ];
+
+            if (valueNotifierWeather.value == null) {
+              return;
+            }
+
+            String si = valueNotifierWeather.value!.modelLocation.si;
+
+            for (var element in listModelEmergencySmsDisasterNew) {
+              if (element.locationName.contains(si) == true) {
+                element.isNearRegion = true;
+              }
+            }
+
+            for (var element in listModelEmergencySmsMissingNew) {
+              if (element.locationName.contains(si) == true) {
+                element.isNearRegion = true;
+              }
+            }
+
+            valueNotifierListModelEmergencySmsDisaster.value = listModelEmergencySmsDisasterNew;
+            valueNotifierListModelEmergencySmsMissing.value = listModelEmergencySmsMissingNew;
+          });
         }
       }
     } catch (e) {

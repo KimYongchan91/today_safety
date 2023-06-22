@@ -47,7 +47,7 @@ class ProviderUser extends ChangeNotifier {
         ModelUser modelUser = ModelUser.fromJson(
             querySnapshot.docs.first.data() as Map<dynamic, dynamic>, querySnapshot.docs.first.id);
         if (modelUser.state == keyOn) {
-          MyApp.logger.d("유저 문서가 존재함");
+          //MyApp.logger.d("유저 문서가 존재함");
           this.modelUser = modelUser;
           jobAfterLoginSuccess();
           notifyListeners();

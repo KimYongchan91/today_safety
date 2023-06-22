@@ -15,7 +15,11 @@ class ItemEmergencySms extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      child: SizedBox(
+      child: Container(
+        decoration: BoxDecoration(
+          ///내 지역의 재난 문자라면 강조
+          color: modelEmergencySms.isNearRegion ? Colors.red : Colors.white,
+        ),
         width: Get.width,
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -31,7 +35,7 @@ class ItemEmergencySms extends StatelessWidget {
                 ///지역
                 Expanded(
                   child: Text(
-                    modelEmergencySms.locaionName,
+                    modelEmergencySms.locationName,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),

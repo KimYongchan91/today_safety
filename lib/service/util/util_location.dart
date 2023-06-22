@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dart_geohash/dart_geohash.dart';
 import 'package:today_safety/const/value/key.dart';
 import 'package:today_safety/my_app.dart';
+import 'package:today_safety/service/util/util_address.dart';
 import 'package:today_safety/service/util/util_snackbar.dart';
 
 import '../../const/model/model_location.dart';
@@ -113,7 +114,7 @@ Future<ModelLocation?> getModelLocationWeatherFromLatLng(double lat, double lng,
       ModelLocation modelLocation = ModelLocation(
         lat: lat,
         lng: lng,
-        si: docFirst['region_1depth_name'],
+        si: formatAddressSi(docFirst['region_1depth_name'])  ,
         gu: docFirst['region_2depth_name'],
         dong: docFirst['region_3depth_name'],
         code: docFirst[keyCode],
@@ -122,6 +123,7 @@ Future<ModelLocation?> getModelLocationWeatherFromLatLng(double lat, double lng,
         gh6: gh6,
         gh7: gh7,
       );
+
 
       if (isIncludeCodeH && modelLocation.code == null) {
         throw Exception('isIncludeCodeH && modelLocation.code ==null');

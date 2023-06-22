@@ -112,7 +112,7 @@ Future<ModelWeather?> getWeatherFromLatLng(double lat, double lng) async {
       "&nx=$codeX"
       "&ny=$codeY";
 
-  MyApp.logger.d('url : $url ');
+  //MyApp.logger.d('url : $url ');
 
   try {
     Map<String, String> requestHeaders = {
