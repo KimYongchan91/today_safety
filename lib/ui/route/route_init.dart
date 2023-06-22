@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -43,6 +46,7 @@ class _RouteInitState extends State<RouteInit> {
     initDeepLink();
     initLogin();
     initKaKaoSdk();
+    initFcm();
 
     await Future.delayed(const Duration(seconds: 1));
     Get.offAllNamed(keyRouteMain);
@@ -68,6 +72,60 @@ class _RouteInitState extends State<RouteInit> {
   initKaKaoSdk() {
     KakaoSdk.init(nativeAppKey: 'f77b6bf70c14c1698265fd3a1d965768');
     AuthRepository.initialize(appKey: '440a470432ea1e6ff3a460609d715301');
+  }
+
+  initFcm() async {
+    MyApp.completerInitFcm = Completer();
+
+    try {
+      FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+
+      NotificationSettings notificationSettings = await firebaseMessaging.requestPermission(
+        alert: true,
+        announcement: false,
+        badge: true,
+        carPlay: false,
+        criticalAlert: false,
+        provisional: false,
+        sound: true,
+      );
+
+      switch (notificationSettings.authorizationStatus) {
+        case AuthorizationStatus.authorized:
+          MyApp.logger.d("FCM 권한 승인됨");
+          break;
+        case AuthorizationStatus.denied:
+          MyApp.logger.d("FCM 권한 거부됨");
+          throw Exception("FCM 권한 거부됨");
+        case AuthorizationStatus.notDetermined:
+          MyApp.logger.d("FCM 권한 아직 결정 안 함");
+          throw Exception("FCM 권한 아직 결정 안 함");
+        case AuthorizationStatus.provisional:
+          MyApp.logger.d("FCM 권한 provisional");
+          throw Exception("FCM 권한 provisional");
+      }
+
+      String? token = await firebaseMessaging.getToken();
+      if (token == null) {
+        throw Exception("token==null");
+      }
+
+      MyApp.logger.d("FCM 토큰 : $token");
+      MyApp.tokenFcm = token;
+
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+        MyApp.logger.d('포그라운드 FCM data: ${message.data}');
+
+        if (message.notification != null) {
+          MyApp.logger.d('Message also contained a notification: ${message.notification}');
+        }
+      });
+
+      MyApp.completerInitFcm.complete();
+    } on Exception catch (e) {
+      MyApp.logger.wtf("FCM 초기화 실패 : ${e.toString()}");
+      MyApp.completerInitFcm.completeError(e);
+    }
   }
 
   @override

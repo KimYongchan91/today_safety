@@ -460,6 +460,7 @@ class ProviderUser extends ChangeNotifier {
 
   ///로그인 성공 후의 작업
   jobAfterLoginSuccess() async {
+    //내가 관리하는 근무지에 대한 리스너 등록
     subscriptionSiteMy = FirebaseFirestore.instance
         .collection(keySites)
         .where(keyMaster, isEqualTo: modelUser?.id ?? '')
@@ -480,6 +481,26 @@ class ProviderUser extends ChangeNotifier {
         }
       }
     });
+
+    //토큰이 바뀌었다면 수정해줌
+    _addToken();
+  }
+
+  _addToken() async {
+    //fcm 초기화 대기
+    if (MyApp.completerInitFcm.isCompleted == false) {
+      await MyApp.completerInitFcm.future;
+    }
+
+    //토큰이 없다면 추가
+    if (modelUser != null &&
+        MyApp.tokenFcm != null &&
+        modelUser!.listToken.contains(MyApp.tokenFcm) == false) {
+      await FirebaseFirestore.instance.collection(keyUsers).doc(modelUser!.docId).update({
+        keyToken: FieldValue.arrayUnion([MyApp.tokenFcm]),
+      });
+      modelUser!.listToken.add(MyApp.tokenFcm);
+    }
   }
 
   clearProvider({bool isNotify = true}) async {

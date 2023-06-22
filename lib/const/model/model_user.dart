@@ -12,6 +12,7 @@ class ModelUser {
   final String loginType;
   final String state;
   final Timestamp dateJoin;
+  List<dynamic> listToken;
 
   ModelUser({
     this.docId = '',
@@ -21,6 +22,7 @@ class ModelUser {
     required this.loginType,
     required this.state,
     required this.dateJoin,
+    this.listToken = const [],
   });
 
   ModelUser.fromJson(Map map, this.docId)
@@ -31,7 +33,8 @@ class ModelUser {
         name = map[keyName] ?? '',
         loginType = map[keyLoginType] ?? '',
         state = map[keyState] ?? '',
-        dateJoin = getTimestampFromData(map[keyDateJoin]) ?? Timestamp.now();
+        dateJoin = getTimestampFromData(map[keyDateJoin]) ?? Timestamp.now(),
+        listToken = map[keyToken] ?? [];
 
   Map<String, dynamic> toJson({bool isForServerForm = false}) {
     Map<String, dynamic> result = {
@@ -42,6 +45,7 @@ class ModelUser {
       keyLoginType: loginType,
       keyState: state,
       keyDateJoin: dateJoin,
+      keyToken: listToken,
     };
 
     return isForServerForm ? transformForServerDataType(result) : result;
