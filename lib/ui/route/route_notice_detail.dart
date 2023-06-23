@@ -85,7 +85,7 @@ class _RouteNoticeDetailState extends State<RouteNoticeDetail> {
                       '본문',
                       style: CustomTextStyle.normalBlackBold(),
                     ),
-                    Text(modelNotice!.title),
+                    Text(modelNotice!.body),
                   ],
                 );
               } else {
