@@ -162,7 +162,7 @@ class _RouteNoticeNewState extends State<RouteNoticeNew> {
                       style: CustomTextStyle.normalBlackBold(),
                     ),
 
-                     TextField(
+                    TextField(
                       maxLines: 1,
                       controller: textEditingControllerTitle,
                       maxLength: _lengthTitleMax,
@@ -187,7 +187,7 @@ class _RouteNoticeNewState extends State<RouteNoticeNew> {
                       style: CustomTextStyle.normalBlackBold(),
                     ),
 
-                     TextField(
+                    TextField(
                       maxLength: _lengthBodyMax,
                       minLines: 8,
                       maxLines: 8,
@@ -332,11 +332,16 @@ class _RouteNoticeNewState extends State<RouteNoticeNew> {
     );
 
     try {
-      DocumentReference documentReference =  await FirebaseFirestore.instance.collection(keyNoticeS).add(modelNotice.toJson());
+      DocumentReference documentReference =
+          await FirebaseFirestore.instance.collection(keyNoticeS).add(modelNotice.toJson());
+
+      Get.toNamed('$keyRouteNoticeDetail/${documentReference.id}', arguments: {keyModelNotice: modelNotice});
 
       showSnackBarOnRoute('공지사항을 게시했어요.');
 
       //여기서 fcm 전송
+
+
 
       valueNotifierIsUploading.value = false;
     } catch (e) {
