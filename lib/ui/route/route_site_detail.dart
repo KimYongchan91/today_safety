@@ -117,16 +117,20 @@ class _RouteSiteDetailState extends State<RouteSiteDetail> with SingleTickerProv
 
                 Container(
                   color: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                   child: Row(
                     children: [
                       ///로고 이미지
-                      CachedNetworkImage(
-                        width: 60,
-                        height: 60,
-                        imageUrl: modelSite.urlLogoImage,
-                        fit: BoxFit.cover,
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: CachedNetworkImage(
+                          width: 60,
+                          height: 60,
+                          imageUrl: modelSite.urlLogoImage,
+                          fit: BoxFit.cover,
+                        ),
                       ),
+                      const SizedBox(width: 10,),
 
                       Expanded(
                           child: Column(
@@ -141,7 +145,7 @@ class _RouteSiteDetailState extends State<RouteSiteDetail> with SingleTickerProv
                             ),
                           ),
                           const SizedBox(
-                            height: 20,
+                            height: 10,
                           ),
 
                           ///주소
@@ -178,7 +182,8 @@ class _RouteSiteDetailState extends State<RouteSiteDetail> with SingleTickerProv
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ],
-                      )
+                      ),
+                      const SizedBox(width: 10,),
                     ],
                   ),
                 ),

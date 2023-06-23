@@ -215,7 +215,8 @@ class _ScreenLoginProfileState extends State<ScreenLoginProfile> {
                         children: [
                           ///근무지 로고 이미지
                           ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(100),
+                            //borderRadius: BorderRadius.circular(20),
                             child: CachedNetworkImage(
                               imageUrl: widget.providerUser.modelSiteMy!.urlLogoImage,
                               fit: BoxFit.cover,
@@ -223,6 +224,8 @@ class _ScreenLoginProfileState extends State<ScreenLoginProfile> {
                               height: 60,
                             ),
                           ),
+
+                          const SizedBox(width: 10,),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,

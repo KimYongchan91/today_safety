@@ -52,17 +52,28 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
   ValueNotifier<List<ModelArticle>?> valueNotifierListModelArticle = ValueNotifier(null);
 
   //재난 문자
-  ValueNotifier<List<ModelEmergencySms>?> valueNotifierListModelEmergencySmsDisaster =
-      ValueNotifier(null); //재난
-  ValueNotifier<List<ModelEmergencySms>?> valueNotifierListModelEmergencySmsMissing =
-      ValueNotifier(null); //실종
+  ValueNotifier<List<ModelEmergencySms>?> valueNotifierListModelEmergencySmsDisaster = ValueNotifier(null); //재난
+  ValueNotifier<List<ModelEmergencySms>?> valueNotifierListModelEmergencySmsMissing = ValueNotifier(null); //실종
 
   //앱 종료 방지용
   int timeBackButtonPressed = 0;
   FToast fToast = FToast();
+  Timer? timer;
+
+  PageController controller = PageController(
+    //처음 실핼할 페이지
+    initialPage: 0,
+  );
 
   @override
   void initState() {
+    timer = Timer.periodic(Duration(seconds: 2), (timer) {
+      int currentPage = controller.page!.toInt();
+      int nextPage = currentPage + 1;
+
+      controller.animateToPage(nextPage, duration: Duration(seconds: 5), curve: Curves.decelerate);
+    });
+
     controllerRefreshWeather = AnimationController(
       duration: const Duration(milliseconds: 1000),
       vsync: this,
@@ -206,74 +217,199 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                     color: Colors.black45,
                   ),
 
-                  const Text(
-                    '최근 사망 사고 기사',
-                    style: CustomTextStyle.bigBlackBold(),
-                  ),
-                  const Text(
-                    '한국산업안전보건공단 제공',
-                    style: CustomTextStyle.normalGrey(),
+                  const SizedBox(
+                    height: 10,
                   ),
 
-                  ///사건 사고 기사
-                  ValueListenableBuilder(
-                    valueListenable: valueNotifierListModelArticle,
-                    builder: (context, value, child) => value != null
+                  Container(
+                    color: Colors.white,
+                    width: Get.width,
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                    child: Column(
+                      children: [
+                        const Text(
+                          '최근 사망 사고 기사',
+                          style: CustomTextStyle.bigBlackBold(),
+                        ),
 
-                        ///기사가 로딩되었을 때
-                        ? ListView.builder(
+                        const SizedBox(
+                          height: 10,
+                        ),
+
+                        ///사건 사고 기사
+                        ValueListenableBuilder(
+                          valueListenable: valueNotifierListModelArticle,
+                          builder: (context, value, child) => value != null
+
+                              ///기사가 로딩되었을 때
+                              ? SizedBox(
+                                  width: Get.width,
+                                  height: 80,
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: PageView.builder(
+                                            controller: controller,
+                                            itemBuilder: (context, index) {
+                                              return ItemArticle(value[index]);
+                                            }),
+                                      ),
+                                      const SizedBox(
+                                        width: 20,
+                                      ),
+                                      InkWell(
+                                        onTap: () {},
+                                        child: FaIcon(FontAwesomeIcons.angleRight),
+                                      )
+                                    ],
+                                  ),
+                                )
+                              /*
+                    ListView.builder(
                             itemCount: min(value.length, 5), //최대 5개
                             itemBuilder: (context, index) => ItemArticle(value[index]),
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
                           )
+                    */
 
-                        ///기사 로딩 중
-                        : LoadingAnimationWidget.inkDrop(color: Colors.green, size: 32),
+                              ///기사 로딩 중
+                              : LoadingAnimationWidget.inkDrop(color: Colors.green, size: 32),
+                        ),
+
+                        const Align(
+                          alignment: Alignment.bottomRight,
+                          child: Text(
+                            '한국산업안전보건공단 제공',
+                            style: TextStyle(
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
 
-                  const Text(
-                    '긴급 재난 문자',
-                    style: CustomTextStyle.bigBlackBold(),
+                  const SizedBox(
+                    height: 10,
                   ),
 
-                  ///재난 문자 (재난 관련)
-                  ValueListenableBuilder(
-                    valueListenable: valueNotifierListModelEmergencySmsDisaster,
-                    builder: (context, value, child) => value != null
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                    width: Get.width,
+                    color: Colors.white,
+                    child: Column(
+                      children: [
+                        const Text(
+                          '긴급 재난 문자',
+                          style: CustomTextStyle.bigBlackBold(),
+                        ),
 
-                        ///데이터가 로딩되었을 때
-                        ? ListView.builder(
-                            itemCount: min(value.length, 5), //최대 5개
-                            itemBuilder: (context, index) => ItemEmergencySms(value[index]),
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                          )
+                        const SizedBox(
+                          height: 20,
+                        ),
 
-                        ///데이터 로딩 중
-                        : LoadingAnimationWidget.inkDrop(color: Colors.green, size: 32),
+                        ///재난 문자 (재난 관련)
+                        ValueListenableBuilder(
+                          valueListenable: valueNotifierListModelEmergencySmsDisaster,
+                          builder: (context, value, child) => value != null
+
+                              ///데이터가 로딩되었을 때
+                              ? SizedBox(
+                                  width: Get.width,
+                                  height: 80,
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Expanded(
+                                        child: PageView.builder(
+                                            controller: controller,
+                                            itemBuilder: (context, index) {
+                                              return ItemEmergencySms(value[index]);
+                                            }),
+                                      ),
+
+                                      /*
+                                      ListView.builder(
+                                        itemCount: min(value.length, 5), //최대 5개
+                                        itemBuilder: (context, index) => ItemEmergencySms(value[index]),
+                                        shrinkWrap: true,
+                                        physics: const NeverScrollableScrollPhysics(),
+                                      ),*/
+
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      InkWell(
+                                        onTap: () {},
+                                        child: const FaIcon(FontAwesomeIcons.angleRight),
+                                      )
+                                    ],
+                                  ),
+                                )
+
+                              ///데이터 로딩 중
+                              : LoadingAnimationWidget.inkDrop(color: Colors.green, size: 32),
+                        ),
+                      ],
+                    ),
                   ),
 
-                  const Text(
-                    '실종자 찾기',
-                    style: CustomTextStyle.bigBlackBold(),
+                  const SizedBox(
+                    height: 10,
                   ),
 
-                  ///재난 문자 (실종 관련)
-                  ValueListenableBuilder(
-                    valueListenable: valueNotifierListModelEmergencySmsMissing,
-                    builder: (context, value, child) => value != null
+                  Container(
+                    color: Colors.white,
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 30),
+                    width: Get.width,
+                    child: Column(
+                      children: [
+                        const Text(
+                          '실종자 찾기',
+                          style: CustomTextStyle.bigBlackBold(),
+                        ),
 
-                        ///데이터가 로딩되었을 때
-                        ? ListView.builder(
-                            itemCount: min(value.length, 5), //최대 5개
-                            itemBuilder: (context, index) => ItemEmergencySms(value[index]),
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                          )
+                        const SizedBox(
+                          height: 20,
+                        ),
 
-                        ///데이터 로딩 중
-                        : LoadingAnimationWidget.inkDrop(color: Colors.green, size: 32),
+                        ///재난 문자 (실종 관련)
+                        SizedBox(
+                          width: Get.width,
+                          height: 80,
+                          child: Row(
+                            children: [
+                              ValueListenableBuilder(
+                                valueListenable: valueNotifierListModelEmergencySmsMissing,
+                                builder: (context, value, child) => value != null
+
+                                    ///데이터가 로딩되었을 때
+                                    ? Expanded(
+                                        child: PageView.builder(
+                                            controller: controller,
+                                            itemBuilder: (context, index) {
+                                              return ItemEmergencySms(value[index]);
+                                            }),
+                                      )
+
+                                    /*
+                                ListView.builder(
+                                  itemCount: min(value.length, 5), //최대 5개
+                                  itemBuilder: (context, index) => ItemEmergencySms(value[index]),
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                )
+*/
+
+                                    ///데이터 로딩 중
+                                    : LoadingAnimationWidget.inkDrop(color: Colors.green, size: 32),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
 
                   ///로그인 정보 영역
@@ -432,8 +568,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
       try {
         String? href = element.href;
         String? date = regExpDate.stringMatch(innerHtmlFormatted)?.replaceAll('[', '').replaceAll(',', '');
-        String? region =
-            regExpRegion.stringMatch(innerHtmlFormatted)?.replaceAll(']', '').replaceAll(',', '').trim();
+        String? region = regExpRegion.stringMatch(innerHtmlFormatted)?.replaceAll(']', '').replaceAll(',', '').trim();
         String? title = innerHtmlFormatted.substring(innerHtmlFormatted.indexOf(']') + 1).trim();
 
         //https://www.kosha.or.kr/kosha/report/kosha_news.do?mode=view&articleNo=442620
