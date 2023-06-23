@@ -31,14 +31,32 @@ Timestamp? getTimestampFromData(dynamic data) {
 
 Map<String, dynamic> transformForServerDataType(Map<String, dynamic> mapOld) {
   Map<String, dynamic> mapNew = {...mapOld};
+  for (var key in mapNew.keys) {
+    dynamic value = mapNew[key];
+    if (value is Map) {
+      //타입이 맵이라면
+      //또 한번 변환
+      mapNew[key] = _transformMap(value);
+    } else {
+      //맵이 아니라면
+      if (mapNew[key] is Timestamp) {
+        mapNew[key] = (mapNew[key] as Timestamp).millisecondsSinceEpoch;
+      }
+    }
+  }
+
+  //MyApp.logger.d("변경된 맵 : ${mapNew.toString()}");
+
+  return mapNew;
+}
+
+Map<String, dynamic> _transformMap(Map mapOld) {
+  Map<String, dynamic> mapNew = {...mapOld};
   for (var element in mapNew.keys) {
     if (mapNew[element] is Timestamp) {
       mapNew[element] = (mapNew[element] as Timestamp).millisecondsSinceEpoch;
     }
   }
-
-  MyApp.logger.d("변경된 맵 : ${mapNew.toString()}");
-
   return mapNew;
 }
 

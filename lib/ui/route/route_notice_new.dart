@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,13 +9,16 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:today_safety/const/model/model_check_list.dart';
 import 'package:today_safety/const/model/model_notice.dart';
 import 'package:today_safety/const/model/model_site.dart';
+import 'package:today_safety/const/model/model_user.dart';
 import 'package:today_safety/const/value/key.dart';
 import 'package:today_safety/const/value/router.dart';
+import 'package:today_safety/const/value/value.dart';
 import 'package:today_safety/custom/custom_text_field.dart';
 import 'package:today_safety/ui/widget/icon_error.dart';
 
 import '../../custom/custom_text_style.dart';
 import '../../my_app.dart';
+import '../../service/util/util_list.dart';
 import '../../service/util/util_snackbar.dart';
 
 const int _lengthTitleMin = 3;
@@ -141,8 +145,8 @@ class _RouteNoticeNewState extends State<RouteNoticeNew> {
                                 valueListenable: valueNotifierSelectedListModelCheckList,
                                 builder: (context, value, child) => Wrap(
                                       children: [
-                                        ...listModelCheckListAll.map(
-                                            (e) => _ItemSelectedModelCheckList(e, value.contains(e), onTap))
+                                        ...listModelCheckListAll
+                                            .map((e) => _ItemSelectedModelCheckList(e, value.contains(e), onTap))
                                       ],
                                     ));
                           } else {
@@ -249,8 +253,7 @@ class _RouteNoticeNewState extends State<RouteNoticeNew> {
                             padding: EdgeInsets.only(top: 2),
                             child: Text(
                               '완료',
-                              style:
-                                  TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 20),
+                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 20),
                             ),
                           ),
                   ),
@@ -339,14 +342,95 @@ class _RouteNoticeNewState extends State<RouteNoticeNew> {
 
       showSnackBarOnRoute('공지사항을 게시했어요.');
 
-      //여기서 fcm 전송
-
-
+      //fcm 전송
+      sendFcm(modelNotice, documentReference);
+      //최근 7일 이내에 이 팀에 인증한 사용자 찾기
 
       valueNotifierIsUploading.value = false;
     } catch (e) {
       MyApp.logger.wtf('공지사항 게시 실패 : ${e.toString()}');
       valueNotifierIsUploading.value = false;
+    }
+  }
+
+  sendFcm(ModelNotice modelNotice, DocumentReference documentReference) async {
+    //토큰 리스트를 받아와야함
+
+    List<String> listCheckListId = [
+      ...valueNotifierSelectedListModelCheckList.value.map(
+        (e) => e.docId,
+      )
+    ];
+    MyApp.logger.d("listCheckListId : ${listCheckListId.toString()}");
+
+    Timestamp timestampBefore =
+        Timestamp.fromMillisecondsSinceEpoch(Timestamp.now().millisecondsSinceEpoch - millisecondDay * 7); //7일전
+
+    //유저 정보 조회
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection(keyUserCheckHistories)
+          .where(keyCheckListId, whereIn: listCheckListId)
+          .where(keyDate, isGreaterThanOrEqualTo: timestampBefore)
+          .get();
+
+      //유저 아이디 set
+      Set<String> setUserId = {};
+
+      if (querySnapshot.docs.isNotEmpty) {
+        for (var element in querySnapshot.docs) {
+          Map data = element.data() as Map;
+          String? id = data[keyUser]?[keyId];
+          if (id != null) {
+            setUserId.add(id);
+          }
+        }
+      }
+
+      List<List<String>> listUserIdSliced = getListSlice<String>(setUserId.toList(), 10);
+
+      List<Future> listFuture = [];
+      Set<String> setToken = {};
+      for (var element in listUserIdSliced) {
+        listFuture
+            .add(FirebaseFirestore.instance.collection(keyUserS).where(keyId, whereIn: element).get().then((value) {
+          for (var element in value.docs) {
+            ModelUser modelUser = ModelUser.fromJson(element.data() as Map, element.id);
+            setToken.addAll([...modelUser.listToken]);
+          }
+        }).catchError((e) {
+          MyApp.logger.wtf("에러 발생 : ${e.toString()}");
+        }));
+      }
+
+      await Future.wait(listFuture);
+
+      ///fcm 전송
+      /*data = {
+         tokens : [...token],
+         notice : {...공지사항}
+       }*/
+
+      Map<String, dynamic> dataNotice = modelNotice.toJson(isForServerForm: true);
+      dataNotice[keyDocId] = documentReference.id;
+      //임시로 check_list 값을 없앰.
+      //timestamp data type 문제
+      dataNotice.remove(keyCheckList);
+      MyApp.logger.d("요청 데이터 : ${dataNotice.toString()}");
+
+      //전송 시작
+      HttpsCallableResult<dynamic> result = await FirebaseFunctions.instanceFor(region: "asia-northeast3")
+          .httpsCallable('sendFcmNotice')
+          .call(<String, dynamic>{
+        'tokens': setToken.toList(),
+        'notice': dataNotice,
+      });
+
+      MyApp.logger.d("응답 결과 : ${result.data}");
+
+      //if (result.data[keyAuthenticated] == true) {}
+    } catch (e) {
+      MyApp.logger.wtf("sendFcm 실패 : ${e.toString()}");
     }
   }
 }
@@ -356,8 +440,7 @@ class _ItemSelectedModelCheckList extends StatelessWidget {
   final bool isSelected;
   final void Function(ModelCheckList) onTap;
 
-  const _ItemSelectedModelCheckList(this.modelCheckList, this.isSelected, this.onTap, {Key? key})
-      : super(key: key);
+  const _ItemSelectedModelCheckList(this.modelCheckList, this.isSelected, this.onTap, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
