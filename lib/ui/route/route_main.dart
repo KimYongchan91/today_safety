@@ -19,6 +19,7 @@ import 'package:today_safety/const/model/model_weather.dart';
 import 'package:today_safety/const/value/router.dart';
 import 'package:today_safety/const/value/value.dart';
 import 'package:today_safety/custom/custom_text_style.dart';
+import 'package:today_safety/custom/custom_value_listenable_builder2.dart';
 import 'package:today_safety/service/util/util_address.dart';
 import 'package:today_safety/service/util/util_weather.dart';
 import 'package:today_safety/ui/item/item_article.dart';
@@ -65,11 +66,14 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
   int timeBackButtonPressed = 0;
   FToast fToast = FToast();
 
-  //
+  //기사, 재난문자 page 관련
   Timer? timer;
   final PageController controllerArticle = PageController(initialPage: 0);
   final PageController controllerEmergencySmsDisaster = PageController(initialPage: 0);
   final PageController controllerEmergencySmsMissing = PageController(initialPage: 0);
+  final ValueNotifier<int> valueNotifierPageArticle = ValueNotifier(0);
+  final ValueNotifier<int> valueNotifierPageEmergencySmsDisaster = ValueNotifier(0);
+  final ValueNotifier<int> valueNotifierPageEmergencySmsMissing = ValueNotifier(0);
 
   int weatherInt = 0;
   final List<String> weather = ['rain', 'heat', 'clean', 'thunder'];
@@ -100,6 +104,8 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
         if (nextPage <= valueNotifierListModelArticle.value!.length - 1) {
           controllerArticle.animateToPage(nextPage,
               duration: const Duration(seconds: 2), curve: Curves.decelerate);
+        } else {
+          controllerArticle.animateToPage(0, duration: const Duration(seconds: 2), curve: Curves.decelerate);
         }
       }
 
@@ -111,6 +117,9 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
         if (nextPage <= valueNotifierListModelEmergencySmsDisaster.value!.length - 1) {
           controllerEmergencySmsDisaster.animateToPage(nextPage,
               duration: const Duration(seconds: 2), curve: Curves.decelerate);
+        } else {
+          controllerEmergencySmsDisaster.animateToPage(0,
+              duration: const Duration(seconds: 2), curve: Curves.decelerate);
         }
       }
 
@@ -121,6 +130,9 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
         int nextPage = currentPage + 1;
         if (nextPage <= valueNotifierListModelEmergencySmsMissing.value!.length - 1) {
           controllerEmergencySmsMissing.animateToPage(nextPage,
+              duration: const Duration(seconds: 2), curve: Curves.decelerate);
+        }else{
+          controllerEmergencySmsMissing.animateToPage(0,
               duration: const Duration(seconds: 2), curve: Curves.decelerate);
         }
       }
@@ -333,9 +345,20 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          '최근 사망 사고 기사',
-                          style: CustomTextStyle.bigBlackBold(),
+                        Row(
+                          children: [
+                            const Text(
+                              '최근 사망 사고 기사',
+                              style: CustomTextStyle.bigBlackBold(),
+                            ),
+                            const Spacer(),
+                            CustomValueListenableBuilder2(
+                              a: valueNotifierListModelArticle,
+                              b: valueNotifierPageArticle,
+                              builder: (context, a, b, child) =>
+                                  a != null ? Text('${b + 1}/${a.length}') : Container(),
+                            ),
+                          ],
                         ),
 
                         const SizedBox(
@@ -355,18 +378,23 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                                     children: [
                                       Expanded(
                                         child: PageView.builder(
-                                            controller: controllerArticle,
-                                            itemBuilder: (context, index) {
-                                              return ItemArticle(value[index]);
-                                            }),
+                                          controller: controllerArticle,
+                                          itemCount: value.length,
+                                          itemBuilder: (context, index) {
+                                            return ItemArticle(value[index]);
+                                          },
+                                          onPageChanged: (value) {
+                                            valueNotifierPageArticle.value = value;
+                                          },
+                                        ),
                                       ),
                                       const SizedBox(
                                         width: 20,
                                       ),
-                                      InkWell(
+                                      /*  InkWell(
                                         onTap: () {},
                                         child: const FaIcon(FontAwesomeIcons.angleRight),
-                                      )
+                                      )*/
                                     ],
                                   ),
                                 )
@@ -407,9 +435,20 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          '긴급 재난 문자',
-                          style: CustomTextStyle.bigBlackBold(),
+                        Row(
+                          children: [
+                            const Text(
+                              '긴급 재난 문자',
+                              style: CustomTextStyle.bigBlackBold(),
+                            ),
+                            const Spacer(),
+                            CustomValueListenableBuilder2(
+                              a: valueNotifierListModelEmergencySmsDisaster,
+                              b: valueNotifierPageEmergencySmsDisaster,
+                              builder: (context, a, b, child) =>
+                                  a != null ? Text('${b + 1}/${a.length}') : Container(),
+                            ),
+                          ],
                         ),
 
                         const SizedBox(
@@ -430,10 +469,15 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                                     children: [
                                       Expanded(
                                         child: PageView.builder(
-                                            controller: controllerEmergencySmsDisaster,
-                                            itemBuilder: (context, index) {
-                                              return ItemEmergencySms(value[index]);
-                                            }),
+                                          controller: controllerEmergencySmsDisaster,
+                                          itemCount: value.length,
+                                          itemBuilder: (context, index) {
+                                            return ItemEmergencySms(value[index]);
+                                          },
+                                          onPageChanged: (value) {
+                                            valueNotifierPageEmergencySmsDisaster.value = value;
+                                          },
+                                        ),
                                       ),
 
                                       /*
@@ -443,14 +487,6 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                                         shrinkWrap: true,
                                         physics: const NeverScrollableScrollPhysics(),
                                       ),*/
-
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      InkWell(
-                                        onTap: () {},
-                                        child: const FaIcon(FontAwesomeIcons.angleRight),
-                                      )
                                     ],
                                   ),
                                 )
@@ -473,9 +509,20 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          '실종자 찾기',
-                          style: CustomTextStyle.bigBlackBold(),
+                        Row(
+                          children: [
+                            const Text(
+                              '실종자 찾기',
+                              style: CustomTextStyle.bigBlackBold(),
+                            ),
+                            const Spacer(),
+                            CustomValueListenableBuilder2(
+                              a: valueNotifierListModelEmergencySmsMissing,
+                              b: valueNotifierPageEmergencySmsMissing,
+                              builder: (context, a, b, child) =>
+                                  a != null ? Text('${b + 1}/${a.length}') : Container(),
+                            ),
+                          ],
                         ),
 
                         const SizedBox(
@@ -495,10 +542,15 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                                     ///데이터가 로딩되었을 때
                                     ? Expanded(
                                         child: PageView.builder(
-                                            controller: controllerEmergencySmsMissing,
-                                            itemBuilder: (context, index) {
-                                              return ItemEmergencySms(value[index]);
-                                            }),
+                                          itemCount: value.length,
+                                          controller: controllerEmergencySmsMissing,
+                                          itemBuilder: (context, index) {
+                                            return ItemEmergencySms(value[index]);
+                                          },
+                                          onPageChanged: (value) {
+                                            valueNotifierPageEmergencySmsMissing.value = value;
+                                          },
+                                        ),
                                       )
 
                                     /*

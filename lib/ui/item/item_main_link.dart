@@ -32,7 +32,7 @@ class _ItemMainLinkState extends State<ItemMainLink> {
                   itemCount: name.length,
                   itemBuilder: (context, index) {
                     return Padding(
-                      padding: EdgeInsets.all(20),
+                      padding: EdgeInsets.all(10),
                       child: Column(
                         children: [
 
