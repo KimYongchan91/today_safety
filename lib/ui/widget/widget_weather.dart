@@ -34,9 +34,10 @@ class WidgetWeather extends StatelessWidget {
           }
         },
         child: Container(
+          width: Get.width,
           color: Colors.white,
           child: Padding(
-            padding: EdgeInsets.all(10),
+            padding: EdgeInsets.all(20),
             child: Column(
               children: [
                 /*  Text(
@@ -106,7 +107,7 @@ class WidgetWeather extends StatelessWidget {
                     ///날씨 아이콘
                     value != null
                         ? SizedBox(
-                            ///todo ldj, Icon 데이터가 이상함
+
                             ///겉 박스에 1.5배 준 거임
 
                             width: _sizeWeatherIcon * 1.5,

@@ -19,19 +19,23 @@ class ItemMainBanner extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           SizedBox(width: 70, height: 70, child: Image.asset('assets/images/images/13.jpg')),
-          const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                '안전은 가장 큰 자산',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Text('오늘 안전과 함께 오늘도 안전'),
-            ],
+          const SizedBox(width: 10,),
+
+          const Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  '안전은 가장 큰 자산입니다.',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Text('오늘 안전과 함께 오늘도 안전한 하루 되세요!'),
+              ],
+            ),
           )
         ],
       ),

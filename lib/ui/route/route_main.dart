@@ -22,7 +22,9 @@ import 'package:today_safety/custom/custom_text_style.dart';
 import 'package:today_safety/service/util/util_address.dart';
 import 'package:today_safety/service/util/util_weather.dart';
 import 'package:today_safety/ui/item/item_article.dart';
+import 'package:today_safety/ui/item/item_banner.dart';
 import 'package:today_safety/ui/item/item_emergency_sms.dart';
+import 'package:today_safety/ui/item/item_main_link.dart';
 import 'package:today_safety/ui/route/route_qr_code_scan.dart';
 import 'package:today_safety/ui/route/test/route_test.dart';
 import 'package:http/http.dart' as http;
@@ -64,6 +66,9 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
     //처음 실핼할 페이지
     initialPage: 0,
   );
+
+  int weatherInt = 0;
+  final List<String> weather = ['rain', 'heat', 'clean', 'thunder'];
 
   @override
   void initState() {
@@ -217,6 +222,73 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                     color: Colors.black45,
                   ),
 
+                  //todo kyc 날씨 연동
+                  ///날씨 정보 영역
+                  InkWell(
+                    onTap: () {
+                      weatherInt++;
+                      if (weatherInt >= 4) {
+                        weatherInt = 0;
+                      }
+
+                      setState(() {});
+                    },
+                    child: Stack(
+                      children: [
+                        SizedBox(
+                          width: Get.width,
+                          height: 200,
+                          child: Image.asset(
+                            'assets/images/gif/${weather[weatherInt]}.gif',
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        Container(
+                          width: Get.width,
+                          height: 200,
+                          padding: const EdgeInsets.all(20),
+                          color: const Color(0x55000000),
+                        ),
+                        const Positioned(
+                          top: 20,
+                          left: 20,
+                          child: Text(
+                            '오늘은 비소식이 있습니다. \n 작업시 우천에 주의하세요.',
+                            style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        const Positioned(
+                          bottom: 20,
+                          right: 20,
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  FaIcon(
+                                    FontAwesomeIcons.umbrella,
+                                    color: Colors.white,
+                                    size: 50,
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(
+                                    ('24°C'),
+                                    style: TextStyle(color: Colors.white, fontSize: 35, fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                              Text(
+                                '서울시 은평구',
+                                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                              )
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+
                   const SizedBox(
                     height: 10,
                   ),
@@ -226,6 +298,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                     width: Get.width,
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
                           '최근 사망 사고 기사',
@@ -299,6 +372,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                     width: Get.width,
                     color: Colors.white,
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
                           '긴급 재난 문자',
@@ -364,6 +438,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 30),
                     width: Get.width,
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
                           '실종자 찾기',
@@ -459,8 +534,12 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                         ),
                 ),*/
 
+                  const SizedBox(
+                    height: 10,
+                  ),
+
                   ///날씨 정보 영역
-                  ///날씨 정보 영역
+
                   WidgetWeather(
                     valueNotifierModelWeather: valueNotifierWeather,
                     onRefreshWeather: () {
@@ -468,6 +547,12 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                     },
                     controllerRefreshWeather: controllerRefreshWeather,
                   ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const ItemMainLink(),
+
+                  const ItemMainBanner()
 
                   //const Spacer(),
                   //const ItemMainBanner(),

@@ -71,6 +71,7 @@ dependencies:
   chaleno: ^0.0.6
   flutter_inappwebview: ^5.7.2+3
 
+
   kakao_flutter_sdk: ^1.4.3
   kakao_map_plugin: ^0.1.4
   google_sign_in: ^6.1.4
@@ -146,7 +147,7 @@ flutter:
     - assets/images/fuc_preset/
     - assets/images/images/
     - assets/datas/
-
+    - assets/images/gif/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 
