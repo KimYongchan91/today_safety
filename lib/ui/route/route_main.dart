@@ -37,6 +37,8 @@ import '../../my_app.dart';
 import '../../service/util/util_permission.dart';
 import '../widget/widget_weather.dart';
 
+const int _intervalTimeToNextArticle = 2;
+
 class RouteMain extends StatefulWidget {
   const RouteMain({Key? key}) : super(key: key);
 
@@ -54,31 +56,26 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
   ValueNotifier<List<ModelArticle>?> valueNotifierListModelArticle = ValueNotifier(null);
 
   //재난 문자
-  ValueNotifier<List<ModelEmergencySms>?> valueNotifierListModelEmergencySmsDisaster = ValueNotifier(null); //재난
-  ValueNotifier<List<ModelEmergencySms>?> valueNotifierListModelEmergencySmsMissing = ValueNotifier(null); //실종
+  ValueNotifier<List<ModelEmergencySms>?> valueNotifierListModelEmergencySmsDisaster =
+      ValueNotifier(null); //재난
+  ValueNotifier<List<ModelEmergencySms>?> valueNotifierListModelEmergencySmsMissing =
+      ValueNotifier(null); //실종
 
   //앱 종료 방지용
   int timeBackButtonPressed = 0;
   FToast fToast = FToast();
-  Timer? timer;
 
-  PageController controller = PageController(
-    //처음 실핼할 페이지
-    initialPage: 0,
-  );
+  //
+  Timer? timer;
+  final PageController controllerArticle = PageController(initialPage: 0);
+  final PageController controllerEmergencySmsDisaster = PageController(initialPage: 0);
+  final PageController controllerEmergencySmsMissing = PageController(initialPage: 0);
 
   int weatherInt = 0;
   final List<String> weather = ['rain', 'heat', 'clean', 'thunder'];
 
   @override
   void initState() {
-    timer = Timer.periodic(Duration(seconds: 2), (timer) {
-      int currentPage = controller.page!.toInt();
-      int nextPage = currentPage + 1;
-
-      controller.animateToPage(nextPage, duration: Duration(seconds: 5), curve: Curves.decelerate);
-    });
-
     controllerRefreshWeather = AnimationController(
       duration: const Duration(milliseconds: 1000),
       vsync: this,
@@ -95,12 +92,47 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
       getEmergencySMS();
     });
 
+    timer = Timer.periodic(const Duration(seconds: 5), (timer) {
+      //기사
+      if (valueNotifierListModelArticle.value != null && controllerArticle.page != null) {
+        int currentPage = controllerArticle.page!.toInt();
+        int nextPage = currentPage + 1;
+        if (nextPage <= valueNotifierListModelArticle.value!.length - 1) {
+          controllerArticle.animateToPage(nextPage,
+              duration: const Duration(seconds: 2), curve: Curves.decelerate);
+        }
+      }
+
+      //재난 문자(재난)
+      if (valueNotifierListModelEmergencySmsDisaster.value != null &&
+          controllerEmergencySmsDisaster.page != null) {
+        int currentPage = controllerEmergencySmsDisaster.page!.toInt();
+        int nextPage = currentPage + 1;
+        if (nextPage <= valueNotifierListModelEmergencySmsDisaster.value!.length - 1) {
+          controllerEmergencySmsDisaster.animateToPage(nextPage,
+              duration: const Duration(seconds: 2), curve: Curves.decelerate);
+        }
+      }
+
+      //재난 문자(실종)
+      if (valueNotifierListModelEmergencySmsMissing.value != null &&
+          controllerEmergencySmsMissing.page != null) {
+        int currentPage = controllerEmergencySmsMissing.page!.toInt();
+        int nextPage = currentPage + 1;
+        if (nextPage <= valueNotifierListModelEmergencySmsMissing.value!.length - 1) {
+          controllerEmergencySmsMissing.animateToPage(nextPage,
+              duration: const Duration(seconds: 2), curve: Curves.decelerate);
+        }
+      }
+    });
+
     super.initState();
   }
 
   @override
   void dispose() {
     controllerRefreshWeather.dispose();
+    timer?.cancel();
     super.dispose();
   }
 
@@ -274,7 +306,8 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                                   ),
                                   Text(
                                     ('24°C'),
-                                    style: TextStyle(color: Colors.white, fontSize: 35, fontWeight: FontWeight.bold),
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 35, fontWeight: FontWeight.bold),
                                   ),
                                 ],
                               ),
@@ -322,7 +355,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                                     children: [
                                       Expanded(
                                         child: PageView.builder(
-                                            controller: controller,
+                                            controller: controllerArticle,
                                             itemBuilder: (context, index) {
                                               return ItemArticle(value[index]);
                                             }),
@@ -332,7 +365,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                                       ),
                                       InkWell(
                                         onTap: () {},
-                                        child: FaIcon(FontAwesomeIcons.angleRight),
+                                        child: const FaIcon(FontAwesomeIcons.angleRight),
                                       )
                                     ],
                                   ),
@@ -397,7 +430,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                                     children: [
                                       Expanded(
                                         child: PageView.builder(
-                                            controller: controller,
+                                            controller: controllerEmergencySmsDisaster,
                                             itemBuilder: (context, index) {
                                               return ItemEmergencySms(value[index]);
                                             }),
@@ -435,7 +468,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
 
                   Container(
                     color: Colors.white,
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 30),
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 30),
                     width: Get.width,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -462,7 +495,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                                     ///데이터가 로딩되었을 때
                                     ? Expanded(
                                         child: PageView.builder(
-                                            controller: controller,
+                                            controller: controllerEmergencySmsMissing,
                                             itemBuilder: (context, index) {
                                               return ItemEmergencySms(value[index]);
                                             }),
@@ -653,7 +686,8 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
       try {
         String? href = element.href;
         String? date = regExpDate.stringMatch(innerHtmlFormatted)?.replaceAll('[', '').replaceAll(',', '');
-        String? region = regExpRegion.stringMatch(innerHtmlFormatted)?.replaceAll(']', '').replaceAll(',', '').trim();
+        String? region =
+            regExpRegion.stringMatch(innerHtmlFormatted)?.replaceAll(']', '').replaceAll(',', '').trim();
         String? title = innerHtmlFormatted.substring(innerHtmlFormatted.indexOf(']') + 1).trim();
 
         //https://www.kosha.or.kr/kosha/report/kosha_news.do?mode=view&articleNo=442620
