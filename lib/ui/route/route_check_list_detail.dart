@@ -16,12 +16,15 @@ import 'package:today_safety/custom/custom_text_style.dart';
 import 'package:today_safety/service/provider/provider_user_check_history.dart';
 import 'package:today_safety/ui/item/item_check.dart';
 import 'package:today_safety/ui/item/item_user_check_history.dart';
+import 'package:today_safety/ui/route/route_notice_new.dart';
+import 'package:today_safety/ui/route/route_qr_code_detail.dart';
 import 'package:today_safety/ui/widget/icon_error.dart';
 import '../../const/value/router.dart';
 import '../../my_app.dart';
 import '../../service/util/util_app_link.dart';
 import '../../service/util/util_chart.dart';
 import '../../service/util/util_check_list.dart';
+import '../../service/util/util_qr_code.dart';
 import '../item/item_calendar.dart';
 
 class RouteCheckListDetail extends StatefulWidget {
@@ -136,13 +139,20 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                                 style: const CustomTextStyle.bigBlackBold(),
                               ),
                             ),
-                            SizedBox(
-                              width: 50,
-                              height: 50,
-                              child: SfBarcodeGenerator(
-                                value: '$urlAppLink/${modelCheckList!.docId}',
-                                symbology: QRCode(),
-                                showValue: false,
+
+                            ///qr 코드
+                            InkWell(
+                              onTap: () {
+                                Get.to(() => RouteQrCodeDetail(modelCheckList!));
+                              },
+                              child: SizedBox(
+                                width: 50,
+                                height: 50,
+                                child: SfBarcodeGenerator(
+                                  value: getQrCode(modelCheckList!),
+                                  symbology: QRCode(),
+                                  showValue: false,
+                                ),
                               ),
                             ),
                           ],
@@ -165,7 +175,8 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                               alignment: Alignment.topLeft,
                               child: Text(
                                 '인증 현황',
-                                style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
+                                style:
+                                    TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
                               ),
                             ),
 
@@ -206,16 +217,6 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                                     style: btnTxtStyle.copyWith(
                                         fontSize: isViewChart == true ? 17 : 15,
                                         color: isViewChart == true ? Colors.black : Colors.black45),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 20,
-                                ),
-                                InkWell(
-                                  onTap: () {},
-                                  child: Text(
-                                    '표기3',
-                                    style: btnTxtStyle,
                                   ),
                                 ),
                               ],
@@ -291,7 +292,8 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                                         defaultBuilder: (context, day, focusedDay) {
                                           return ItemCalendar(
                                             dateTime: day,
-                                            listModelUserCheckHistory: value.getDailyUserCheckHistoryCount(day),
+                                            listModelUserCheckHistory:
+                                                value.getDailyUserCheckHistoryCount(day),
                                           );
                                         },
 
@@ -308,7 +310,8 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                                           return ItemCalendar(
                                             dateTime: day,
                                             isToday: true,
-                                            listModelUserCheckHistory: value.getDailyUserCheckHistoryCount(day),
+                                            listModelUserCheckHistory:
+                                                value.getDailyUserCheckHistoryCount(day),
                                           );
                                         },
 
@@ -388,6 +391,19 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                         ),
                       ),
 
+                      ///공지 사항
+                      const Text(
+                        '공지 사항',
+                        style: CustomTextStyle.bigBlackBold(),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          Get.to(()=>RouteNoticeNew(modelSite: modelCheckList!.modelSite, modelCheckList: modelCheckList));
+                        },
+                        child: Text('새 공지사항 만들기'),
+                      ),
+
+                      ///체크 리스트
                       Container(
                         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                         color: Colors.white,
@@ -403,7 +419,7 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                               height: 20,
                             ),
 
-                            ///체크 항목 리스트 뷰
+                            ///체크 리스트 뷰
                             ListView.builder(
                               itemCount: modelCheckList!.listModelCheck.length,
                               itemBuilder: (context, index) => ItemCheck(

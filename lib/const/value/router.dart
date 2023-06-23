@@ -18,3 +18,8 @@ const String keyCheckListId = 'check_list_id';
 const String keyModelCheckList = 'model_check_list';
 const String keyDailyDateFormatted= 'daily_date_formatted';
 const String keyListModelUserCheckHistory = 'list_model_user_check_history';
+
+
+const String keyRouteNoticeDetail = "/notice";
+const String keyNoticeId = 'notice_id';
+const String keyModelNotice = 'model_notice';

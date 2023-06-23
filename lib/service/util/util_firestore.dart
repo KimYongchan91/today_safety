@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:today_safety/const/model/model_check_image.dart';
+import 'package:today_safety/const/model/model_check_list.dart';
+import 'package:today_safety/const/value/key.dart';
 
 import '../../const/model/model_check.dart';
 import '../../const/model/model_user_check_history.dart';
@@ -53,18 +55,17 @@ List<ModelCheck> getListModelCheckFromServer(dynamic list) {
   return result;
 }
 
-dynamic getListModelCheckFromLocal(List<ModelCheck> list){
+dynamic getListModelCheckFromLocal(List<ModelCheck> list) {
   List<dynamic> result = [];
 
   for (var element in list) {
     result.add(element.toJson());
   }
 
-
   return result;
 }
 
-///
+///ModelCheckImage
 List<ModelCheckImage> getListModelCheckImageFromServer(dynamic list) {
   List<ModelCheckImage> result = [];
 
@@ -77,18 +78,17 @@ List<ModelCheckImage> getListModelCheckImageFromServer(dynamic list) {
   return result;
 }
 
-dynamic getListModelCheckImageFromLocal(List<ModelCheckImage> list){
+dynamic getListModelCheckImageFromLocal(List<ModelCheckImage> list) {
   List<dynamic> result = [];
 
   for (var element in list) {
     result.add(element.toJson());
   }
 
-
   return result;
 }
 
-///
+///ModelUserCheckHistory
 List<ModelUserCheckHistory> getListModelUserCheckHistoryFromServer(dynamic list) {
   List<ModelUserCheckHistory> result = [];
 
@@ -101,13 +101,35 @@ List<ModelUserCheckHistory> getListModelUserCheckHistoryFromServer(dynamic list)
   return result;
 }
 
-dynamic getListModelUserCheckHistoryFromLocal(List<ModelUserCheckHistory> list){
+dynamic getListModelUserCheckHistoryFromLocal(List<ModelUserCheckHistory> list) {
   List<dynamic> result = [];
 
   for (var element in list) {
     result.add(element.toJson());
   }
 
+  return result;
+}
+
+///ModelCheckList
+List<ModelCheckList> getListModelCheckListFromServer(dynamic list) {
+  List<ModelCheckList> result = [];
+
+  if (list != null && list is List) {
+    for (var element in list) {
+      result.add(ModelCheckList.fromJson(element, element[keyDocId] ?? ''));
+    }
+  }
+
+  return result;
+}
+
+dynamic getModelCheckListFromLocal(List<ModelCheckList> list) {
+  List<dynamic> result = [];
+
+  for (var element in list) {
+    result.add(element.toJson());
+  }
 
   return result;
 }
