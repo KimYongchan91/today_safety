@@ -37,7 +37,7 @@ class ProviderUser extends ChangeNotifier {
   loginAuto() async {
     if (FirebaseAuth.instance.currentUser != null) {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-          .collection(keyUsers)
+          .collection(keyUserS)
           .where(keyId, isEqualTo: FirebaseAuth.instance.currentUser!.uid)
           .limit(1)
           .get(const GetOptions(source: Source.server));
@@ -496,7 +496,7 @@ class ProviderUser extends ChangeNotifier {
     if (modelUser != null &&
         MyApp.tokenFcm != null &&
         modelUser!.listToken.contains(MyApp.tokenFcm) == false) {
-      await FirebaseFirestore.instance.collection(keyUsers).doc(modelUser!.docId).update({
+      await FirebaseFirestore.instance.collection(keyUserS).doc(modelUser!.docId).update({
         keyToken: FieldValue.arrayUnion([MyApp.tokenFcm]),
       });
       modelUser!.listToken.add(MyApp.tokenFcm);

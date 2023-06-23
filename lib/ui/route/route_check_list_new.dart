@@ -27,7 +27,7 @@ import '../../my_app.dart';
 import '../dialog/dialog_close_route.dart';
 import '../item/item_check.dart';
 
-const int lengthCheckListNameMin = 5;
+const int lengthCheckListNameMin = 3;
 const int lengthCheckListNameMax = 20;
 
 const int _sizeMarkerWidth = 60;
@@ -67,78 +67,78 @@ class _RouteCheckListNewState extends State<RouteCheckListNew> {
     return WillPopScope(
       onWillPop: onWillPop,
       child: Scaffold(
-
         body: SafeArea(
           child: isFucPresetSelected
               ?
 
               ///fuc 선택 단계를 지났으면
               Column(
-                  children: [
-                    SingleChildScrollView(
-                      //physics: const NeverScrollableScrollPhysics(),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: InkWell(
-                              onTap: () {
-                                Get.back();
-                              },
-                              child: FaIcon(FontAwesomeIcons.angleLeft),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
-                            child: Text(
-                              '새로 작성할 \n체크리스트의 이름을 입력하세요.',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                        //physics: const NeverScrollableScrollPhysics(),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: InkWell(
+                                onTap: () {
+                                  Get.back();
+                                },
+                                child: FaIcon(FontAwesomeIcons.angleLeft),
                               ),
                             ),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: TextField(
-                              decoration: const InputDecoration(
-                                hintText: 'ex) 오전 근무조',
-                              ),
-                              controller: textEditingControllerName,
+                            const SizedBox(
+                              height: 20,
                             ),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-
-
-
-                          ValueListenableBuilder(
-                            valueListenable: valueNotifierListModelCheck,
-                            builder: (context, value, child) => ListView.builder(
-                              itemBuilder: (context, index) => InkWell(
-                                onTap: () {},
-                                child: ItemCheck(value[index], onDelete: () {
-                                  onDeleteModelFuc(value[index]);
-                                }),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 20),
+                              child: Text(
+                                '새로 작성할 \n체크리스트의 이름을 입력하세요.',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                              itemCount: value.length,
-                              shrinkWrap: true,
-                              physics: const BouncingScrollPhysics(),
                             ),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              child: TextField(
+                                decoration: const InputDecoration(
+                                  hintText: 'ex) 오전 근무조',
+                                ),
+                                controller: textEditingControllerName,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            ValueListenableBuilder(
+                              valueListenable: valueNotifierListModelCheck,
+                              builder: (context, value, child) => ListView.builder(
+                                itemBuilder: (context, index) => InkWell(
+                                  onTap: () {},
+                                  child: ItemCheck(value[index], onDelete: () {
+                                    onDeleteModelFuc(value[index]);
+                                  }),
+                                ),
+                                itemCount: value.length,
+                                shrinkWrap: true,
+                                physics: const BouncingScrollPhysics(),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
 
-                          /*///인증 위치 제한 on/off 토글
+
+
+
+                            /*///인증 위치 제한 on/off 토글
                           ValueListenableBuilder(
                               valueListenable: valueNotifierModelConstraintLocation,
                               builder: (context, value, _) => Row(
@@ -240,65 +240,60 @@ class _RouteCheckListNewState extends State<RouteCheckListNew> {
                           ),
 
                           ///카카오 맵*/
-                        ],
-                      ),
-                    ),
-
-                    const Spacer(),
-
-                    ///만들기 버튼
-                    InkWell(
-                      onTap: complete,
-                      child: Container(
-                        width: Get.width,
-                        height: 70,
-                        margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                        decoration: BoxDecoration(
-                          color: Colors.orangeAccent,
-                          borderRadius: BorderRadius.circular(20),
+                          ],
                         ),
-                        child: Center(
-                          child: ValueListenableBuilder(
-                            valueListenable: valueNotifierUpload,
-                            builder: (context, value, child) => value
-                                ? const CircularProgressIndicator()
-                                : const Padding(
-                                    padding: EdgeInsets.only(top: 2),
-                                    child: Text(
-                                      '만들기',
-                                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 20),
-                                    ),
-                                  ),
+                      ),
+                  ),
+                  ///만들기 버튼
+                  InkWell(
+                    onTap: complete,
+                    child: Container(
+                      width: Get.width,
+                      height: 70,
+                      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.orangeAccent,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Center(
+                        child: ValueListenableBuilder(
+                          valueListenable: valueNotifierUpload,
+                          builder: (context, value, child) => value
+                              ? const CircularProgressIndicator()
+                              : const Padding(
+                            padding: EdgeInsets.only(top: 2),
+                            child: Text(
+                              '만들기',
+                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 20),
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ],
-                )
+                  ),
+                ],
+              )
               :
 
               ///fuc 선택 단계 진행 중
               Column(
-
                   children: [
-
                     Align(
                         alignment: Alignment.centerLeft,
                         child: InkWell(
-                            onTap: (){
+                            onTap: () {
                               Get.back();
                             },
                             child: const Padding(
-
                               padding: EdgeInsets.all(20),
                               child: FaIcon(FontAwesomeIcons.angleLeft),
                             ))),
-
-                    const SizedBox(height: 30,),
+                    const SizedBox(
+                      height: 30,
+                    ),
                     const Align(
                       alignment: Alignment.centerLeft,
                       child: Padding(
-
                         padding: EdgeInsets.symmetric(horizontal: 20),
                         child: Text(
                           '어떤 작업과 관련되어 있나요?',
@@ -314,7 +309,7 @@ class _RouteCheckListNewState extends State<RouteCheckListNew> {
                             setFuc(null);
                           },
                           child: const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 10 , horizontal: 20),
+                            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                             child: Text(
                               '건너뛰기',
                               style: CustomTextStyle.normalGreyBold(),
@@ -323,16 +318,15 @@ class _RouteCheckListNewState extends State<RouteCheckListNew> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 50,),
-
+                    const SizedBox(
+                      height: 50,
+                    ),
                     Padding(
-                      padding:const EdgeInsets.symmetric(horizontal: 20),
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: GridView.builder(
                         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 3,
                           crossAxisSpacing: 5,
-
-
                         ),
                         itemBuilder: (context, index) => InkWell(
                           onTap: () {

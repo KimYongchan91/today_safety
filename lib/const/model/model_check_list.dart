@@ -50,4 +50,12 @@ class ModelCheckList {
 
     return isForServerForm ? transformForServerDataType(result) : result;
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ModelCheckList && runtimeType == other.runtimeType && docId == other.docId;
+
+  @override
+  int get hashCode => docId.hashCode;
 }

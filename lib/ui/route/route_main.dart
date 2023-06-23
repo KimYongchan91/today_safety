@@ -23,7 +23,7 @@ import 'package:today_safety/service/util/util_address.dart';
 import 'package:today_safety/service/util/util_weather.dart';
 import 'package:today_safety/ui/item/item_article.dart';
 import 'package:today_safety/ui/item/item_emergency_sms.dart';
-import 'package:today_safety/ui/route/route_scan_qr.dart';
+import 'package:today_safety/ui/route/route_qr_code_scan.dart';
 import 'package:today_safety/ui/route/test/route_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart' show SystemNavigator, rootBundle;
@@ -149,7 +149,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                                 return;
                               }
 
-                              Get.to(() => const RouteScanQr());
+                              Get.to(() => const RouteQrCodeScan());
                             },
                             child: const FaIcon(
                               FontAwesomeIcons.qrcode,

@@ -1,6 +1,6 @@
 const String keyUrl = 'url';
 
-const String keyUsers = 'users';
+const String keyUserS = 'users';
 
 const String keyKakao = 'kakao';
 const String keyNaver = 'naver';
@@ -50,6 +50,9 @@ const String keyImages = 'images';
 
 const String keyCompany = 'company';
 const String keyDate = 'date';
+const String keyTitle = 'title';
+const String keyBody = 'body';
+const String keyIsSendFcm = 'is_send_fcm';
 const String keyLocation = 'location';
 const String keyUserCount = 'user_count';
 const String keyName = 'name';
@@ -91,3 +94,6 @@ const String keyRange = 'range';
 const String keyStart = 'start';
 const String keyEnd = 'end';
 const String keyWeek = 'week';
+
+const String keyNoticeS = 'notices';
+const String keyNotice = 'notice';

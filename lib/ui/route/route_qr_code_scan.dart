@@ -9,14 +9,14 @@ import 'package:today_safety/custom/custom_text_style.dart';
 import '../../const/value/router.dart';
 import '../../my_app.dart';
 
-class RouteScanQr extends StatefulWidget {
-  const RouteScanQr({Key? key}) : super(key: key);
+class RouteQrCodeScan extends StatefulWidget {
+  const RouteQrCodeScan({Key? key}) : super(key: key);
 
   @override
-  State<RouteScanQr> createState() => _RouteScanQrState();
+  State<RouteQrCodeScan> createState() => _RouteQrCodeScanState();
 }
 
-class _RouteScanQrState extends State<RouteScanQr> {
+class _RouteQrCodeScanState extends State<RouteQrCodeScan> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   QRViewController? controller;
   StreamSubscription? streamSubscription;
@@ -46,7 +46,9 @@ class _RouteScanQrState extends State<RouteScanQr> {
           Positioned.fill(
             child: QRView(
               key: qrKey,
-              overlay: QrScannerOverlayShape(),
+              overlay: QrScannerOverlayShape(
+                  cutOutSize : Get.width * 0.8,
+              ),
               onQRViewCreated: _onQRViewCreated,
             ),
           ),
