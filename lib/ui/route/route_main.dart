@@ -352,6 +352,8 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                               style: CustomTextStyle.bigBlackBold(),
                             ),
                             const Spacer(),
+
+                            ///페이지 번호 표시 부분
                             CustomValueListenableBuilder2(
                               a: valueNotifierListModelArticle,
                               b: valueNotifierPageArticle,
@@ -442,6 +444,8 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                               style: CustomTextStyle.bigBlackBold(),
                             ),
                             const Spacer(),
+
+                            ///페이지 번호 표시 부분
                             CustomValueListenableBuilder2(
                               a: valueNotifierListModelEmergencySmsDisaster,
                               b: valueNotifierPageEmergencySmsDisaster,
@@ -516,6 +520,8 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                               style: CustomTextStyle.bigBlackBold(),
                             ),
                             const Spacer(),
+
+                            ///페이지 번호 표시 부분
                             CustomValueListenableBuilder2(
                               a: valueNotifierListModelEmergencySmsMissing,
                               b: valueNotifierPageEmergencySmsMissing,
