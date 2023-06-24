@@ -19,6 +19,7 @@ Future<ModelWeather?> getWeatherFromLatLng(double lat, double lng) async {
     modelLocation = await getModelLocationWeatherFromLatLng(lat, lng);
   } on Exception catch (e) {
     MyApp.logger.wtf("행정 구역 코드 조회 실패 : ${e.toString()}");
+    return null;
   }
 
   if (modelLocation == null) {

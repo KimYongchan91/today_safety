@@ -131,7 +131,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
         if (nextPage <= valueNotifierListModelEmergencySmsMissing.value!.length - 1) {
           controllerEmergencySmsMissing.animateToPage(nextPage,
               duration: const Duration(seconds: 2), curve: Curves.decelerate);
-        }else{
+        } else {
           controllerEmergencySmsMissing.animateToPage(0,
               duration: const Duration(seconds: 2), curve: Curves.decelerate);
         }
@@ -266,71 +266,16 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                     color: Colors.black45,
                   ),
 
-                  //todo kyc 날씨 연동
                   ///날씨 정보 영역
-                  InkWell(
-                    onTap: () {
-                      weatherInt++;
-                      if (weatherInt >= 4) {
-                        weatherInt = 0;
-                      }
-
-                      setState(() {});
-                    },
-                    child: Stack(
-                      children: [
-                        SizedBox(
-                          width: Get.width,
-                          height: 200,
-                          child: Image.asset(
-                            'assets/images/gif/${weather[weatherInt]}.gif',
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        Container(
-                          width: Get.width,
-                          height: 200,
-                          padding: const EdgeInsets.all(20),
-                          color: const Color(0x55000000),
-                        ),
-                        const Positioned(
-                          top: 20,
-                          left: 20,
-                          child: Text(
-                            '오늘은 비소식이 있습니다. \n 작업시 우천에 주의하세요.',
-                            style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        const Positioned(
-                          bottom: 20,
-                          right: 20,
-                          child: Column(
-                            children: [
-                              Row(
-                                children: [
-                                  FaIcon(
-                                    FontAwesomeIcons.umbrella,
-                                    color: Colors.white,
-                                    size: 50,
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(
-                                    ('24°C'),
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 35, fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
-                              Text(
-                                '서울시 은평구',
-                                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                              )
-                            ],
-                          ),
-                        )
-                      ],
+                  ValueListenableBuilder(
+                    valueListenable: valueNotifierWeather,
+                    builder: (context, value, child) => WidgetWeather(
+                      modelWeather: value,
+                      onRefreshWeather: () {
+                        _refreshWeather(refreshForce: true);
+                      },
+                      controllerRefreshWeather: controllerRefreshWeather,
+                      key: UniqueKey(),
                     ),
                   ),
 
@@ -450,7 +395,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                               a: valueNotifierListModelEmergencySmsDisaster,
                               b: valueNotifierPageEmergencySmsDisaster,
                               builder: (context, a, b, child) =>
-                                  a != null ? Text('${b + 1}/${a.length}') : Container(),
+                                  a != null && a.isNotEmpty ? Text('${b + 1}/${a.length}') : Container(),
                             ),
                           ],
                         ),
@@ -526,7 +471,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                               a: valueNotifierListModelEmergencySmsMissing,
                               b: valueNotifierPageEmergencySmsMissing,
                               builder: (context, a, b, child) =>
-                                  a != null ? Text('${b + 1}/${a.length}') : Container(),
+                                  a != null && a.isNotEmpty ? Text('${b + 1}/${a.length}') : Container(),
                             ),
                           ],
                         ),
@@ -629,15 +574,6 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                     height: 10,
                   ),
 
-                  ///날씨 정보 영역
-
-                  WidgetWeather(
-                    valueNotifierModelWeather: valueNotifierWeather,
-                    onRefreshWeather: () {
-                      _refreshWeather(refreshForce: true);
-                    },
-                    controllerRefreshWeather: controllerRefreshWeather,
-                  ),
                   const SizedBox(
                     height: 10,
                   ),
@@ -701,8 +637,9 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
     time = dateTimeNow.millisecondsSinceEpoch;
 
     ModelWeather? modelWeather = await getWeatherFromLatLng(latLng.latitude, latLng.longitude).then((value) {
-      ///
-      completerRefreshWeather.complete();
+      if (completerRefreshWeather.isCompleted == false) {
+        completerRefreshWeather.complete();
+      }
       return value;
     });
     //MyApp.logger.d('조회된 날씨 정보 : ${modelWeather.toString()}');
@@ -882,8 +819,9 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
 
           //만약 아직 날씨를 받아오지 않았다면, 콜백 등록
           completerRefreshWeather.future.then((_) {
-            if (valueNotifierWeather.value!.modelLocation.lat == defaultLat &&
-                valueNotifierWeather.value!.modelLocation.lng == defaultLng) {
+            if (
+            valueNotifierWeather.value ==null ||(valueNotifierWeather.value!.modelLocation.lat == defaultLat &&
+                    valueNotifierWeather.value!.modelLocation.lng == defaultLng)) {
               return;
             }
 

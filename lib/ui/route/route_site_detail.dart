@@ -130,7 +130,9 @@ class _RouteSiteDetailState extends State<RouteSiteDetail> with SingleTickerProv
                           fit: BoxFit.cover,
                         ),
                       ),
-                      const SizedBox(width: 10,),
+                      const SizedBox(
+                        width: 10,
+                      ),
 
                       Expanded(
                           child: Column(
@@ -183,7 +185,9 @@ class _RouteSiteDetailState extends State<RouteSiteDetail> with SingleTickerProv
                           ),
                         ],
                       ),
-                      const SizedBox(width: 10,),
+                      const SizedBox(
+                        width: 10,
+                      ),
                     ],
                   ),
                 ),
@@ -193,10 +197,13 @@ class _RouteSiteDetailState extends State<RouteSiteDetail> with SingleTickerProv
                 ),
 
                 ///날씨 정보 영역
-                WidgetWeather(
-                  valueNotifierModelWeather: valueNotifierWeather,
-                  onRefreshWeather: _refreshWeather,
-                  controllerRefreshWeather: controllerRefreshWeather,
+                ValueListenableBuilder(
+                  valueListenable: valueNotifierWeather,
+                  builder: (context, value, child) => WidgetWeather(
+                    modelWeather: value,
+                    onRefreshWeather: _refreshWeather,
+                    controllerRefreshWeather: controllerRefreshWeather,
+                  ),
                 ),
 
                 /*ValueListenableBuilder(
