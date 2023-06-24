@@ -13,6 +13,9 @@ class MyApp {
     apiKey: 'dac0a057b6d123949b76313b80fa6d48',
   );
 
+  //fcm  관련
   static late Completer completerInitFcm;
   static String? tokenFcm;
+
+
 }

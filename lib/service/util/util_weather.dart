@@ -10,7 +10,13 @@ import '../../my_app.dart';
 import 'util_location.dart';
 import 'package:http/http.dart' as http;
 
-Future<ModelWeather?> getWeatherFromLatLng(double lat, double lng) async {
+Future<ModelWeather?> getWeatherFromLatLng(
+  double lat,
+  double lng, {
+  //기존의 modelWeather를 준다면 행정 구역 조회 등의 중복된 작업을 하지 않아도 되는데,
+  //귀찮으니 적용 안 함.
+  ModelWeather? modelWeather,
+}) async {
   DateTime dateTimeNow = DateTime.now();
 
   //행정 구역 코드 받아오기

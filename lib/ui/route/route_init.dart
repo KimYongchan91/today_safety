@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:kakao_map_plugin/kakao_map_plugin.dart';
@@ -11,8 +12,10 @@ import 'package:today_safety/const/value/router.dart';
 import 'package:today_safety/service/util/util_snackbar.dart';
 import 'package:uni_links/uni_links.dart';
 
+import '../../const/value/fcm.dart';
 import '../../firebase_options.dart';
 import '../../my_app.dart';
+import '../../service/util/util_fcm.dart';
 
 class RouteInit extends StatefulWidget {
   const RouteInit({Key? key}) : super(key: key);
@@ -75,6 +78,8 @@ class _RouteInitState extends State<RouteInit> {
   }
 
   initFcm() async {
+    FirebaseMessaging.onBackgroundMessage(handlerFirebaseMessagingBackground);
+
     MyApp.completerInitFcm = Completer();
 
     try {
@@ -113,28 +118,43 @@ class _RouteInitState extends State<RouteInit> {
       MyApp.logger.d("FCM 토큰 : $token");
       MyApp.tokenFcm = token;
 
-      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-        MyApp.logger.d('포그라운드 FCM data: ${message.data}');
-
-        if (message.notification != null) {
-          MyApp.logger.d('Message also contained a notification: ${message.notification}');
-        }
-      });
+      FirebaseMessaging.onMessage.listen(handlerFirebaseMessagingForeground);
+      FirebaseMessaging.onMessageOpenedApp.listen(handlerOnMessageOpenedApp);
 
       MyApp.completerInitFcm.complete();
     } on Exception catch (e) {
       MyApp.logger.wtf("FCM 초기화 실패 : ${e.toString()}");
       MyApp.completerInitFcm.completeError(e);
     }
+
+    //로컬 노티 플러그인
+    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+    //로컬 노티 세팅값
+    InitializationSettings initializationSettings = const InitializationSettings(
+      android: AndroidInitializationSettings("sample_app_icon_fcm_230625"),
+    );
+
+    //로컬 노티 초기화
+    flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: handlerOnDidReceiveNotificationResponse,
+      onDidReceiveBackgroundNotificationResponse: handlerOnDidReceiveBackgroundNotificationResponse,
+    );
+
+    //안드로이드 채널 추가
+    flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(channelNoticeNew);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: const [
+          children: [
             Text('로딩 중'),
             SizedBox(
               height: 20,

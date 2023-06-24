@@ -203,6 +203,7 @@ class _RouteSiteDetailState extends State<RouteSiteDetail> with SingleTickerProv
                     modelWeather: value,
                     onRefreshWeather: _refreshWeather,
                     controllerRefreshWeather: controllerRefreshWeather,
+                    key: UniqueKey(),
                   ),
                 ),
 
