@@ -37,7 +37,7 @@ class _RouteNoticeDetailState extends State<RouteNoticeDetail> {
       modelNotice = Get.arguments[keyModelNotice];
       completerModelCheckList.complete(true);
     } else {
-      getModelNoticeFromServerByDocId(Get.parameters[keyModelNotice]!).then((value) {
+      getModelNoticeFromServerByDocId(Get.parameters[keyNoticeId]!).then((value) {
         if (value != null) {
           modelNotice = value;
           completerModelCheckList.complete(true);

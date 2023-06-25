@@ -499,7 +499,7 @@ class ProviderUser extends ChangeNotifier {
       await FirebaseFirestore.instance.collection(keyUserS).doc(modelUser!.docId).update({
         keyToken: FieldValue.arrayUnion([MyApp.tokenFcm]),
       });
-      modelUser!.listToken.add(MyApp.tokenFcm);
+      //modelUser!.listToken.add(MyApp.tokenFcm);
     }
   }
 

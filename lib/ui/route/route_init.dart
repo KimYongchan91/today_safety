@@ -51,7 +51,6 @@ class _RouteInitState extends State<RouteInit> {
     initKaKaoSdk();
     initFcm();
 
-    await Future.delayed(const Duration(seconds: 1));
     Get.offAllNamed(keyRouteMain);
   }
 
@@ -78,7 +77,7 @@ class _RouteInitState extends State<RouteInit> {
   }
 
   initFcm() async {
-    FirebaseMessaging.onBackgroundMessage(handlerFirebaseMessagingBackground);
+    //FirebaseMessaging.onBackgroundMessage(handlerFirebaseMessagingBackground);
 
     MyApp.completerInitFcm = Completer();
 
@@ -118,8 +117,17 @@ class _RouteInitState extends State<RouteInit> {
       MyApp.logger.d("FCM 토큰 : $token");
       MyApp.tokenFcm = token;
 
+      //앱이 종료되었 때 노티를 클릭하고 들어왔을 때
+      RemoteMessage? remoteMessageInitial = await FirebaseMessaging.instance.getInitialMessage();
+      if (remoteMessageInitial != null) {
+        MyApp.logger.d('remoteMessage 존재함! ');
+        await Future.delayed(const Duration(microseconds: 500));
+        handlerRemoteMessage(remoteMessageInitial.data);
+      }
+
       FirebaseMessaging.onMessage.listen(handlerFirebaseMessagingForeground);
       FirebaseMessaging.onMessageOpenedApp.listen(handlerOnMessageOpenedApp);
+
 
       MyApp.completerInitFcm.complete();
     } on Exception catch (e) {
@@ -130,10 +138,6 @@ class _RouteInitState extends State<RouteInit> {
     //로컬 노티 플러그인
     FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
-    //로컬 노티 세팅값
-    InitializationSettings initializationSettings = const InitializationSettings(
-      android: AndroidInitializationSettings("sample_app_icon_fcm_230625"),
-    );
 
     //로컬 노티 초기화
     flutterLocalNotificationsPlugin.initialize(
