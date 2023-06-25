@@ -15,7 +15,7 @@ import 'package:today_safety/const/value/value.dart';
 import 'package:today_safety/custom/custom_text_style.dart';
 import 'package:today_safety/service/provider/provider_user_check_history_on_check_list.dart';
 import 'package:today_safety/ui/item/item_check.dart';
-import 'package:today_safety/ui/item/item_user_check_history.dart';
+import 'package:today_safety/ui/item/item_user_check_history_small.dart';
 import 'package:today_safety/ui/route/route_notice_new.dart';
 import 'package:today_safety/ui/route/route_qr_code_detail.dart';
 import 'package:today_safety/ui/widget/icon_error.dart';
@@ -379,7 +379,7 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                               ),
                               ListView.builder(
                                 itemCount: value.listModelUserCheckHistory.length,
-                                itemBuilder: (context, index) => ItemUserCheckHistory(
+                                itemBuilder: (context, index) => ItemUserCheckHistorySmall(
                                   value.listModelUserCheckHistory[index],
                                   modelCheckList: modelCheckList,
                                 ),

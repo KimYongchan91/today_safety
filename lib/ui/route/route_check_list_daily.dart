@@ -8,7 +8,7 @@ import 'package:today_safety/custom/custom_text_style.dart';
 import '../../const/model/model_user_check_history.dart';
 import '../../const/value/router.dart';
 import '../../my_app.dart';
-import '../item/item_user_check_history.dart';
+import '../item/item_user_check_history_small.dart';
 
 class RouteCheckListDaily extends StatefulWidget {
   const RouteCheckListDaily({Key? key}) : super(key: key);
@@ -57,7 +57,7 @@ class _RouteCheckListDailyState extends State<RouteCheckListDaily> {
               ),
               ListView.builder(
                 itemCount: listModelUserCheckHistory.length,
-                itemBuilder: (context, index) => ItemUserCheckHistory(
+                itemBuilder: (context, index) => ItemUserCheckHistorySmall(
                   listModelUserCheckHistory[index],
                   modelCheckList: modelCheckList,
                 ),

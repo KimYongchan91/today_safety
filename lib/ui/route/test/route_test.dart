@@ -32,6 +32,10 @@ class _RouteTestState extends State<RouteTest> {
               onPressed: crawl,
               child: const Text('산업안전보건공단 사건사고 크롤'),
             ),
+            ElevatedButton(
+              onPressed: changeDataUserCheckHistoryStatePend,
+              child: const Text('모든 인증 이력 state = pend로 변경'),
+            ),
           ],
         ),
       ),
@@ -61,8 +65,8 @@ class _RouteTestState extends State<RouteTest> {
 
     for (int i = 1; i < countTargetDay; i++) {
       Map<String, dynamic> json = {...jsonOld};
-      DateTime datetimeNew =
-          DateTime.fromMillisecondsSinceEpoch(jsonOld[keyDate].toDate().millisecondsSinceEpoch - i * millisecondDay);
+      DateTime datetimeNew = DateTime.fromMillisecondsSinceEpoch(
+          jsonOld[keyDate].toDate().millisecondsSinceEpoch - i * millisecondDay);
       final String displayDateToday = DateFormat('yyyy-MM-dd').format(datetimeNew);
 
       json[keyDate] = Timestamp.fromDate(datetimeNew);
@@ -108,7 +112,8 @@ class _RouteTestState extends State<RouteTest> {
       try {
         String? href = element.href;
         String? date = regExpDate.stringMatch(innerHtmlFormatted)?.replaceAll('[', '').replaceAll(',', '');
-        String? region = regExpRegion.stringMatch(innerHtmlFormatted)?.replaceAll(']', '').replaceAll(',', '').trim();
+        String? region =
+            regExpRegion.stringMatch(innerHtmlFormatted)?.replaceAll(']', '').replaceAll(',', '').trim();
         String? title = innerHtmlFormatted.substring(innerHtmlFormatted.indexOf(']') + 1).trim();
 
         if (href == null || date == null || region == null) {
@@ -124,5 +129,13 @@ class _RouteTestState extends State<RouteTest> {
         MyApp.logger.wtf('정규 표현식 에러 : ${e.toString()}');
       }
     }
+  }
+
+  changeDataUserCheckHistoryStatePend() async {
+    FirebaseFirestore.instance.collection(keyUserCheckHistories).get().then((value) {
+      for (var element in value.docs) {
+        element.reference.update({keyState: keyPend});
+      }
+    });
   }
 }

@@ -52,9 +52,7 @@ class ProviderUserCheckHistoryOnMe extends ChangeNotifier {
         switch (element.type) {
           case DocumentChangeType.added:
             listModelUserCheckHistory.add(modelUserCheckHistory);
-            listModelUserCheckHistory.sort(
-              (a, b) => b.date.millisecondsSinceEpoch.compareTo(a.date.millisecondsSinceEpoch),
-            );
+
             break;
           case DocumentChangeType.modified:
             listModelUserCheckHistory.removeWhere((element) => element == modelUserCheckHistory);
@@ -64,6 +62,9 @@ class ProviderUserCheckHistoryOnMe extends ChangeNotifier {
             listModelUserCheckHistory.removeWhere((element) => element == modelUserCheckHistory);
             break;
         }
+        listModelUserCheckHistory.sort(
+              (a, b) => b.date.millisecondsSinceEpoch.compareTo(a.date.millisecondsSinceEpoch),
+        );
         notifyListeners();
       }
     });

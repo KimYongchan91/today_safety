@@ -10,6 +10,7 @@ const String keyApple = 'apple';
 const String keyOn = 'on';
 const String keyBan = 'ban';
 const String keyOut = 'out';
+const String keyPend = 'pend';
 
 const String keyResult = 'result';
 const String keyMessage = 'message';

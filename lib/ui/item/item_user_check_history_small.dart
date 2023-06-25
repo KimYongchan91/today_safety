@@ -12,11 +12,14 @@ import 'package:today_safety/ui/route/route_map_detail.dart';
 
 const double sizeCheckImage = 60;
 
-class ItemUserCheckHistory extends StatelessWidget {
+
+///site detail, check list detail 등의 페이지에서
+///최근 인증한 직원들 목록 보여줄 때 사용
+class ItemUserCheckHistorySmall extends StatelessWidget {
   final ModelUserCheckHistory modelUserCheckHistory;
   final ModelCheckList? modelCheckList;
 
-  const ItemUserCheckHistory(this.modelUserCheckHistory, {this.modelCheckList, Key? key}) : super(key: key);
+  const ItemUserCheckHistorySmall(this.modelUserCheckHistory, {this.modelCheckList, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

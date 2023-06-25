@@ -13,6 +13,7 @@ import '../../service/util/util_firestore.dart';
 class ModelUserCheckHistory {
   String? docId;
   final ModelCheckList modelCheckList;
+
   //final ModelSite modelSite; 이미 modelCheckList 내에 있음
   final ModelUser modelUser;
   final Timestamp date;
@@ -21,6 +22,7 @@ class ModelUserCheckHistory {
   final ModelLocation modelLocation;
   final ModelDevice modelDevice;
   final List<ModelCheckImage> listModelCheckImage;
+  final String state;
 
   ModelUserCheckHistory({
     this.docId = '',
@@ -33,10 +35,12 @@ class ModelUserCheckHistory {
     required this.modelLocation,
     required this.modelDevice,
     required this.listModelCheckImage,
+    required this.state,
   });
 
   ModelUserCheckHistory.fromJson(Map json, {this.docId})
-      : modelCheckList = ModelCheckList.fromJson(json[keyCheckList] ?? {}, json[keyCheckList]?[keyDocId] ?? ''),
+      : modelCheckList =
+            ModelCheckList.fromJson(json[keyCheckList] ?? {}, json[keyCheckList]?[keyDocId] ?? ''),
         //modelSite = ModelSite.fromJson(json[keySite] ?? {}, json[keySite]?[keyDocId] ?? ''),
         modelUser = ModelUser.fromJson(json[keyUser], json[keyUser]?[keyDocId] ?? ''),
         date = getTimestampFromData(json[keyDate]) ?? Timestamp.now(),
@@ -44,7 +48,8 @@ class ModelUserCheckHistory {
         dateWeek = json[keyDateWeek] ?? 1,
         modelLocation = ModelLocation.fromJson(json[keyLocation] ?? {}),
         modelDevice = ModelDevice.fromJson(json[keyDevice] ?? {}),
-        listModelCheckImage = getListModelCheckImageFromServer(json[keyImage]);
+        listModelCheckImage = getListModelCheckImageFromServer(json[keyImage]),
+        state = json[keyState] ?? '';
 
   Map<String, dynamic> toJson() {
     return {
@@ -58,6 +63,7 @@ class ModelUserCheckHistory {
       keyLocation: modelLocation.toJson(),
       keyDevice: modelDevice.toJson(),
       keyImage: getListModelCheckImageFromLocal(listModelCheckImage),
+      keyState: state,
     };
   }
 

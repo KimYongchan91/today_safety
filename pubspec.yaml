@@ -147,6 +147,7 @@ flutter:
     - assets/images/fuc/
     - assets/images/fuc_preset/
     - assets/images/images/
+    - assets/images/logo/
     - assets/datas/
     - assets/images/weather/
   # An image asset can refer to one or more resolution-specific "variants", see

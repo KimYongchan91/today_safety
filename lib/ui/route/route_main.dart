@@ -37,6 +37,7 @@ import '../../const/value/key.dart';
 import '../../my_app.dart';
 import '../../service/provider/provider_user_check_history_on_me.dart';
 import '../../service/util/util_permission.dart';
+import '../item/item_user_check_history_big.dart';
 import '../widget/widget_weather.dart';
 
 const int _intervalTimeToNextArticle = 2;
@@ -279,13 +280,17 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                   ///내 인증서 영역
                   Container(
                     width: Get.width,
-                    height: Get.height * 0.6,
+                    height: Get.height * 0.5,
                     decoration: BoxDecoration(color: Colors.grey),
                     child: Consumer<ProviderUserCheckHistoryOnMe>(
                       builder: (context, value, child) => value.modelUser != null
 
                           ///로그인 함
-                          ? Text('ok')
+                          ? PageView.builder(
+                              itemCount: value.listModelUserCheckHistory.length,
+                              itemBuilder: (context, index) =>
+                                  ItemUserCheckHistoryBig(value.listModelUserCheckHistory[index]),
+                            )
 
                           ///로그인 하기 전
                           : Center(
