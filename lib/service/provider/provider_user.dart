@@ -460,6 +460,10 @@ class ProviderUser extends ChangeNotifier {
 
   ///로그인 성공 후의 작업
   jobAfterLoginSuccess() async {
+    //내 인증서 리스너 등록
+    MyApp.providerUserCheckHistoryOnMe.modelUser = modelUser;
+    MyApp.providerUserCheckHistoryOnMe.init();
+
     //내가 관리하는 근무지에 대한 리스너 등록
     subscriptionSiteMy = FirebaseFirestore.instance
         .collection(keySites)
@@ -506,6 +510,7 @@ class ProviderUser extends ChangeNotifier {
   clearProvider({bool isNotify = true}) async {
     modelUser = null;
     if (isNotify) notifyListeners();
+    MyApp.providerUserCheckHistoryOnMe.clearProvider();
 
     logoutFromAll();
 

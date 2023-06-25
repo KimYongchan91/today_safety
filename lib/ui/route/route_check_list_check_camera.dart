@@ -665,7 +665,8 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
     MyApp.logger.d('디바이스 모델 : ${modelDevice.toJson().toString()}');
 
     ModelUserCheckHistory modelUserCheckHistory = ModelUserCheckHistory(
-      checkListId: widget.modelCheckList.docId,
+      modelCheckList: widget.modelCheckList,
+      //modelSite: widget.modelCheckList.modelSite,
       modelUser: MyApp.providerUser.modelUser!,
       date: timestampNow,
       dateDisplay: displayDateToday,

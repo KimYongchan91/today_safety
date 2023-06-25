@@ -12,7 +12,7 @@ import 'package:today_safety/const/value/value.dart';
 import '../../const/model/model_daily_check_history.dart';
 import '../../my_app.dart';
 
-class ProviderUserCheckHistory extends ChangeNotifier {
+class ProviderUserCheckHistoryOnCheckList extends ChangeNotifier {
   final String checkListId;
   final int limit;
   final String? userId;
@@ -30,7 +30,7 @@ class ProviderUserCheckHistory extends ChangeNotifier {
 
   DateFormat dateFormatYyyyMMDd = DateFormat('yyyy-MM-dd');
 
-  ProviderUserCheckHistory({
+  ProviderUserCheckHistoryOnCheckList({
     required this.checkListId,
     this.limit = 3,
     this.userId,
@@ -43,7 +43,7 @@ class ProviderUserCheckHistory extends ChangeNotifier {
   init() {
     Query query = FirebaseFirestore.instance
         .collection(keyUserCheckHistories)
-        .where(keyCheckListId, isEqualTo: checkListId);
+        .where('$keyCheckList.$keyDocId', isEqualTo: checkListId);
 
     if (userId != null) {
       query = query.where('$keyUser.$keyId', isEqualTo: userId);

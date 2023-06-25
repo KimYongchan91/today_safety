@@ -370,7 +370,7 @@ class _RouteNoticeNewState extends State<RouteNoticeNew> {
     try {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection(keyUserCheckHistories)
-          .where(keyCheckListId, whereIn: listCheckListId)
+          .where('$keyCheckList.$keyDocId', whereIn: listCheckListId)
           .where(keyDate, isGreaterThanOrEqualTo: timestampBefore)
           .get();
 

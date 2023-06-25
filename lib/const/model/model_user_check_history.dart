@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:today_safety/const/model/model_check_image.dart';
+import 'package:today_safety/const/model/model_check_list.dart';
 import 'package:today_safety/const/model/model_device.dart';
 import 'package:today_safety/const/model/model_location.dart';
+import 'package:today_safety/const/model/model_site.dart';
 import 'package:today_safety/const/model/model_user.dart';
 import 'package:today_safety/const/value/key.dart';
 import 'package:today_safety/const/value/router.dart';
@@ -10,7 +12,8 @@ import '../../service/util/util_firestore.dart';
 
 class ModelUserCheckHistory {
   String? docId;
-  final String checkListId;
+  final ModelCheckList modelCheckList;
+  //final ModelSite modelSite; 이미 modelCheckList 내에 있음
   final ModelUser modelUser;
   final Timestamp date;
   final String dateDisplay;
@@ -21,7 +24,8 @@ class ModelUserCheckHistory {
 
   ModelUserCheckHistory({
     this.docId = '',
-    required this.checkListId,
+    required this.modelCheckList,
+    //required this.modelSite,
     required this.modelUser,
     required this.date,
     required this.dateDisplay,
@@ -32,7 +36,8 @@ class ModelUserCheckHistory {
   });
 
   ModelUserCheckHistory.fromJson(Map json, {this.docId})
-      : checkListId = json[keyCheckListId] ?? '',
+      : modelCheckList = ModelCheckList.fromJson(json[keyCheckList] ?? {}, json[keyCheckList]?[keyDocId] ?? ''),
+        //modelSite = ModelSite.fromJson(json[keySite] ?? {}, json[keySite]?[keyDocId] ?? ''),
         modelUser = ModelUser.fromJson(json[keyUser], json[keyUser]?[keyDocId] ?? ''),
         date = getTimestampFromData(json[keyDate]) ?? Timestamp.now(),
         dateDisplay = json[keyDateDisplay] ?? '',
@@ -44,7 +49,8 @@ class ModelUserCheckHistory {
   Map<String, dynamic> toJson() {
     return {
       keyDocId: docId,
-      keyCheckListId: checkListId,
+      keyCheckList: modelCheckList.toJson(),
+      //keySite : modelSite.toJson(),
       keyUser: modelUser.toJson(),
       keyDate: date,
       keyDateDisplay: dateDisplay,
@@ -54,4 +60,15 @@ class ModelUserCheckHistory {
       keyImage: getListModelCheckImageFromLocal(listModelCheckImage),
     };
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ModelUserCheckHistory &&
+          runtimeType == other.runtimeType &&
+          docId == other.docId &&
+          date == other.date;
+
+  @override
+  int get hashCode => docId.hashCode ^ date.hashCode;
 }

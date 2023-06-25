@@ -35,6 +35,7 @@ import '../../const/model/model_article.dart';
 import '../../const/value/color.dart';
 import '../../const/value/key.dart';
 import '../../my_app.dart';
+import '../../service/provider/provider_user_check_history_on_me.dart';
 import '../../service/util/util_permission.dart';
 import '../widget/widget_weather.dart';
 
@@ -158,6 +159,7 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
           child: MultiProvider(
             providers: [
               ChangeNotifierProvider.value(value: MyApp.providerUser),
+              ChangeNotifierProvider.value(value: MyApp.providerUserCheckHistoryOnMe)
             ],
             builder: (context, child) => SingleChildScrollView(
               child: Column(
@@ -264,6 +266,36 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
                     width: MediaQuery.of(context).size.width,
                     height: 0.5,
                     color: Colors.black45,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+
+                  const Text(
+                    '내 안전 인증서',
+                    style: CustomTextStyle.bigBlackBold(),
+                  ),
+
+                  ///내 인증서 영역
+                  Container(
+                    width: Get.width,
+                    height: Get.height * 0.6,
+                    decoration: BoxDecoration(color: Colors.grey),
+                    child: Consumer<ProviderUserCheckHistoryOnMe>(
+                      builder: (context, value, child) => value.modelUser != null
+
+                          ///로그인 함
+                          ? Text('ok')
+
+                          ///로그인 하기 전
+                          : Center(
+                              child: Text('로그인을 해주세요.'),
+                            ),
+                    ),
+                  ),
+
+                  const SizedBox(
+                    height: 10,
                   ),
 
                   ///날씨 정보 영역
@@ -819,8 +851,8 @@ class _RouteMainState extends State<RouteMain> with SingleTickerProviderStateMix
 
           //만약 아직 날씨를 받아오지 않았다면, 콜백 등록
           completerRefreshWeather.future.then((_) {
-            if (
-            valueNotifierWeather.value ==null ||(valueNotifierWeather.value!.modelLocation.lat == defaultLat &&
+            if (valueNotifierWeather.value == null ||
+                (valueNotifierWeather.value!.modelLocation.lat == defaultLat &&
                     valueNotifierWeather.value!.modelLocation.lng == defaultLng)) {
               return;
             }

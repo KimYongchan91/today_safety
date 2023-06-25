@@ -13,7 +13,7 @@ import 'package:today_safety/const/model/model_check_list.dart';
 import 'package:today_safety/const/value/color.dart';
 import 'package:today_safety/const/value/value.dart';
 import 'package:today_safety/custom/custom_text_style.dart';
-import 'package:today_safety/service/provider/provider_user_check_history.dart';
+import 'package:today_safety/service/provider/provider_user_check_history_on_check_list.dart';
 import 'package:today_safety/ui/item/item_check.dart';
 import 'package:today_safety/ui/item/item_user_check_history.dart';
 import 'package:today_safety/ui/route/route_notice_new.dart';
@@ -37,7 +37,7 @@ class RouteCheckListDetail extends StatefulWidget {
 class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
   late Completer<bool> completerModelCheckList;
   ModelCheckList? modelCheckList;
-  late ProviderUserCheckHistory providerUserCheckHistory;
+  late ProviderUserCheckHistoryOnCheckList providerUserCheckHistory;
   bool isViewCalendar = true;
   bool isViewChart = false;
 
@@ -77,7 +77,7 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
   }
 
   initByCheckList() {
-    providerUserCheckHistory = ProviderUserCheckHistory(checkListId: modelCheckList!.docId);
+    providerUserCheckHistory = ProviderUserCheckHistoryOnCheckList(checkListId: modelCheckList!.docId);
   }
 
   @override
@@ -228,7 +228,7 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
 
                             ///달력
                             isViewCalendar == true
-                                ? Consumer<ProviderUserCheckHistory>(
+                                ? Consumer<ProviderUserCheckHistoryOnCheckList>(
                                     builder: (context, value, child) => TableCalendar(
                                       firstDay: DateTime.fromMillisecondsSinceEpoch(
                                           DateTime.now().millisecondsSinceEpoch -
@@ -328,7 +328,7 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                                 ?
 
                                 ///차트
-                                Consumer<ProviderUserCheckHistory>(
+                                Consumer<ProviderUserCheckHistoryOnCheckList>(
                                     builder: (context, value, child) => AspectRatio(
                                       aspectRatio: 3 / 2,
                                       child: BarChart(
@@ -354,7 +354,7 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
 
                       ///최근 인증한 유저
                       ///3개 정도?
-                      Consumer<ProviderUserCheckHistory>(
+                      Consumer<ProviderUserCheckHistoryOnCheckList>(
                         builder: (context, value, child) => Container(
                           color: Colors.white,
                           margin: const EdgeInsets.symmetric(vertical: 10),

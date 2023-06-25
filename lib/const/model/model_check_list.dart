@@ -31,15 +31,17 @@ class ModelCheckList {
   ModelCheckList.fromJson(Map map, this.docId)
       : name = map[keyName] ?? '',
         date = getTimestampFromData(map[keyDate]) ?? Timestamp.now(),
-        modelSite = ModelSite.fromJson(map[keySite], map[keySite][keyDocId] ?? ''),
-        modelConstraintLocation =
-            map[keyConstraintLocation] != null ? ModelConstraintLocation.fromJson(map[keyConstraintLocation]) : null,
+        modelSite = ModelSite.fromJson(map[keySite] ??{}, map[keySite]?[keyDocId] ?? ''),
+        modelConstraintLocation = map[keyConstraintLocation] != null
+            ? ModelConstraintLocation.fromJson(map[keyConstraintLocation])
+            : null,
         modelConstraintTime =
             map[keyConstraintTime] != null ? ModelConstraintTime.fromJson(map[keyConstraintTime]) : null,
         listModelCheck = getListModelCheckFromServer(map[keyCheckList]);
 
   Map<String, dynamic> toJson({bool isForServerForm = false}) {
     Map<String, dynamic> result = {
+      keyDocId: docId,
       keyName: name,
       keyDate: date,
       keySite: modelSite.toJson(isIncludeDocID: true),
