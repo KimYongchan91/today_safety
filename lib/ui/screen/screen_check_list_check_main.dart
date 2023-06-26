@@ -85,7 +85,8 @@ class _ScreenCheckListCheckMainState extends State<ScreenCheckListCheckMain> {
                 ListView.builder(
                   itemCount: widget.modelCheckList.listModelCheck.length,
                   itemBuilder: (context, index) => ItemCheck(
-                    widget.modelCheckList.listModelCheck[index],
+                    modelCheck: widget.modelCheckList.listModelCheck[index],
+                    itemCheckType: ItemCheckType.none,
                   ),
                   shrinkWrap: true,
                 )

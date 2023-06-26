@@ -44,7 +44,11 @@ class _RouteCheckListNewState extends State<RouteCheckListNew> {
   late ModelSite modelSite;
   bool isFucPresetSelected = false; //fuc 선택 단계를 지났는지
 
+  //선택된 안전 점검 항목
   ValueNotifier<List<ModelCheck>> valueNotifierListModelCheck = ValueNotifier([]);
+
+  //전체 안전 점검 항목
+  List<ModelCheck> listAllModelCheck = [];
   ValueNotifier<bool> valueNotifierUpload = ValueNotifier(false);
 
   TextEditingController textEditingControllerName = TextEditingController();
@@ -59,6 +63,10 @@ class _RouteCheckListNewState extends State<RouteCheckListNew> {
   void initState() {
     modelSite = Get.arguments[keyModelSite];
 
+    for (var element in listAllFucCode) {
+      listAllModelCheck.add(getModelCheck(element));
+    }
+
     super.initState();
   }
 
@@ -72,233 +80,259 @@ class _RouteCheckListNewState extends State<RouteCheckListNew> {
               ?
 
               ///fuc 선택 단계를 지났으면
-              Column(
-                  children: [
-                    Expanded(
-                      child: SingleChildScrollView(
-                        //physics: const NeverScrollableScrollPhysics(),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(20),
-                              child: InkWell(
-                                onTap: () {
-                                  Get.back();
-                                },
-                                child: FaIcon(FontAwesomeIcons.angleLeft),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 20),
-                              child: Text(
-                                '팀의 이름을 입력해 주세요.',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
+              InkWell(
+                  onTap: () {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                  },
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: SingleChildScrollView(
+                          //physics: const NeverScrollableScrollPhysics(),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(20),
+                                child: InkWell(
+                                  onTap: () {
+                                    Get.back();
+                                  },
+                                  child: FaIcon(FontAwesomeIcons.angleLeft),
                                 ),
                               ),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 20),
-                              child: TextField(
-                                decoration: const InputDecoration(
-                                  hintText: '생산팀, 전기팀, 오전 근무팀 등',
-                                ),
-                                controller: textEditingControllerName,
+                              const SizedBox(
+                                height: 20,
                               ),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 20),
-                              child: Text(
-                                '안전 점검 항목을 추가해 주세요.',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            ValueListenableBuilder(
-                              valueListenable: valueNotifierListModelCheck,
-                              builder: (context, value, child) => ListView.builder(
-                                itemBuilder: (context, index) => InkWell(
-                                  onTap: () {},
-                                  child: ItemCheck(value[index], onDelete: () {
-                                    onDeleteModelFuc(value[index]);
-                                  }),
-                                ),
-                                itemCount: value.length,
-                                shrinkWrap: true,
-                                physics: const BouncingScrollPhysics(),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-
-                            /*///인증 위치 제한 on/off 토글
-                          ValueListenableBuilder(
-                              valueListenable: valueNotifierModelConstraintLocation,
-                              builder: (context, value, _) => Row(
-                                    children: [
-                                      Text(
-                                        '인증 위치 제한',
-                                        style: CustomTextStyle.bigBlackBold(),
-                                      ),
-                                      CupertinoSwitch(
-                                        value: value != null,
-                                        onChanged: (value) {
-                                          if (value) {
-                                            valueNotifierModelConstraintLocation.value =
-                                                ModelConstraintLocation.fromJson({});
-                                          } else {
-                                            valueNotifierModelConstraintLocation.value = null;
-                                          }
-                                        },
-                                      )
-                                    ],
-                                  )),
-
-                          ///인증 위치 제한 거리 설정
-                          ValueListenableBuilder(
-                            valueListenable: valueNotifierModelConstraintLocation,
-                            builder: (context, value, child) => Visibility(
-                              visible: value != null,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text('거리 : ${value?.range ?? 0}m'),
-                                  SfSlider(
-                                    min: 1,
-                                    max: 15,
-                                    value: (value?.range ?? 0) ~/ 100,
-                                    interval: 1,
-                                    showTicks: true,
-                                    showLabels: true,
-                                    labelFormatterCallback: (actualValue, formattedText) {
-                                      return '${actualValue.toInt()}';
-                                    },
-                                    showDividers: true,
-                                    onChanged: (value) {
-                                      valueNotifierModelConstraintLocation.value =
-                                          ModelConstraintLocation.fromJson(
-                                              {keyRange: (value as double).toInt() * 100});
-                                    },
+                              const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 20),
+                                child: Text(
+                                  '팀의 이름을 입력해 주세요.',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
                                   ),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 20),
+                                child: TextField(
+                                  decoration: const InputDecoration(
+                                    hintText: '생산팀, 전기팀, 오전 근무팀 등',
+                                  ),
+                                  controller: textEditingControllerName,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 20),
+                                child: Text(
+                                  '팀원이 준수해야 할 안전 점검 항목을 선택해 주세요.',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              Text('추가됨'),
+                              const SizedBox(
+                                height: 20,
+                              ),
 
-                                  ///todo kyc, 마커가 처음 실행시 자동으로 보이지 않음
-                                  ///circle이 보이지 않음
-                                  IgnorePointer(
-                                    child: SizedBox(
-                                      height: 300,
-                                      child: KakaoMap(
-                                        onMapCreated: ((controller) {
-                                          print('onMapCreated');
-                                          kakaoMapController = controller;
-                                          controller.panTo(
-                                              LatLng(modelSite.modelLocation.lat!, modelSite.modelLocation.lng!));
-
-                                          if (modelSite.modelLocation.lat != null && modelSite.modelLocation.lng != null) {
-                                            listMarker.add(
-                                              Marker(
-                                                  markerId: 'MARKER_${modelSite.docId}',
-                                                  latLng: LatLng(
-                                                    modelSite.modelLocation.lat!,
-                                                    modelSite.modelLocation.lng!,
-                                                  ),
-                                                  width: _sizeMarkerWidth,
-                                                  height: _sizeMarkerHeight,
-                                                  offsetX: _sizeMarkerWidth ~/ 2,
-                                                  offsetY: _sizeMarkerHeight ~/ 2,
-                                                  infoWindowContent: '근무지 위치',
-                                                  infoWindowFirstShow: true,
-                                                  infoWindowRemovable: false,
-
-                                                  //마커 이미지
-                                                  markerImageSrc: modelSite.urlLogoImage),
-                                            );
-                                          }
-
+                              ///이미 추가된 항목 리스트뷰
+                              ValueListenableBuilder(
+                                valueListenable: valueNotifierListModelCheck,
+                                builder: (context, value, child) => ListView.builder(
+                                  itemBuilder: (context, index) => InkWell(
+                                    onTap: () {},
+                                    child: ItemCheck(
+                                        modelCheck: value[index],
+                                        itemCheckType: ItemCheckType.delete,
+                                        onTap: () {
+                                          onDeleteModelFuc(value[index]);
                                         }),
-                                        markers: listMarker,
-                                        circles: [
-                                          Circle(
-                                              circleId: 'CIRCLE_$value',
-                                              center: LatLng(
-                                                  modelSite.modelLocation.lat!, modelSite.modelLocation.lng!),
-                                              radius: 100,
-                                              fillColor: Colors.green)
-                                        ],
-                                      ),
+                                  ),
+                                  itemCount: value.length,
+                                  shrinkWrap: true,
+                                  physics: const BouncingScrollPhysics(),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Text('추가할 수 있는 항목'),
+
+                              ///추가할 수 있는 항목 리스트뷰
+                              ValueListenableBuilder(
+                                valueListenable: valueNotifierListModelCheck,
+                                builder: (context, value, child) => ListView.builder(
+                                  itemBuilder: (context, index) => InkWell(
+                                    onTap: () {},
+                                    child: ItemCheck(
+                                        modelCheck: listAllModelCheck
+                                            .where((element) => value.contains(element) == false)
+                                            .toList()[index],
+                                        itemCheckType: ItemCheckType.add,
+                                        onTap: () {
+                                          onAddModelFuc(listAllModelCheck
+                                              .where((element) => value.contains(element) == false)
+                                              .toList()[index]);
+                                        }),
+                                  ),
+                                  itemCount: listAllModelCheck.length - value.length,
+                                  shrinkWrap: true,
+                                  physics: const BouncingScrollPhysics(),
+                                ),
+                              ),
+
+                              /*///인증 위치 제한 on/off 토글
+                            ValueListenableBuilder(
+                                valueListenable: valueNotifierModelConstraintLocation,
+                                builder: (context, value, _) => Row(
+                                      children: [
+                                        Text(
+                                          '인증 위치 제한',
+                                          style: CustomTextStyle.bigBlackBold(),
+                                        ),
+                                        CupertinoSwitch(
+                                          value: value != null,
+                                          onChanged: (value) {
+                                            if (value) {
+                                              valueNotifierModelConstraintLocation.value =
+                                                  ModelConstraintLocation.fromJson({});
+                                            } else {
+                                              valueNotifierModelConstraintLocation.value = null;
+                                            }
+                                          },
+                                        )
+                                      ],
+                                    )),
+
+                            ///인증 위치 제한 거리 설정
+                            ValueListenableBuilder(
+                              valueListenable: valueNotifierModelConstraintLocation,
+                              builder: (context, value, child) => Visibility(
+                                visible: value != null,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text('거리 : ${value?.range ?? 0}m'),
+                                    SfSlider(
+                                      min: 1,
+                                      max: 15,
+                                      value: (value?.range ?? 0) ~/ 100,
+                                      interval: 1,
+                                      showTicks: true,
+                                      showLabels: true,
+                                      labelFormatterCallback: (actualValue, formattedText) {
+                                        return '${actualValue.toInt()}';
+                                      },
+                                      showDividers: true,
+                                      onChanged: (value) {
+                                        valueNotifierModelConstraintLocation.value =
+                                            ModelConstraintLocation.fromJson(
+                                                {keyRange: (value as double).toInt() * 100});
+                                      },
                                     ),
-                                  )
-                                ],
+
+                                    ///todo kyc, 마커가 처음 실행시 자동으로 보이지 않음
+                                    ///circle이 보이지 않음
+                                    IgnorePointer(
+                                      child: SizedBox(
+                                        height: 300,
+                                        child: KakaoMap(
+                                          onMapCreated: ((controller) {
+                                            print('onMapCreated');
+                                            kakaoMapController = controller;
+                                            controller.panTo(
+                                                LatLng(modelSite.modelLocation.lat!, modelSite.modelLocation.lng!));
+
+                                            if (modelSite.modelLocation.lat != null && modelSite.modelLocation.lng != null) {
+                                              listMarker.add(
+                                                Marker(
+                                                    markerId: 'MARKER_${modelSite.docId}',
+                                                    latLng: LatLng(
+                                                      modelSite.modelLocation.lat!,
+                                                      modelSite.modelLocation.lng!,
+                                                    ),
+                                                    width: _sizeMarkerWidth,
+                                                    height: _sizeMarkerHeight,
+                                                    offsetX: _sizeMarkerWidth ~/ 2,
+                                                    offsetY: _sizeMarkerHeight ~/ 2,
+                                                    infoWindowContent: '근무지 위치',
+                                                    infoWindowFirstShow: true,
+                                                    infoWindowRemovable: false,
+
+                                                    //마커 이미지
+                                                    markerImageSrc: modelSite.urlLogoImage),
+                                              );
+                                            }
+
+                                          }),
+                                          markers: listMarker,
+                                          circles: [
+                                            Circle(
+                                                circleId: 'CIRCLE_$value',
+                                                center: LatLng(
+                                                    modelSite.modelLocation.lat!, modelSite.modelLocation.lng!),
+                                                radius: 100,
+                                                fillColor: Colors.green)
+                                          ],
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
 
-                          ///카카오 맵*/
-                          ],
+                            ///카카오 맵*/
+                            ],
+                          ),
                         ),
                       ),
-                    ),
 
-                    ///만들기 버튼
-                    InkWell(
-                      onTap: complete,
-                      child: Container(
-                        width: Get.width,
-                        height: 70,
-                        margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                        decoration: BoxDecoration(
-                          color: Colors.orangeAccent,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Center(
-                          child: ValueListenableBuilder(
-                            valueListenable: valueNotifierUpload,
-                            builder: (context, value, child) => value
-                                ? const CircularProgressIndicator()
-                                : const Padding(
-                                    padding: EdgeInsets.only(top: 2),
-                                    child: Text(
-                                      '만들기',
-                                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 20),
+                      ///만들기 버튼
+                      InkWell(
+                        onTap: complete,
+                        child: Container(
+                          width: Get.width,
+                          height: 70,
+                          margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                          decoration: BoxDecoration(
+                            color: Colors.orangeAccent,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Center(
+                            child: ValueListenableBuilder(
+                              valueListenable: valueNotifierUpload,
+                              builder: (context, value, child) => value
+                                  ? const CircularProgressIndicator()
+                                  : const Padding(
+                                      padding: EdgeInsets.only(top: 2),
+                                      child: Text(
+                                        '만들기',
+                                        style:
+                                            TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 20),
+                                      ),
                                     ),
-                                  ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 )
               :
 
               ///fuc 선택 단계 진행 중
               Column(
                   children: [
-                    Align(
-                        alignment: Alignment.centerLeft,
-                        child: InkWell(
-                            onTap: () {
-                              Get.back();
-                            },
-                            child: const Padding(
-                              padding: EdgeInsets.all(20),
-                              child: FaIcon(FontAwesomeIcons.angleLeft),
-                            ))),
                     const SizedBox(
                       height: 30,
                     ),
@@ -334,11 +368,7 @@ class _RouteCheckListNewState extends State<RouteCheckListNew> {
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: GridView.builder(
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          crossAxisSpacing: 5,
-                        ),
+                      child: ListView.builder(
                         itemBuilder: (context, index) => InkWell(
                           onTap: () {
                             setFuc(getModelFucPreset(listAllFucPresetCode[index]));
@@ -379,6 +409,13 @@ class _RouteCheckListNewState extends State<RouteCheckListNew> {
   onDeleteModelFuc(ModelCheck modelCheck) {
     List<ModelCheck> listNew = [...valueNotifierListModelCheck.value];
     listNew.removeWhere((element) => element.fac == modelCheck.fac && element.date == modelCheck.date);
+
+    valueNotifierListModelCheck.value = listNew;
+  }
+
+  onAddModelFuc(ModelCheck modelCheck) {
+    List<ModelCheck> listNew = [...valueNotifierListModelCheck.value];
+    listNew.add(modelCheck);
 
     valueNotifierListModelCheck.value = listNew;
   }
@@ -426,11 +463,10 @@ class _RouteCheckListNewState extends State<RouteCheckListNew> {
   }
 
   Future<bool> onWillPop() async {
-    if (textEditingControllerName.text.isEmpty && valueNotifierModelConstraintLocation.value == null) {
-      return true;
-    }
-
-    var result = await Get.dialog(const DialogCloseRoute());
+    var result = await Get.dialog(const DialogCloseRoute(
+      content: '저장하지 않고 나갈까요?',
+      labelButton: '나가기',
+    ));
     if (result == true) {
       return true;
     } else {

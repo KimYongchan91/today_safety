@@ -19,12 +19,12 @@ class ItemFucPreset extends StatelessWidget {
         padding: const EdgeInsets.all(10),
         child: Column(
           children: [
-            Container(
+            /*Container(
               width: 50,
               alignment: Alignment.center,
 
                 child: Image.asset(getPathFucPresetImage(modelFucPreset))),
-            Spacer(),
+            Spacer(),*/
             Text(
               modelFucPreset.name,
               style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500,fontSize: 16),

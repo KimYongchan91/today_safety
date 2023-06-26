@@ -7,11 +7,15 @@ import 'package:today_safety/const/value/fuc.dart';
 import 'package:today_safety/const/value/fuc_preset.dart';
 import 'package:today_safety/custom/custom_text_style.dart';
 
+enum ItemCheckType { add, delete,none }
+
 class ItemCheck extends StatelessWidget {
   final ModelCheck modelCheck;
-  final void Function()? onDelete;
+  final ItemCheckType itemCheckType;
 
-  const ItemCheck(this.modelCheck, {this.onDelete, Key? key}) : super(key: key);
+  final void Function()? onTap;
+
+  const ItemCheck({required this.modelCheck, required this.itemCheckType, this.onTap, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +34,10 @@ class ItemCheck extends StatelessWidget {
             Container(
                 padding: const EdgeInsets.all(10),
                 decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xffbbd6fd)),
-                child: Image.asset(getPathCheckImage(modelCheck))),
+                child: AspectRatio(
+                  aspectRatio: 1,
+                  child: Image.asset(getPathCheckImage(modelCheck)),
+                )),
             const SizedBox(
               width: 20,
             ),
@@ -44,13 +51,13 @@ class ItemCheck extends StatelessWidget {
               ),
             ),
             Visibility(
-              visible: onDelete != null,
+              visible: onTap != null,
               child: InkWell(
-                onTap: onDelete,
-                child: const Padding(
-                  padding: EdgeInsets.all(10),
+                onTap: onTap,
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
                   child: Icon(
-                    Icons.close,
+                    itemCheckType == ItemCheckType.add ? Icons.add : Icons.close,
                     color: Colors.black54,
                   ),
                 ),

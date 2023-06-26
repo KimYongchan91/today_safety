@@ -46,7 +46,10 @@ class _RouteTestCheckSequenceState extends State<RouteTestCheckSequence> {
                     collapsed: Container(),
 
                     ///설명의 바디 (확장되었을 때)
-                    expanded: ItemCheck(widget.modelCheckList!.listModelCheck[value]),
+                    expanded: ItemCheck(
+                      modelCheck: widget.modelCheckList!.listModelCheck[value],
+                      itemCheckType: ItemCheckType.none,
+                    ),
                     theme: const ExpandableThemeData(
                       hasIcon: true,
                       iconSize: 36,

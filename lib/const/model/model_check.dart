@@ -36,11 +36,10 @@ class ModelCheck {
   }
 
   @override
-  bool operator ==(Object other) {
-    return other is ModelCheck && other.name == name;
-  }
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ModelCheck && runtimeType == other.runtimeType && name == other.name && fac == other.fac;
 
   @override
-  int get hashCode => hash2(name, fac);
-
+  int get hashCode => name.hashCode ^ fac.hashCode;
 }

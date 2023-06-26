@@ -422,7 +422,8 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                             ListView.builder(
                               itemCount: modelCheckList!.listModelCheck.length,
                               itemBuilder: (context, index) => ItemCheck(
-                                modelCheckList!.listModelCheck[index],
+                                modelCheck :  modelCheckList!.listModelCheck[index],
+                                itemCheckType: ItemCheckType.none,
                               ),
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
