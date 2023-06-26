@@ -6,6 +6,7 @@ import 'package:today_safety/service/provider/provider_user.dart';
 
 import '../../const/value/router.dart';
 import '../../my_app.dart';
+import '../widget/widget_app_bar.dart';
 
 class ScreenLoginProfile extends StatefulWidget {
   final ProviderUser providerUser;
@@ -31,31 +32,8 @@ class _ScreenLoginProfileState extends State<ScreenLoginProfile> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        ///앱바
-        Container(
-          alignment: Alignment.center,
-          width: Get.width,
-          height: 60,
-          color: Colors.white,
-          child: Row(
-            children: [
-              InkWell(
-                  onTap: () {
-                    Get.back();
-                  },
-                  child: const Padding(
-                      padding: EdgeInsets.all(20),
-                      child: FaIcon(
-                        FontAwesomeIcons.angleLeft,
-                        color: Colors.black,
-                      ))),
-              const Text(
-                '내 정보',
-                style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
-        ),
+        ///앱바 영역
+        WidgetAppBar(),
 
         ///로그인 정보
         Container(
