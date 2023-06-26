@@ -9,5 +9,5 @@ const AndroidNotificationChannel channelNoticeNew = AndroidNotificationChannel(
 
 //로컬 노티 세팅값
 const InitializationSettings initializationSettings = InitializationSettings(
-  android: AndroidInitializationSettings("sample_app_icon_fcm_230625"),
+  android: AndroidInitializationSettings("app_logo_128"),
 );

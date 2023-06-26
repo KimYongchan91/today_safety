@@ -34,24 +34,18 @@ class _ScreenLoginLoginState extends State<ScreenLoginLogin> {
         Expanded(
           flex: 1,
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Container(
-              alignment: Alignment.center,
-              width: 150,
-              height: 150,
-              decoration:
-                  BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.yellow.shade700),
-              padding: EdgeInsets.all(30),
-              child: const FaIcon(
-                FontAwesomeIcons.helmetSafety,
-                size: 80,
-                color: Colors.white,
-              ),
-            ),
+            ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Image.asset(
+                  'assets/images/logo/app_logo_720.png',
+                  width: 150,
+                  height: 150,
+                )),
             const SizedBox(
               height: 20,
             ),
             const Text(
-              ('오늘안전'),
+              '오늘 안전',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Colors.black,
@@ -71,8 +65,7 @@ class _ScreenLoginLoginState extends State<ScreenLoginLogin> {
               InkWell(
                 onTap: () async {
                   print("요청 보냄");
-                  if (valueNotifierIsProcessingLoginWithKakao.value ||
-                      valueNotifierIsProcessingLoginWithGoogle.value) {
+                  if (valueNotifierIsProcessingLoginWithKakao.value || valueNotifierIsProcessingLoginWithGoogle.value) {
                     return;
                   }
 

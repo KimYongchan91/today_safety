@@ -33,7 +33,7 @@ class _ScreenLoginProfileState extends State<ScreenLoginProfile> {
     return Column(
       children: [
         ///앱바 영역
-        WidgetAppBar(),
+        const WidgetAppBar(),
 
         ///로그인 정보
         Container(
@@ -193,7 +193,7 @@ class _ScreenLoginProfileState extends State<ScreenLoginProfile> {
                         children: [
                           ///근무지 로고 이미지
                           ClipRRect(
-                      borderRadius: BorderRadius.circular(100),
+                            borderRadius: BorderRadius.circular(100),
                             //borderRadius: BorderRadius.circular(20),
                             child: CachedNetworkImage(
                               imageUrl: widget.providerUser.modelSiteMy!.urlLogoImage,
@@ -203,7 +203,9 @@ class _ScreenLoginProfileState extends State<ScreenLoginProfile> {
                             ),
                           ),
 
-                          const SizedBox(width: 10,),
+                          const SizedBox(
+                            width: 10,
+                          ),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -219,16 +221,18 @@ class _ScreenLoginProfileState extends State<ScreenLoginProfile> {
                                 ),
 
                                 ///주소
-                                const Row(
+                                Row(
                                   children: [
-                                    FaIcon(
+                                    const FaIcon(
                                       FontAwesomeIcons.locationDot,
                                       size: 16,
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       width: 5,
                                     ),
-                                    Text('서울시 은평구 불광동 32번 가길'),
+                                    Text(
+                                        '${widget.providerUser.modelSiteMy!.modelLocation.si} ${widget.providerUser.modelSiteMy!.modelLocation.gu}'
+                                            ' ${widget.providerUser.modelSiteMy!.modelLocation.dong}'),
                                   ],
                                 ),
                               ],

@@ -5,7 +5,8 @@ import 'package:get/get.dart';
 import '../route/test/route_test.dart';
 
 class WidgetAppBar extends StatelessWidget {
-  const WidgetAppBar({Key? key}) : super(key: key);
+  final Color colorBackground;
+  const WidgetAppBar({this.colorBackground = Colors.white, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +14,7 @@ class WidgetAppBar extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20),
       width: MediaQuery.of(context).size.width,
       height: 65,
-      color: Colors.white,
+      color: colorBackground,
       child: Row(
         children: [
           ///아이콘
@@ -21,17 +22,17 @@ class WidgetAppBar extends StatelessWidget {
             onTap: () {
               Get.to(() => const RouteTest());
             },
-            child: Container(
-              alignment: Alignment.center,
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: Colors.yellow.shade700,
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: const FaIcon(
-                FontAwesomeIcons.helmetSafety,
-                color: Colors.white,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: Container(
+                alignment: Alignment.center,
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: Colors.yellow.shade700,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child:Image.asset('assets/images/logo/app_logo_720.png',width: 40,height: 40,),
               ),
             ),
           ),

@@ -73,9 +73,9 @@ class _RouteCheckListNewState extends State<RouteCheckListNew> {
 
               ///fuc 선택 단계를 지났으면
               Column(
-                children: [
-                  Expanded(
-                    child: SingleChildScrollView(
+                  children: [
+                    Expanded(
+                      child: SingleChildScrollView(
                         //physics: const NeverScrollableScrollPhysics(),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,7 +95,7 @@ class _RouteCheckListNewState extends State<RouteCheckListNew> {
                             const Padding(
                               padding: EdgeInsets.symmetric(horizontal: 20),
                               child: Text(
-                                '새로 작성할 \n체크리스트의 이름을 입력하세요.',
+                                '팀의 이름을 입력해 주세요.',
                                 style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
@@ -109,9 +109,22 @@ class _RouteCheckListNewState extends State<RouteCheckListNew> {
                               padding: const EdgeInsets.symmetric(horizontal: 20),
                               child: TextField(
                                 decoration: const InputDecoration(
-                                  hintText: 'ex) 오전 근무조',
+                                  hintText: '생산팀, 전기팀, 오전 근무팀 등',
                                 ),
                                 controller: textEditingControllerName,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 20),
+                              child: Text(
+                                '안전 점검 항목을 추가해 주세요.',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                             const SizedBox(
@@ -134,9 +147,6 @@ class _RouteCheckListNewState extends State<RouteCheckListNew> {
                             const SizedBox(
                               height: 20,
                             ),
-
-
-
 
                             /*///인증 위치 제한 on/off 토글
                           ValueListenableBuilder(
@@ -243,36 +253,37 @@ class _RouteCheckListNewState extends State<RouteCheckListNew> {
                           ],
                         ),
                       ),
-                  ),
-                  ///만들기 버튼
-                  InkWell(
-                    onTap: complete,
-                    child: Container(
-                      width: Get.width,
-                      height: 70,
-                      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                      decoration: BoxDecoration(
-                        color: Colors.orangeAccent,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Center(
-                        child: ValueListenableBuilder(
-                          valueListenable: valueNotifierUpload,
-                          builder: (context, value, child) => value
-                              ? const CircularProgressIndicator()
-                              : const Padding(
-                            padding: EdgeInsets.only(top: 2),
-                            child: Text(
-                              '만들기',
-                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 20),
-                            ),
+                    ),
+
+                    ///만들기 버튼
+                    InkWell(
+                      onTap: complete,
+                      child: Container(
+                        width: Get.width,
+                        height: 70,
+                        margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        decoration: BoxDecoration(
+                          color: Colors.orangeAccent,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Center(
+                          child: ValueListenableBuilder(
+                            valueListenable: valueNotifierUpload,
+                            builder: (context, value, child) => value
+                                ? const CircularProgressIndicator()
+                                : const Padding(
+                                    padding: EdgeInsets.only(top: 2),
+                                    child: Text(
+                                      '만들기',
+                                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 20),
+                                    ),
+                                  ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              )
+                  ],
+                )
               :
 
               ///fuc 선택 단계 진행 중
@@ -296,7 +307,7 @@ class _RouteCheckListNewState extends State<RouteCheckListNew> {
                       child: Padding(
                         padding: EdgeInsets.symmetric(horizontal: 20),
                         child: Text(
-                          '어떤 작업과 관련되어 있나요?',
+                          '어떤 작업과 관련된 팀인가요?',
                           style: CustomTextStyle.bigBlackBold(),
                         ),
                       ),

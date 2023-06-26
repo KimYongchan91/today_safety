@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:today_safety/ui/item/item_user_check_history_big.dart';
+import 'package:today_safety/ui/widget/widget_app_bar.dart';
 
 import '../../const/value/layout_main.dart';
 import '../../service/provider/provider_user_check_history_on_me.dart';
@@ -25,6 +26,14 @@ class _ScreenMainCheckState extends State<ScreenMainCheck> {
           ///로그인 함
           ? Stack(
               children: [
+                ///앱 로고
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: WidgetAppBar(
+                    colorBackground: Colors.transparent,
+                  ),
+                ),
+
                 ///인증서 목록
                 Positioned.fill(
                   child: PageView.builder(
@@ -43,17 +52,19 @@ class _ScreenMainCheckState extends State<ScreenMainCheck> {
                 Align(
                   alignment: Alignment.topCenter,
                   child: Padding(
-                    padding: EdgeInsets.only(top: 40),
-                    child: SmoothPageIndicator(
-                      controller: pageController,
-                      count: value.listModelUserCheckHistory.length,
-                      effect: ExpandingDotsEffect(
-                        dotWidth: 8,
-                        dotHeight: 8,
-                        dotColor: Colors.grey,
-                        activeDotColor: Colors.black,
-                      ),
-                    ),
+                    padding: EdgeInsets.only(top: 50),
+                    child: value.listModelUserCheckHistory.length != 0
+                        ? SmoothPageIndicator(
+                            controller: pageController,
+                            count: value.listModelUserCheckHistory.length,
+                            effect: ExpandingDotsEffect(
+                              dotWidth: 8,
+                              dotHeight: 8,
+                              dotColor: Colors.grey,
+                              activeDotColor: Colors.black,
+                            ),
+                          )
+                        : Container(),
                   ),
                 )
               ],

@@ -328,7 +328,7 @@ class _RouteSiteDetailState extends State<RouteSiteDetail> with SingleTickerProv
                   child: Row(
                     children: [
                       const Text(
-                        '안전점검 체크리스트',
+                        '팀',
                         style: CustomTextStyle.normalGreyBold(),
                       ),
                       const Spacer(),
