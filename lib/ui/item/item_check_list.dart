@@ -32,7 +32,7 @@ class ItemCheckList extends StatelessWidget {
               width: 50,
               height: 50,
               child: SfBarcodeGenerator(
-                value: '$urlAppLink/${modelCheckList.docId}',
+                value: '$urlBaseAppLink$keyRouteCheckListDetail/${modelCheckList.docId}',
                 symbology: QRCode(),
                 showValue: false,
               ),

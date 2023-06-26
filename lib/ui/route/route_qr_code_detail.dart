@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:syncfusion_flutter_barcodes/barcodes.dart';
 import 'package:today_safety/const/model/model_check_list.dart';
 
-import '../../service/util/util_qr_code.dart';
+import '../../const/value/router.dart';
 
 class RouteQrCodeDetail extends StatefulWidget {
   final ModelCheckList modelCheckList;
@@ -24,7 +24,7 @@ class _RouteQrCodeDetailState extends State<RouteQrCodeDetail> {
             width: Get.width * 0.8,
             height: Get.width * 0.8,
             child: SfBarcodeGenerator(
-              value: getQrCode(widget.modelCheckList),
+              value: '$urlBaseAppLink$keyRouteCheckListDetail/${widget.modelCheckList.docId}/$keyRouteCheckListCheckWithOutSlash',
               symbology: QRCode(),
               showValue: false,
             ),

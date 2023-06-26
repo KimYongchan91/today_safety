@@ -29,3 +29,8 @@ const String keyModelUserCheckHistory = 'model_user_check_history';
 const String keyRouteNoticeDetail = "/notice";
 const String keyNoticeId = 'notice_id';
 const String keyModelNotice = 'model_notice';
+
+String urlBase = 'https://kayple.com/today_safety/check_list/';
+
+const String urlBaseAppLink = 'https://kayple.com/today_safety';
+

@@ -24,7 +24,6 @@ import '../../my_app.dart';
 import '../../service/util/util_app_link.dart';
 import '../../service/util/util_chart.dart';
 import '../../service/util/util_check_list.dart';
-import '../../service/util/util_qr_code.dart';
 import '../item/item_calendar.dart';
 
 class RouteCheckListDetail extends StatefulWidget {
@@ -149,7 +148,7 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                                 width: 50,
                                 height: 50,
                                 child: SfBarcodeGenerator(
-                                  value: getQrCode(modelCheckList!),
+                                  value: '$urlBaseAppLink$keyRouteCheckListDetail/${modelCheckList!.docId}/$keyRouteCheckListCheckWithOutSlash',
                                   symbology: QRCode(),
                                   showValue: false,
                                 ),

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:syncfusion_flutter_barcodes/barcodes.dart';
 import 'package:today_safety/const/model/model_check_image.dart';
 import 'package:today_safety/const/value/value.dart';
 import 'package:today_safety/custom/custom_text_style.dart';
@@ -18,6 +19,7 @@ import '../../const/model/model_check_list.dart';
 import '../../const/model/model_user_check_history.dart';
 import '../../const/value/router.dart';
 import '../../my_app.dart';
+import '../../service/util/util_app_link.dart';
 import '../../service/util/util_user_check_history.dart';
 
 class RouteUserCheckHistoryDetail extends StatefulWidget {
@@ -46,7 +48,7 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
       modelUserCheckHistory = Get.arguments[keyModelUserCheckHistory];
       completerModelUserCheckHistory.complete(true);
     } else {
-      getModelUserCheckHistoryFromServerByDocId(Get.parameters[keyCheckListId]!).then((value) {
+      getModelUserCheckHistoryFromServerByDocId(Get.parameters[keyUserCheckHistoryId]!).then((value) {
         if (value != null) {
           modelUserCheckHistory = value;
           completerModelUserCheckHistory.complete(true);
@@ -87,27 +89,43 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
                           Spacer(),
                           AnimatedTextKit(
                             pause: Duration(milliseconds: 1000),
-                            repeatForever : true,
+                            repeatForever: true,
                             animatedTexts: [
-                              ColorizeAnimatedText(
-                                '오늘 안전',
-                                textStyle: CustomTextStyle.bigBlackBold(),
-                                colors: [
-                                  Colors.yellow,
-                                  Colors.green,
-                                  Colors.orange,
-
-                                ],
-                                speed: const  Duration(milliseconds: 1000)
-                              ),
+                              ColorizeAnimatedText('오늘 안전',
+                                  textStyle: CustomTextStyle.bigBlackBold(),
+                                  colors: [
+                                    Colors.yellow,
+                                    Colors.green,
+                                    Colors.orange,
+                                  ],
+                                  speed: const Duration(milliseconds: 1000)),
                             ],
                             isRepeatingAnimation: true,
                             onTap: () {
                               print("Tap Event");
                             },
                           ),
-                          Image.asset('assets/images/logo/sample_logo_230625.jpg',width: 40,height: 40,)
+                          Image.asset(
+                            'assets/images/logo/sample_logo_230625.jpg',
+                            width: 40,
+                            height: 40,
+                          )
                         ],
+                      ),
+
+                      SizedBox(
+                        height: 30,
+                      ),
+
+                      ///QR 코드 부분
+                      SizedBox(
+                        width: Get.width * 0.6,
+                        height: Get.width * 0.6,
+                        child: SfBarcodeGenerator(
+                          value: '$urlBaseAppLink$keyRouteUserCheckHistoryDetail/${Get.parameters[keyUserCheckHistoryId]}',
+                          symbology: QRCode(),
+                          showValue: false,
+                        ),
                       ),
 
                       SizedBox(

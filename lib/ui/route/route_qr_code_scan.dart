@@ -47,7 +47,7 @@ class _RouteQrCodeScanState extends State<RouteQrCodeScan> {
             child: QRView(
               key: qrKey,
               overlay: QrScannerOverlayShape(
-                  cutOutSize : Get.width * 0.8,
+                cutOutSize: Get.width * 0.8,
               ),
               onQRViewCreated: _onQRViewCreated,
             ),
@@ -66,20 +66,11 @@ class _RouteQrCodeScanState extends State<RouteQrCodeScan> {
   void _onQRViewCreated(QRViewController controller) {
     this.controller = controller;
     streamSubscription = controller.scannedDataStream.listen((scanData) {
-      String urlBase = 'https://kayple.com/today_safety/check_list/';
-
-      if (scanData.code != null && scanData.code!.contains(urlBase)) {
-        String checkListId = scanData.code!.replaceAll(urlBase, '');
-        if (checkListId.contains('/')) {
-          checkListId = checkListId.split('/').first;
-        }
-
-        Get.offNamed('$keyRouteCheckListDetail/$checkListId/$keyRouteCheckListCheckWithOutSlash');
+      if (scanData.code != null && scanData.code!.contains(urlBaseAppLink)) {
+        Get.offNamed(scanData.code!.replaceAll(urlBaseAppLink, ''));
         this.controller!.pauseCamera();
         streamSubscription?.cancel();
       }
-
-      //https://kayple.com/today_safety/check_list/Y7eoaYJLn5v1YvolI0xW
     });
   }
 }
