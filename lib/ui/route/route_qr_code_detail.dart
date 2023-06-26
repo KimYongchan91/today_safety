@@ -24,7 +24,8 @@ class _RouteQrCodeDetailState extends State<RouteQrCodeDetail> {
             width: Get.width * 0.8,
             height: Get.width * 0.8,
             child: SfBarcodeGenerator(
-              value: '$urlBaseAppLink$keyRouteCheckListDetail/${widget.modelCheckList.docId}/$keyRouteCheckListCheckWithOutSlash',
+              value:
+                  '$urlBaseAppLink$keyRouteCheckListDetail/${widget.modelCheckList.docId}/$keyRouteCheckListCheckWithOutSlash',
               symbology: QRCode(),
               showValue: false,
             ),
