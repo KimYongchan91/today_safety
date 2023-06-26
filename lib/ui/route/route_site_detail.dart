@@ -322,26 +322,31 @@ class _RouteSiteDetailState extends State<RouteSiteDetail> with SingleTickerProv
                     border: Border(
                         bottom: BorderSide(
                       width: 1.5,
-                      color: Colors.black45,
+                      color: colorBackground,
                     )),
                   ),
                   child: Row(
                     children: [
                       const Text(
                         '팀',
-                        style: CustomTextStyle.normalGreyBold(),
+                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orange, fontSize: 17),
                       ),
                       const Spacer(),
                       InkWell(
                         onTap: () {
                           addCheckList();
                         },
-                        child: const SizedBox(
-                          child: Row(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(width: 1, color: Colors.orange),
+                              color: Colors.white),
+                          child: const Row(
                             children: [
                               FaIcon(
                                 FontAwesomeIcons.plus,
-                                color: Colors.blue,
+                                color: Colors.orange,
                                 size: 13,
                               ),
                               SizedBox(
@@ -349,7 +354,7 @@ class _RouteSiteDetailState extends State<RouteSiteDetail> with SingleTickerProv
                               ),
                               Text(
                                 '만들기',
-                                style: TextStyle(color: Colors.blue),
+                                style: TextStyle(color: Colors.orange),
                               ),
                             ],
                           ),

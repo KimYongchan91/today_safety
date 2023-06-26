@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_barcodes/barcodes.dart';
 import 'package:today_safety/const/model/model_check_list.dart';
+import 'package:today_safety/const/value/color.dart';
 
 import '../../const/value/router.dart';
 import '../../service/util/util_app_link.dart';
@@ -24,7 +25,7 @@ class ItemCheckList extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         width: Get.width,
         decoration:
-            BoxDecoration(color: Colors.white, border: Border(bottom: BorderSide(width: 0.3, color: Colors.blue))),
+            const BoxDecoration(color: Colors.white, border: Border(bottom: BorderSide(width: 1, color:colorBackground))),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -43,9 +44,10 @@ class ItemCheckList extends StatelessWidget {
             Expanded(
                 child: Text(
               modelCheckList.name,
-              style: TextStyle(
+              style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 18,
+                color: Colors.black54
               ),
             )),
           ],

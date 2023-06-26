@@ -121,25 +121,27 @@ class _RouteCheckListNewState extends State<RouteCheckListNew> {
                                 padding: const EdgeInsets.symmetric(horizontal: 20),
                                 child: TextField(
                                   decoration: const InputDecoration(
-                                    hintText: '생산팀, 전기팀, 오전 근무팀 등',
+                                    hintText: 'Ex) 생산팀, 전기팀, 오전 근무팀 등',
                                   ),
                                   controller: textEditingControllerName,
                                 ),
                               ),
                               const SizedBox(
-                                height: 20,
+                                height: 50,
                               ),
                               const Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 20),
                                 child: Text(
                                   '팀원이 준수해야 할 안전 점검 항목을 선택해 주세요.',
                                   style: TextStyle(
-                                    fontSize: 20,
+                                    fontSize: 16,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),
-                              Text('추가됨'),
+                              const Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 20),
+                                  child: Text('추가됨')),
                               const SizedBox(
                                 height: 20,
                               ),
@@ -165,7 +167,9 @@ class _RouteCheckListNewState extends State<RouteCheckListNew> {
                               const SizedBox(
                                 height: 20,
                               ),
-                              Text('추가할 수 있는 항목'),
+                              const Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 20),
+                                  child: Text('추가할 수 있는 항목')),
 
                               ///추가할 수 있는 항목 리스트뷰
                               ValueListenableBuilder(
@@ -331,60 +335,77 @@ class _RouteCheckListNewState extends State<RouteCheckListNew> {
               :
 
               ///fuc 선택 단계 진행 중
-              Column(
-                  children: [
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    const Align(
-                      alignment: Alignment.centerLeft,
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: Text(
-                          '어떤 작업과 관련된 팀인가요?',
-                          style: CustomTextStyle.bigBlackBold(),
+              Padding(
+                padding: EdgeInsets.all(20),
+                child: Column(
+                    children: [
+                      const SizedBox(
+                        height: 30,
+                      ),
+
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: InkWell(
+                          onTap: (){
+                            Get.back();
+                          },
+                          child: FaIcon(FontAwesomeIcons.angleLeft),
                         ),
                       ),
-                    ),
-                    Row(
-                      children: [
-                        const Spacer(),
-                        InkWell(
-                          onTap: () {
-                            setFuc(null);
-                          },
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                            child: Text(
-                              '건너뛰기',
-                              style: CustomTextStyle.normalGreyBold(),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 50,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: ListView.builder(
-                        itemBuilder: (context, index) => InkWell(
-                          onTap: () {
-                            setFuc(getModelFucPreset(listAllFucPresetCode[index]));
-                          },
-                          child: ItemFucPreset(
-                            getModelFucPreset(
-                              listAllFucPresetCode[index],
-                            ),
-                          ),
-                        ),
-                        itemCount: listAllFucPresetCode.length,
-                        shrinkWrap: true,
+
+                      const SizedBox(
+                        height: 30,
                       ),
-                    )
-                  ],
-                ),
+                      const Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          child: Text(
+                            '어떤 작업과 관련된 팀인가요?',
+                            style: CustomTextStyle.bigBlackBold(),
+                          ),
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          const Spacer(),
+                          InkWell(
+                            onTap: () {
+                              setFuc(null);
+                            },
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                              child: Text(
+                                '건너뛰기',
+                                style: CustomTextStyle.normalGreyBold(),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 50,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: ListView.builder(
+                          itemBuilder: (context, index) => InkWell(
+                            onTap: () {
+                              setFuc(getModelFucPreset(listAllFucPresetCode[index]));
+                            },
+                            child: ItemFucPreset(
+                              getModelFucPreset(
+                                listAllFucPresetCode[index],
+                              ),
+                            ),
+                          ),
+                          itemCount: listAllFucPresetCode.length,
+                          shrinkWrap: true,
+                        ),
+                      )
+                    ],
+                  ),
+              ),
         ),
       ),
     );
