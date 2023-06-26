@@ -91,7 +91,7 @@ class _WidgetWeatherState extends State<WidgetWeather> {
                   width: Get.width,
                   height: 200,
                   padding: const EdgeInsets.all(20),
-                  color: const Color(0x55000000),
+                  color: const Color(0x33000000),
                 ),
                 Positioned(
                   top: 20,
@@ -124,6 +124,7 @@ class _WidgetWeatherState extends State<WidgetWeather> {
                           ),
                         ],
                       ),
+                      SizedBox(height: 10,),
                       Text(
                         '${widget.modelWeather!.modelLocation.gu} ${widget.modelWeather!.modelLocation.dong}',
                         style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),

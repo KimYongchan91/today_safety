@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:chaleno/chaleno.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -11,6 +12,8 @@ import 'package:kakao_map_plugin/kakao_map_plugin.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:http/http.dart' as http;
+import 'package:today_safety/const/value/color.dart';
+import 'package:today_safety/ui/item/item_notice.dart';
 
 import '../../const/model/model_article.dart';
 import '../../const/model/model_emergency_sms.dart';
@@ -37,7 +40,6 @@ class ScreenMainInfo extends StatefulWidget {
 }
 
 class _ScreenMainInfoState extends State<ScreenMainInfo> with SingleTickerProviderStateMixin {
-
   //날씨
   ValueNotifier<ModelWeather?> valueNotifierWeather = ValueNotifier(null);
   late AnimationController controllerRefreshWeather;
@@ -49,7 +51,6 @@ class _ScreenMainInfoState extends State<ScreenMainInfo> with SingleTickerProvid
   //재난 문자
   ValueNotifier<List<ModelEmergencySms>?> valueNotifierListModelEmergencySmsDisaster = ValueNotifier(null); //재난
   ValueNotifier<List<ModelEmergencySms>?> valueNotifierListModelEmergencySmsMissing = ValueNotifier(null); //실종
-
 
   //기사, 재난문자 page 관련
   Timer? timer;
@@ -66,7 +67,6 @@ class _ScreenMainInfoState extends State<ScreenMainInfo> with SingleTickerProvid
       duration: const Duration(milliseconds: 1000),
       vsync: this,
     );
-
 
     completerRefreshWeather = Completer();
 
@@ -126,13 +126,11 @@ class _ScreenMainInfoState extends State<ScreenMainInfo> with SingleTickerProvid
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
         children: [
-
           ///앱바 영역
           WidgetAppBar(),
 
@@ -149,36 +147,53 @@ class _ScreenMainInfoState extends State<ScreenMainInfo> with SingleTickerProvid
             ),
           ),
 
-          const SizedBox(
-            height: 10,
-          ),
+
+          ItemNotice(),
+
 
           Container(
             color: Colors.white,
             width: Get.width,
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    const Text(
-                      '최근 사망 사고 기사',
-                      style: CustomTextStyle.bigBlackBold(),
-                    ),
-                    const Spacer(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      const Text(
+                        '최근 사망 사고 기사',
+                        style: CustomTextStyle.bigBlackBold(),
+                      ),
 
-                    ///페이지 번호 표시 부분
-                    CustomValueListenableBuilder2(
-                      a: valueNotifierListModelArticle,
-                      b: valueNotifierPageArticle,
-                      builder: (context, a, b, child) => a != null ? Text('${b + 1}/${a.length}') : Container(),
-                    ),
-                  ],
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      const Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Text(
+                          '한국산업안전보건공단 제공',
+                          style: TextStyle(
+                            fontSize: 13,
+                          ),
+                        ),
+                      ),
+                      const Spacer(),
+
+                      ///페이지 번호 표시 부분
+                      CustomValueListenableBuilder2(
+                        a: valueNotifierListModelArticle,
+                        b: valueNotifierPageArticle,
+                        builder: (context, a, b, child) => a != null ? Text('${b + 1}/${a.length}') : Container(),
+                      ),
+                    ],
+                  ),
                 ),
 
                 const SizedBox(
-                  height: 10,
+                  height: 20,
                 ),
 
                 ///사건 사고 기사
@@ -186,35 +201,33 @@ class _ScreenMainInfoState extends State<ScreenMainInfo> with SingleTickerProvid
                   valueListenable: valueNotifierListModelArticle,
                   builder: (context, value, child) => value != null
 
-                  ///기사가 로딩되었을 때
+                      ///기사가 로딩되었을 때
                       ? SizedBox(
-                    width: Get.width,
-                    height: 80,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: PageView.builder(
-                            controller: controllerArticle,
-                            itemCount: value.length,
-                            itemBuilder: (context, index) {
-                              return ItemArticle(value[index]);
-                            },
-                            onPageChanged: (value) {
-                              valueNotifierPageArticle.value = value;
-                            },
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        /*  InkWell(
+                          width: Get.width,
+                          height: 80,
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: PageView.builder(
+                                  controller: controllerArticle,
+                                  itemCount: value.length,
+                                  itemBuilder: (context, index) {
+                                    return ItemArticle(value[index]);
+                                  },
+                                  onPageChanged: (value) {
+                                    valueNotifierPageArticle.value = value;
+                                  },
+                                ),
+                              ),
+
+                              /*  InkWell(
                                         onTap: () {},
                                         child: const FaIcon(FontAwesomeIcons.angleRight),
                                       )*/
-                      ],
-                    ),
-                  )
-                  /*
+                            ],
+                          ),
+                        )
+                      /*
                     ListView.builder(
                             itemCount: min(value.length, 5), //최대 5개
                             itemBuilder: (context, index) => ItemArticle(value[index]),
@@ -223,18 +236,8 @@ class _ScreenMainInfoState extends State<ScreenMainInfo> with SingleTickerProvid
                           )
                     */
 
-                  ///기사 로딩 중
+                      ///기사 로딩 중
                       : LoadingAnimationWidget.inkDrop(color: Colors.green, size: 32),
-                ),
-
-                const Align(
-                  alignment: Alignment.bottomRight,
-                  child: Text(
-                    '한국산업안전보건공단 제공',
-                    style: TextStyle(
-                      fontSize: 13,
-                    ),
-                  ),
                 ),
               ],
             ),
@@ -245,28 +248,31 @@ class _ScreenMainInfoState extends State<ScreenMainInfo> with SingleTickerProvid
           ),
 
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
             width: Get.width,
             color: Colors.white,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    const Text(
-                      '긴급 재난 문자',
-                      style: CustomTextStyle.bigBlackBold(),
-                    ),
-                    const Spacer(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Row(
+                    children: [
+                      const Text(
+                        '긴급 재난 문자',
+                        style: CustomTextStyle.bigBlackBold(),
+                      ),
+                      const Spacer(),
 
-                    ///페이지 번호 표시 부분
-                    CustomValueListenableBuilder2(
-                      a: valueNotifierListModelEmergencySmsDisaster,
-                      b: valueNotifierPageEmergencySmsDisaster,
-                      builder: (context, a, b, child) =>
-                      a != null && a.isNotEmpty ? Text('${b + 1}/${a.length}') : Container(),
-                    ),
-                  ],
+                      ///페이지 번호 표시 부분
+                      CustomValueListenableBuilder2(
+                        a: valueNotifierListModelEmergencySmsDisaster,
+                        b: valueNotifierPageEmergencySmsDisaster,
+                        builder: (context, a, b, child) =>
+                            a != null && a.isNotEmpty ? Text('${b + 1}/${a.length}') : Container(),
+                      ),
+                    ],
+                  ),
                 ),
 
                 const SizedBox(
@@ -278,48 +284,45 @@ class _ScreenMainInfoState extends State<ScreenMainInfo> with SingleTickerProvid
                   valueListenable: valueNotifierListModelEmergencySmsDisaster,
                   builder: (context, value, child) => value != null
 
-                  ///데이터가 로딩되었을 때
+                      ///데이터가 로딩되었을 때
                       ? SizedBox(
-                    width: Get.width,
-                    height: 80,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: PageView.builder(
-                            controller: controllerEmergencySmsDisaster,
-                            itemCount: value.length,
-                            itemBuilder: (context, index) {
-                              return ItemEmergencySms(value[index]);
-                            },
-                            onPageChanged: (value) {
-                              valueNotifierPageEmergencySmsDisaster.value = value;
-                            },
-                          ),
-                        ),
+                          width: Get.width,
+                          height: 80,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                child: PageView.builder(
+                                  controller: controllerEmergencySmsDisaster,
+                                  itemCount: value.length,
+                                  itemBuilder: (context, index) {
+                                    return ItemEmergencySms(value[index]);
+                                  },
+                                  onPageChanged: (value) {
+                                    valueNotifierPageEmergencySmsDisaster.value = value;
+                                  },
+                                ),
+                              ),
 
-                        /*
+                              /*
                                       ListView.builder(
                                         itemCount: min(value.length, 5), //최대 5개
                                         itemBuilder: (context, index) => ItemEmergencySms(value[index]),
                                         shrinkWrap: true,
                                         physics: const NeverScrollableScrollPhysics(),
                                       ),*/
-                      ],
-                    ),
-                  )
+                            ],
+                          ),
+                        )
 
-                  ///데이터 로딩 중
+                      ///데이터 로딩 중
                       : LoadingAnimationWidget.inkDrop(color: Colors.green, size: 32),
                 ),
               ],
             ),
           ),
 
-          const SizedBox(
-            height: 10,
-          ),
-
+          /*
           Container(
             color: Colors.white,
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 30),
@@ -392,14 +395,10 @@ class _ScreenMainInfoState extends State<ScreenMainInfo> with SingleTickerProvid
             ),
           ),
 
+*/
 
-          const SizedBox(
-            height: 10,
-          ),
+          const ItemMainBanner(),
           const ItemMainLink(),
-
-          const ItemMainBanner()
-
         ],
       ),
     );
@@ -526,7 +525,7 @@ class _ScreenMainInfoState extends State<ScreenMainInfo> with SingleTickerProvid
     }
 
     listModelArticleNew.sort(
-          (a, b) => b.dateTime.millisecondsSinceEpoch.compareTo(a.dateTime.millisecondsSinceEpoch),
+      (a, b) => b.dateTime.millisecondsSinceEpoch.compareTo(a.dateTime.millisecondsSinceEpoch),
     );
 
     valueNotifierListModelArticle.value = listModelArticleNew;

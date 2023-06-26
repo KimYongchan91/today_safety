@@ -40,7 +40,7 @@ class _RouteMainState extends State<RouteMain> {
   int timeBackButtonPressed = 0;
   FToast fToast = FToast();
 
-  List<IconData> listIconNavigationBar = [Icons.info_outline, Icons.check, Icons.person];
+  List<IconData> listIconNavigationBar = [Icons.home, Icons.card_membership, Icons.person];
   ValueNotifier<int> valueNotifierIndexPage = ValueNotifier(0);
 
   @override
