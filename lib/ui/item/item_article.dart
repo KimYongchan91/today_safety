@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:today_safety/const/model/model_article.dart';
+import 'package:today_safety/const/value/color.dart';
 import 'package:today_safety/custom/custom_text_style.dart';
 import 'package:today_safety/ui/route/route_webview.dart';
 
@@ -18,9 +19,11 @@ class ItemArticle extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 5),
         child: Container(
-          decoration: BoxDecoration(color: Colors.white,
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          alignment: Alignment.center,
+          decoration: BoxDecoration(color:colorBackground,
           borderRadius: BorderRadius.circular(20)),
 
           width: Get.width,
@@ -36,7 +39,7 @@ class ItemArticle extends StatelessWidget {
                     child: Center(
                       child: Text(
                         modelArticle.title,
-                        style: const CustomTextStyle.normalBlackBold(),
+                        style: const CustomTextStyle.normalBlackBold().copyWith(color: Colors.black54),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -46,18 +49,19 @@ class ItemArticle extends StatelessWidget {
 
                 ],
               ),
-              const SizedBox(height: 10,),
+
+              const SizedBox(height: 20,),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   ///날짜
-                  Text(DateFormat('MM-dd').format(modelArticle.dateTime),style: const TextStyle(fontWeight: FontWeight.w600),),
+                  Text(DateFormat('MM-dd').format(modelArticle.dateTime),style: const TextStyle(fontWeight: FontWeight.w600,color: Colors.black54),),
                   const SizedBox(
                     width: 5,
                   ),
 
                   ///지역
-                  Text(modelArticle.region,style: const TextStyle(fontWeight: FontWeight.w600),),
+                  Text(modelArticle.region,style: const TextStyle(fontWeight: FontWeight.w600,color: Colors.black54),),
                 ],
               ),
             ],

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:today_safety/custom/custom_text_style.dart';
@@ -72,20 +73,53 @@ class _RouteNoticeDetailState extends State<RouteNoticeDetail> {
               if (snapshot.data == true) {
                 return Column(
                   children: [
-                    Text(
-                      '공지사항',
-                      style: CustomTextStyle.bigBlackBold(),
+                    Container(
+padding: const EdgeInsets.symmetric(horizontal: 20),
+                      width: Get.width,
+                      height: 60,
+                      color: Colors.white,
+                      child: Row(
+                        children: [
+                          InkWell(
+                            onTap: (){
+                              Get.back();
+                            },
+                            child: FaIcon(FontAwesomeIcons.angleLeft),
+                          ),
+
+                          const SizedBox(width: 20,),
+                          const Text(
+                            '공지사항',
+                            style: CustomTextStyle.bigBlackBold(),
+                          ),
+
+
+
+                        ],
+                      ),
                     ),
-                    Text(
-                      '제목',
-                      style: CustomTextStyle.normalBlackBold(),
+
+                    Container(
+                      height: 1,
+                      width: Get.width,
+                      color: Colors.black54,
                     ),
-                    Text(modelNotice!.title),
-                    Text(
-                      '본문',
-                      style: CustomTextStyle.normalBlackBold(),
-                    ),
-                    Text(modelNotice!.body),
+
+                    const SizedBox(height: 50,),
+
+
+
+
+                    Text(modelNotice!.title,style: const CustomTextStyle.bigBlackBold(),),
+
+                    const SizedBox(height: 20,),
+                    const Align(
+                        alignment: Alignment.centerRight,
+                        child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            child: Text('시간'))),
+                    const SizedBox(height: 40,),
+                    Text(modelNotice!.body, style: TextStyle(fontWeight: FontWeight.w700, fontSize: 17),),
                   ],
                 );
               } else {

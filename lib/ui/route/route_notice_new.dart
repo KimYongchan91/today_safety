@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:today_safety/const/model/model_check_list.dart';
@@ -115,123 +116,144 @@ class _RouteNoticeNewState extends State<RouteNoticeNew> {
           children: [
             Expanded(
               child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    const Text(
-                      '새 공지 사항',
-                      style: CustomTextStyle.bigBlackBold(),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
+                child: Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      InkWell(
+                          onTap: (){
+                            Get.back();
+                          },
+                          child: const FaIcon(FontAwesomeIcons.angleLeft)),
 
-                    const Text(
-                      '대상 팀',
-                      style: CustomTextStyle.normalBlackBold(),
-                    ),
-
-                    ///대상 팀 리스트뷰
-                    FutureBuilder(
-                      future: completerLoadListModelCheckListAll.future,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData == false) {
-                          return Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: LoadingAnimationWidget.inkDrop(color: Colors.green, size: 48),
-                          );
-                        } else {
-                          if (snapshot.data == true) {
-                            return ValueListenableBuilder(
-                                valueListenable: valueNotifierSelectedListModelCheckList,
-                                builder: (context, value, child) => Wrap(
-                                      children: [
-                                        ...listModelCheckListAll
-                                            .map((e) => _ItemSelectedModelCheckList(e, value.contains(e), onTap))
-                                      ],
-                                    ));
-                          } else {
-                            return const IconError();
-                          }
-                        }
-                      },
-                    ),
-
-                    const SizedBox(
-                      height: 20,
-                    ),
-
-                    ///제목
-                    const Text(
-                      '제목',
-                      style: CustomTextStyle.normalBlackBold(),
-                    ),
-
-                    TextField(
-                      maxLines: 1,
-                      controller: textEditingControllerTitle,
-                      maxLength: _lengthTitleMax,
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                          ),
-                          focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.blueAccent)),
-                          enabledBorder: OutlineInputBorder(),
-                          isDense: true,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                          hintText: '제목'),
-                    ),
-
-                    const SizedBox(
-                      height: 20,
-                    ),
-
-                    ///본문
-                    const Text(
-                      '본문',
-                      style: CustomTextStyle.normalBlackBold(),
-                    ),
-
-                    TextField(
-                      maxLength: _lengthBodyMax,
-                      minLines: 8,
-                      maxLines: 8,
-                      controller: textEditingControllerBody,
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                          ),
-                          focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.blueAccent)),
-                          enabledBorder: OutlineInputBorder(),
-                          isDense: true,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                          hintText: '제목'),
-                    ),
-
-                    const SizedBox(
-                      height: 20,
-                    ),
-
-                    ValueListenableBuilder(
-                      valueListenable: valueNotifierIsSendFcm,
-                      builder: (context, value, child) => Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Checkbox(
-                            value: value,
-                            onChanged: (value) {
-                              if (value != null) {
-                                valueNotifierIsSendFcm.value = value;
-                              }
-                            },
-                          ),
-                          const Text('사용자에게 알림 전송')
-                        ],
+                      const SizedBox(height: 30,),
+                      const Text(
+                        '새 공지 사항',
+                        style: CustomTextStyle.bigBlackBold(),
                       ),
-                    ),
-                  ],
+                      const SizedBox(
+                        height: 50,
+                      ),
+
+                      const Text(
+                        '대상 팀',
+                        style: CustomTextStyle.normalBlackBold(),
+                      ),
+
+                      ///대상 팀 리스트뷰
+                      FutureBuilder(
+                        future: completerLoadListModelCheckListAll.future,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData == false) {
+                            return Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: LoadingAnimationWidget.inkDrop(color: Colors.green, size: 48),
+                            );
+                          } else {
+                            if (snapshot.data == true) {
+                              return ValueListenableBuilder(
+                                  valueListenable: valueNotifierSelectedListModelCheckList,
+                                  builder: (context, value, child) => Wrap(
+                                        children: [
+                                          ...listModelCheckListAll
+                                              .map((e) => _ItemSelectedModelCheckList(e, value.contains(e), onTap))
+                                        ],
+                                      ));
+                            } else {
+                              return const IconError();
+                            }
+                          }
+                        },
+                      ),
+
+                      const SizedBox(
+                        height: 40,
+                      ),
+
+                      ///제목
+                      const Text(
+                        '제목',
+                        style: CustomTextStyle.normalBlackBold(),
+                      ),
+
+                      const SizedBox(height: 20,),
+
+                      TextField(
+                        maxLines: 1,
+                        controller: textEditingControllerTitle,
+                        maxLength: _lengthTitleMax,
+                        decoration: const InputDecoration(
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                            ),
+                            focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.blueAccent)),
+                            enabledBorder: OutlineInputBorder(),
+                            isDense: true,
+                            contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                            hintText: '제목'),
+                      ),
+
+                      const SizedBox(
+                        height: 40,
+                      ),
+
+                      ///본문
+                      const Text(
+                        '본문',
+                        style: CustomTextStyle.normalBlackBold(),
+                      ),
+
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      TextField(
+                        maxLength: _lengthBodyMax,
+                        minLines: 8,
+                        maxLines: 8,
+                        controller: textEditingControllerBody,
+                        decoration: const InputDecoration(
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                            ),
+                            focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.blueAccent)),
+                            enabledBorder: OutlineInputBorder(),
+                            isDense: true,
+                            contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                            hintText: '제목'),
+                      ),
+
+                      const SizedBox(
+                        height: 20,
+                      ),
+
+
+                    ],
+                  ),
                 ),
               ),
             ),
+
+
+            ValueListenableBuilder(
+              valueListenable: valueNotifierIsSendFcm,
+              builder: (context, value, child) => Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Checkbox(
+                    value: value,
+                    onChanged: (value) {
+                      if (value != null) {
+                        valueNotifierIsSendFcm.value = value;
+                      }
+                    },
+                  ),
+                  const Text('사용자에게 알림 전송')
+                ],
+              ),
+            ),
+
 
             ///완료 버튼
             InkWell(
@@ -449,16 +471,18 @@ class _ItemSelectedModelCheckList extends StatelessWidget {
         onTap(modelCheckList);
       },
       child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 5,vertical: 10),
         decoration: BoxDecoration(
+          color: isSelected ? Colors.orange : Colors.white,
           border: Border.all(
-            color: isSelected ? Colors.red : Colors.grey,
+            color: isSelected ? Colors.orange : Colors.grey,
             width: isSelected ? 2 : 1,
           ),
           borderRadius: BorderRadius.circular(20),
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-          child: Text(modelCheckList.name),
+          child: Text(modelCheckList.name,style: TextStyle(color: isSelected ? Colors.white : Colors.black),),
         ),
       ),
     );

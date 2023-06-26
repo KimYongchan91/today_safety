@@ -25,6 +25,7 @@ import '../../service/util/util_app_link.dart';
 import '../../service/util/util_chart.dart';
 import '../../service/util/util_check_list.dart';
 import '../item/item_calendar.dart';
+import '../item/item_notice.dart';
 
 class RouteCheckListDetail extends StatefulWidget {
   const RouteCheckListDetail({Key? key}) : super(key: key);
@@ -371,7 +372,7 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                                     ),
                                     Text(
                                       '더보기',
-                                      style: CustomTextStyle.normalGreyBold(),
+                                      style: TextStyle(color: Colors.orange , fontWeight: FontWeight.bold),
                                     )
                                   ],
                                 ),
@@ -390,17 +391,51 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                         ),
                       ),
 
-                      ///공지 사항
-                      const Text(
-                        '공지 사항',
-                        style: CustomTextStyle.bigBlackBold(),
+                      Container(
+                        width: Get.width,
+                        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                        color: Colors.white,
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                ///공지 사항
+                                const Text(
+                                  '공지 사항',
+                                  style: CustomTextStyle.bigBlackBold(),
+                                ),
+
+
+
+
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Colors.orange, // Background color
+                                  ),
+                                  onPressed: () {
+                                    Get.to(()=>RouteNoticeNew(modelSite: modelCheckList!.modelSite, modelCheckList: modelCheckList));
+                                  },
+                                  child: const Text('작성하기',style: TextStyle(fontWeight: FontWeight.bold),),
+                                ),
+                              ],
+                            ),
+
+
+
+
+
+                           // ItemNotice(),
+
+
+
+
+
+                          ],
+                        ),
                       ),
-                      ElevatedButton(
-                        onPressed: () {
-                          Get.to(()=>RouteNoticeNew(modelSite: modelCheckList!.modelSite, modelCheckList: modelCheckList));
-                        },
-                        child: Text('새 공지사항 만들기'),
-                      ),
+
+
 
                       ///체크 리스트
                       Container(
