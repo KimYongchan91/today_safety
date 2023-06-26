@@ -29,6 +29,12 @@ class ProviderUserCheckHistoryOnMe extends ChangeNotifier {
 
   DateFormat dateFormatYyyyMMDd = DateFormat('yyyy-MM-dd');
 
+  set(ModelUser modelUser){
+    this.modelUser = modelUser;
+    notifyListeners();
+    init();
+  }
+
   init() {
     if(modelUser ==null){
       MyApp.logger.wtf("modelUser ==null");

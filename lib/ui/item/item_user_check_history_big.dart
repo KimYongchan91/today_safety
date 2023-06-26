@@ -10,6 +10,7 @@ import 'package:today_safety/const/value/value.dart';
 import 'package:today_safety/custom/custom_text_style.dart';
 import 'package:today_safety/ui/route/route_check_image_detail.dart';
 import 'package:today_safety/ui/route/route_map_detail.dart';
+import 'package:today_safety/ui/route/route_user_check_history_detail.dart';
 
 const double sizeCheckImage = 60;
 
@@ -38,134 +39,134 @@ class ItemUserCheckHistoryBig extends StatelessWidget {
     }
 
     return Center(
-      child: AspectRatio(
-        aspectRatio: 1 / 1.618,
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Column(
-            children: [
-              Expanded(
-                child: Stack(
-                  children: [
-                    Positioned.fill(
-                      child: Image.asset(
-                        'assets/images/logo/sample_logo_230625.jpg',
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 10,
-                      left: 10,
-                      child: Text(
-                        '${modelUserCheckHistory.modelCheckList.modelSite.name}\n안전 점검 인증',
-                        style: const CustomTextStyle.normalWhiteBold(),
-                      ),
-                    ),
-                    Positioned(
-                      top: 10,
-                      right: 10,
-                      child: Text('${modelUserCheckHistory.state == keyPend ? '대기 중' : '확인 완료'}'),
-                    )
-                  ],
-                ),
-              ),
-              Container(
-                height: 60,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Text(
-                      modelUserCheckHistory.modelCheckList.name,
-                      style: const CustomTextStyle.bigBlackBold(),
-                    ),
-                    Text(
-                      DateFormat('yyyy-MM-dd').format(modelUserCheckHistory.date.toDate()),
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-              )
-            ],
-          )
-
-          /*ExpandablePanel(
-            header: Row(
+      child: InkWell(
+        onTap: onTap,
+        child: AspectRatio(
+          aspectRatio: 1 / 1.618,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
               children: [
-                Text(modelUserCheckHistory.modelUser.name),
-                const Spacer(),
-                Text(
-                  millisecondGapFormatted,
-                  style: const CustomTextStyle.normalRedBold(),
-                )
-              ],
-            ), //todo kyc, 인증 시간 추가
-            collapsed: Container(),
-            expanded: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                    '인증 날짜 : ${DateFormat('yyyy-MM-dd HH:mm:ss').format(modelUserCheckHistory.date.toDate())}'),
-                InkWell(
-                  onTap: onTapLocation,
-                  child: Row(
+                Expanded(
+                  child: Stack(
                     children: [
-                      Text(
-                        "인증 위치 :${modelUserCheckHistory.modelLocation.si} ${modelUserCheckHistory.modelLocation.gu} "
-                        "${modelUserCheckHistory.modelLocation.dong}",
-                        style: const CustomTextStyle.normalBlue(),
-                      ),
-                      const Icon(Icons.map)
-                    ],
-                  ),
-                ),
-                Text("기기 정보 : ${modelUserCheckHistory.modelDevice.toJson().toString()}"),
-
-                ///인증 사진 가로 리스트 뷰
-                SizedBox(
-                  height: sizeCheckImage,
-                  child: ListView.builder(
-                    itemCount: modelUserCheckHistory.listModelCheckImage.length,
-                    itemBuilder: (context, index) => InkWell(
-                      onTap: () {
-                        Get.to(
-                          () => RouteCheckImageDetail(
-                            modelUserCheckHistory.listModelCheckImage,
-                            index: index,
-                            modelUser: modelUserCheckHistory.modelUser,
-                            modelDevice: modelUserCheckHistory.modelDevice,
-                          ),
-                        );
-                      },
-                      child: Hero(
-                        tag: modelUserCheckHistory.listModelCheckImage[index].urlImage,
-                        child: CachedNetworkImage(
-                          imageUrl: modelUserCheckHistory.listModelCheckImage[index].urlImage,
-                          width: sizeCheckImage,
-                          height: sizeCheckImage,
+                      Positioned.fill(
+                        child: Image.asset(
+                          'assets/images/logo/sample_logo_230625.jpg',
                           fit: BoxFit.cover,
                         ),
                       ),
-                    ),
-                    scrollDirection: Axis.horizontal,
+                      Positioned(
+                        bottom: 10,
+                        left: 10,
+                        child: Text(
+                          '${modelUserCheckHistory.modelCheckList.modelSite.name}\n안전 점검 인증',
+                          style: const CustomTextStyle.normalWhiteBold(),
+                        ),
+                      ),
+                      Positioned(
+                        top: 10,
+                        right: 10,
+                        child: Text('${modelUserCheckHistory.state == keyPend ? '대기 중' : '확인 완료'}'),
+                      )
+                    ],
+                  ),
+                ),
+                Container(
+                  height: 60,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Text(
+                        modelUserCheckHistory.modelCheckList.name,
+                        style: const CustomTextStyle.bigBlackBold(),
+                      ),
+                      Text(
+                        DateFormat('yyyy-MM-dd').format(modelUserCheckHistory.date.toDate()),
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
                   ),
                 )
               ],
-            ), //todo kyc, 인증 주소 등 추가
-          )*/
-          ,
+            )
+
+            /*ExpandablePanel(
+              header: Row(
+                children: [
+                  Text(modelUserCheckHistory.modelUser.name),
+                  const Spacer(),
+                  Text(
+                    millisecondGapFormatted,
+                    style: const CustomTextStyle.normalRedBold(),
+                  )
+                ],
+              ), //todo kyc, 인증 시간 추가
+              collapsed: Container(),
+              expanded: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                      '인증 날짜 : ${DateFormat('yyyy-MM-dd HH:mm:ss').format(modelUserCheckHistory.date.toDate())}'),
+                  InkWell(
+                    onTap: onTapLocation,
+                    child: Row(
+                      children: [
+                        Text(
+                          "인증 위치 :${modelUserCheckHistory.modelLocation.si} ${modelUserCheckHistory.modelLocation.gu} "
+                          "${modelUserCheckHistory.modelLocation.dong}",
+                          style: const CustomTextStyle.normalBlue(),
+                        ),
+                        const Icon(Icons.map)
+                      ],
+                    ),
+                  ),
+                  Text("기기 정보 : ${modelUserCheckHistory.modelDevice.toJson().toString()}"),
+
+                  ///인증 사진 가로 리스트 뷰
+                  SizedBox(
+                    height: sizeCheckImage,
+                    child: ListView.builder(
+                      itemCount: modelUserCheckHistory.listModelCheckImage.length,
+                      itemBuilder: (context, index) => InkWell(
+                        onTap: () {
+                          Get.to(
+                            () => RouteCheckImageDetail(
+                              modelUserCheckHistory.listModelCheckImage,
+                              index: index,
+                              modelUser: modelUserCheckHistory.modelUser,
+                              modelDevice: modelUserCheckHistory.modelDevice,
+                            ),
+                          );
+                        },
+                        child: Hero(
+                          tag: modelUserCheckHistory.listModelCheckImage[index].urlImage,
+                          child: CachedNetworkImage(
+                            imageUrl: modelUserCheckHistory.listModelCheckImage[index].urlImage,
+                            width: sizeCheckImage,
+                            height: sizeCheckImage,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      scrollDirection: Axis.horizontal,
+                    ),
+                  )
+                ],
+              ), //todo kyc, 인증 주소 등 추가
+            )*/
+            ,
+          ),
         ),
       ),
     );
   }
 
-  onTapLocation() {
-    Get.to(() => RouteMapDetail(
-          modelUserCheckHistory: modelUserCheckHistory,
-          modelCheckList: modelCheckList,
-        ));
+  onTap() {
+    Get.to(() => RouteUserCheckHistoryDetail(modelUserCheckHistory));
   }
 }
