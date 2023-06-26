@@ -20,6 +20,12 @@ const String keyDailyDateFormatted= 'daily_date_formatted';
 const String keyListModelUserCheckHistory = 'list_model_user_check_history';
 
 
+const String keyRouteUserCheckHistoryDetail = '/user_check';
+const String keyUserCheckHistoryId = 'user_check_history_id';
+const String keyModelUserCheckHistory = 'model_user_check_history';
+
+
+
 const String keyRouteNoticeDetail = "/notice";
 const String keyNoticeId = 'notice_id';
 const String keyModelNotice = 'model_notice';

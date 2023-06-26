@@ -12,6 +12,7 @@ import 'package:today_safety/ui/route/route_site_detail.dart';
 import 'package:today_safety/ui/route/route_site_new.dart';
 import 'package:today_safety/ui/route/route_site_search.dart';
 import 'package:today_safety/ui/route/route_check_list_check.dart';
+import 'package:today_safety/ui/route/route_user_check_history_detail.dart';
 
 import 'route_main.dart';
 
@@ -81,6 +82,12 @@ class RouteRouter extends StatelessWidget {
         GetPage(
           name: '$keyRouteNoticeDetail/:$keyNoticeId',
           page: () => const RouteNoticeDetail(),
+        ),
+
+        //
+        GetPage(
+          name: '$keyRouteUserCheckHistoryDetail/:$keyUserCheckHistoryId',
+          page: () => const RouteUserCheckHistoryDetail(),
         ),
 
         /*  GetPage(

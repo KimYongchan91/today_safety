@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:today_safety/const/model/model_check_list.dart';
 import 'package:today_safety/const/model/model_user_check_history.dart';
 import 'package:today_safety/const/value/key.dart';
+import 'package:today_safety/const/value/router.dart';
 import 'package:today_safety/const/value/value.dart';
 import 'package:today_safety/custom/custom_text_style.dart';
 import 'package:today_safety/ui/route/route_check_image_detail.dart';
@@ -20,13 +21,11 @@ class ItemUserCheckHistoryBig extends StatelessWidget {
   final ModelUserCheckHistory modelUserCheckHistory;
   final ModelCheckList? modelCheckList;
 
-  const ItemUserCheckHistoryBig(this.modelUserCheckHistory, {this.modelCheckList, Key? key})
-      : super(key: key);
+  const ItemUserCheckHistoryBig(this.modelUserCheckHistory, {this.modelCheckList, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    int millisecondGap =
-        DateTime.now().millisecondsSinceEpoch - modelUserCheckHistory.date.millisecondsSinceEpoch;
+    int millisecondGap = DateTime.now().millisecondsSinceEpoch - modelUserCheckHistory.date.millisecondsSinceEpoch;
     String millisecondGapFormatted;
     if (millisecondGap < millisecondMinute) {
       millisecondGapFormatted = "방금";
@@ -167,6 +166,8 @@ class ItemUserCheckHistoryBig extends StatelessWidget {
   }
 
   onTap() {
-    Get.to(() => RouteUserCheckHistoryDetail(modelUserCheckHistory));
+    Get.toNamed('$keyRouteUserCheckHistoryDetail/${modelUserCheckHistory.docId}', arguments: {
+      keyModelUserCheckHistory: modelUserCheckHistory,
+    });
   }
 }

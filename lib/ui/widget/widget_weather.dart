@@ -29,7 +29,7 @@ class WidgetWeather extends StatefulWidget {
 }
 
 class _WidgetWeatherState extends State<WidgetWeather> {
-  late VideoPlayerController videoPlayerController;
+   VideoPlayerController? videoPlayerController;
 
   final ValueNotifier<bool> valueNotifierIsInitVideoController = ValueNotifier(false);
 
@@ -41,13 +41,13 @@ class _WidgetWeatherState extends State<WidgetWeather> {
             mixWithOthers: true,
             allowBackgroundPlayback: true,
           ));
-      videoPlayerController.initialize().then((_) {
+      videoPlayerController!.initialize().then((_) {
         //
         MyApp.logger.d("비디오 컨트롤러 초기화 완료");
         valueNotifierIsInitVideoController.value = true;
-        videoPlayerController.setVolume(0.0);
-        videoPlayerController.setLooping(true);
-        videoPlayerController.play();
+        videoPlayerController!.setVolume(0.0);
+        videoPlayerController!.setLooping(true);
+        videoPlayerController!.play();
       }).catchError((e) {
         MyApp.logger.wtf("비디오 컨트롤러 초기화 실패 : ${e.toString()}");
       });
@@ -56,6 +56,12 @@ class _WidgetWeatherState extends State<WidgetWeather> {
     }
 
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    videoPlayerController?.dispose();
+    super.dispose();
   }
 
   @override
@@ -78,7 +84,7 @@ class _WidgetWeatherState extends State<WidgetWeather> {
                   child: ValueListenableBuilder(
                     valueListenable: valueNotifierIsInitVideoController,
                     builder: (context, value, child) =>
-                        value ? VideoPlayer(videoPlayerController) : Container(),
+                        value ? VideoPlayer(videoPlayerController!) : Container(),
                   ),
                 ),
                 Container(
