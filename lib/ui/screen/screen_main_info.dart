@@ -103,7 +103,7 @@ class _ScreenMainInfoState extends State<ScreenMainInfo> with SingleTickerProvid
       }
 
       //재난 문자(실종)
-      if (valueNotifierListModelEmergencySmsMissing.value != null && controllerEmergencySmsMissing.page != null) {
+      /*if (valueNotifierListModelEmergencySmsMissing.value != null && controllerEmergencySmsMissing.page != null) {
         int currentPage = controllerEmergencySmsMissing.page!.toInt();
         int nextPage = currentPage + 1;
         if (nextPage <= valueNotifierListModelEmergencySmsMissing.value!.length - 1) {
@@ -113,7 +113,7 @@ class _ScreenMainInfoState extends State<ScreenMainInfo> with SingleTickerProvid
           controllerEmergencySmsMissing.animateToPage(0,
               duration: const Duration(seconds: 2), curve: Curves.decelerate);
         }
-      }
+      }*/
     });
 
     super.initState();
