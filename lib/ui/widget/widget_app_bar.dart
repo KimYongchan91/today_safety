@@ -6,12 +6,13 @@ import '../route/test/route_test.dart';
 
 class WidgetAppBar extends StatelessWidget {
   final Color colorBackground;
-  const WidgetAppBar({this.colorBackground = Colors.white, Key? key}) : super(key: key);
+  final double paddingHorizontal;
+  const WidgetAppBar({this.colorBackground = Colors.white, this.paddingHorizontal = 20, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding:  EdgeInsets.symmetric(horizontal: paddingHorizontal),
       width: MediaQuery.of(context).size.width,
       height: 65,
       color: colorBackground,

@@ -1384,6 +1384,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.27.7"
+  share_plus:
+    dependency: "direct main"
+    description:
+      name: share_plus
+      sha256: ed3fcea4f789ed95913328e629c0c53e69e80e08b6c24542f1b3576046c614e8
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.0.2"
+  share_plus_platform_interface:
+    dependency: transitive
+    description:
+      name: share_plus_platform_interface
+      sha256: "0c6e61471bd71b04a138b8b588fa388e66d8b005e6f2deda63371c5c505a0981"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.2.1"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -1781,6 +1797,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.5.0"
+  widgets_to_image:
+    dependency: "direct main"
+    description:
+      name: widgets_to_image
+      sha256: e32c7b77267c01d319dc97333d4f3d894e9d81c8b3a408fd33862fa7775ee398
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2"
   win32:
     dependency: transitive
     description:
