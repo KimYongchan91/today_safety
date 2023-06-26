@@ -52,9 +52,9 @@ class _RouteQrCodeScanState extends State<RouteQrCodeScan> {
               onQRViewCreated: _onQRViewCreated,
             ),
           ),
-          Center(
+          const Center(
             child: Text(
-              '인식됨. ${result?.code ?? '아직'}',
+              '인식 중',
               style: CustomTextStyle.normalRedBold(),
             ),
           )

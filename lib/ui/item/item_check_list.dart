@@ -28,7 +28,7 @@ class ItemCheckList extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
+/*            SizedBox(
               width: 50,
               height: 50,
               child: SfBarcodeGenerator(
@@ -38,8 +38,8 @@ class ItemCheckList extends StatelessWidget {
               ),
             ),
             const SizedBox(
-              width: 30,
-            ),
+              width: 10,
+            ),*/
             Expanded(
                 child: Text(
               modelCheckList.name,

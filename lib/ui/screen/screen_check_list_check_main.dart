@@ -75,9 +75,21 @@ class _ScreenCheckListCheckMainState extends State<ScreenCheckListCheckMain> {
             color: Colors.white,
             child: Column(
               children: [
-                Text(
-                  '${widget.modelCheckList.name} 체크리스트',
-                  style: TextStyle(color: Colors.black54, fontSize: 18, fontWeight: FontWeight.w700),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      '${widget.modelCheckList.name}',
+                      style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w700),
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Text(
+                      '안전 점검 항목',
+                      style: TextStyle(color: Colors.black54, fontSize: 18, fontWeight: FontWeight.w700),
+                    ),
+                  ],
                 ),
                 const SizedBox(
                   height: 20,
