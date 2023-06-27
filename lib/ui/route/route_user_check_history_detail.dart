@@ -64,6 +64,19 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
       });
     }
 
+    //이미 승인했는지 아닌지
+    completerModelUserCheckHistory.future.then((value) {
+      if (value) {
+        if (modelUserCheckHistory?.state == keyOn) {
+          valueNotifierIsCheckGrant.value = true;
+        } else if (modelUserCheckHistory?.state == keyPend) {
+          //
+        } else if (modelUserCheckHistory?.state == keyReject) {
+          valueNotifierIsCheckGrant.value = false;
+        }
+      }
+    });
+
     super.initState();
   }
 
@@ -328,7 +341,6 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
 
   setCheckResult(bool isGrant) async {
     try {
-
       MyApp.logger.d("modelUserCheckHistory!.docId : ${modelUserCheckHistory!.docId}");
 
       await FirebaseFirestore.instance
