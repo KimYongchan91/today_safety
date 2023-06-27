@@ -6,10 +6,14 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:today_safety/const/model/model_check_list.dart';
 import 'package:today_safety/const/model/model_user_check_history.dart';
+import 'package:today_safety/const/value/key.dart';
 import 'package:today_safety/const/value/value.dart';
 import 'package:today_safety/custom/custom_text_style.dart';
 import 'package:today_safety/ui/route/route_check_image_detail.dart';
 import 'package:today_safety/ui/route/route_map_detail.dart';
+
+import '../../const/value/color.dart';
+import '../../const/value/router.dart';
 
 const double sizeCheckImage = 60;
 
@@ -35,118 +39,154 @@ class ItemUserCheckHistorySmall extends StatelessWidget {
       millisecondGapFormatted = "${millisecondGap ~/ millisecondDay}일 전";
     }
 
-    return Container(
-      decoration: BoxDecoration(
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
           border: Border.all(
-        color: Colors.grey,
-      )),
-      child: ExpandablePanel(
-        header: Container(
-          width: Get.width,
-          height: 50,
-          child: Row(
-            children: [
-              const SizedBox(
-                width: 10,
-              ),
-              Text(
-                modelUserCheckHistory.modelUser.name,
-                style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black54, fontSize: 17),
-              ),
-              const Spacer(),
-              Text(
-                millisecondGapFormatted,
-                style: const CustomTextStyle.normalRedBold(),
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-            ],
+            color: Colors.grey,
           ),
-        ), //todo kyc, 인증 시간 추가
-        collapsed: Container(),
-        expanded: Padding(
+        ),
+        child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ///인증 사진 가로 리스트 뷰
-              SizedBox(
-                height: sizeCheckImage,
-                child: ListView.builder(
-                  itemCount: modelUserCheckHistory.listModelCheckImage.length,
-                  itemBuilder: (context, index) => InkWell(
-                    onTap: () {
-                      Get.to(
-                        () => RouteCheckImageDetail(
-                          modelUserCheckHistory.listModelCheckImage,
-                          index: index,
-                          modelUser: modelUserCheckHistory.modelUser,
-                          modelDevice: modelUserCheckHistory.modelDevice,
-                        ),
+              Row(
+                children: [
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    modelUserCheckHistory.modelUser.name,
+                    style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black54, fontSize: 17),
+                  ),
+                  const Spacer(),
+                  Text(
+                    millisecondGapFormatted,
+                    style: const CustomTextStyle.normalRedBold(),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                ],
+              ),
+
+              ///인증 상태, 날짜
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ///인증 상태
+                  Builder(
+                    builder: (context) {
+                      String text;
+                      Color color;
+
+                      switch (modelUserCheckHistory.state) {
+                        case keyOn:
+                          text = '확인 완료';
+                          color = colorCheckStateOn;
+                          break;
+
+                        case keyPend:
+                          text = '확인 대기 중';
+                          color = colorCheckStatePend;
+                          break;
+
+                        case keyReject:
+                          text = '거절';
+                          color = colorCheckStateReject;
+                          break;
+
+                        default:
+                          text = '확인 대기 중';
+                          color = colorCheckStatePend;
+                          break;
+                      }
+
+                      return Text(
+                        text,
+                        style: TextStyle(color: color, fontWeight: FontWeight.bold),
                       );
                     },
-                    child: Hero(
-                      tag: modelUserCheckHistory.listModelCheckImage[index].urlImage,
-                      child: CachedNetworkImage(
-                        imageUrl: modelUserCheckHistory.listModelCheckImage[index].urlImage,
-                        width: sizeCheckImage,
-                        height: sizeCheckImage,
-                        fit: BoxFit.cover,
+                  ),
+
+                  ///날짜
+                  /* Text('${DateFormat('yyyy-MM-dd HH:mm:ss').format(modelUserCheckHistory.date.toDate())}'),*/
+                ],
+              ),
+
+              /*  SizedBox(
+                height: 10,
+              ),*/
+
+              /*   ///위치 정보
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      const FaIcon(
+                        FontAwesomeIcons.locationDot,
+                        size: 15,
                       ),
-                    ),
-                  ),
-                  scrollDirection: Axis.horizontal,
-                ),
-              ),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  const FaIcon(
-                    FontAwesomeIcons.clock,
-                    size: 15,
-                  ),
-                  const SizedBox(
-                    width: 5,
-                  ),
-                  Text('${DateFormat('yyyy-MM-dd HH:mm:ss').format(modelUserCheckHistory.date.toDate())}'),
-                ],
-              ),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  const FaIcon(
-                    FontAwesomeIcons.locationDot,
-                    size: 15,
-                  ),
-                  const SizedBox(
-                    width: 5,
-                  ),
-                  InkWell(
-                    onTap: onTapLocation,
-                    child: Row(
-                      children: [
-                        Text(
-                          "${modelUserCheckHistory.modelLocation.si} ${modelUserCheckHistory.modelLocation.gu} "
-                          "${modelUserCheckHistory.modelLocation.dong}",
-                          style: const CustomTextStyle.normalBlue(),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      InkWell(
+                        onTap: onTapLocation,
+                        child: Row(
+                          children: [
+                            Text(
+                              "${modelUserCheckHistory.modelLocation.si} ${modelUserCheckHistory.modelLocation.gu} "
+                                  "${modelUserCheckHistory.modelLocation.dong}",
+                              style: const CustomTextStyle.normalBlue(),
+                            ),
+                          ],
                         ),
-                        const Icon(Icons.map)
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+                      ),
+                    ],
+                  ),*/
 
-              Text("기기 정보 : ${modelUserCheckHistory.modelDevice.toJson().toString()}"),
+              /*Text("기기 정보 : ${modelUserCheckHistory.modelDevice.toJson().toString()}"),*/
+
+              ///인증 사진 가로 리스트 뷰
+              /* SizedBox(
+                    height: sizeCheckImage,
+                    child: ListView.builder(
+                      itemCount: modelUserCheckHistory.listModelCheckImage.length,
+                      itemBuilder: (context, index) => InkWell(
+                        onTap: () {
+                          Get.to(
+                            () => RouteCheckImageDetail(
+                              modelUserCheckHistory.listModelCheckImage,
+                              index: index,
+                              modelUser: modelUserCheckHistory.modelUser,
+                              modelDevice: modelUserCheckHistory.modelDevice,
+                            ),
+                          );
+                        },
+                        child: Hero(
+                          tag: modelUserCheckHistory.listModelCheckImage[index].urlImage,
+                          child: CachedNetworkImage(
+                            imageUrl: modelUserCheckHistory.listModelCheckImage[index].urlImage,
+                            width: sizeCheckImage,
+                            height: sizeCheckImage,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      scrollDirection: Axis.horizontal,
+                    ),
+                  ),*/
             ],
           ),
-        ), //todo kyc, 인증 주소 등 추가
+        ),
       ),
     );
+  }
+
+  onTap() {
+    Get.toNamed('$keyRouteUserCheckHistoryDetail/${modelUserCheckHistory.docId}');
   }
 
   onTapLocation() {

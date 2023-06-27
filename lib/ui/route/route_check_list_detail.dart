@@ -149,7 +149,8 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                                 width: 50,
                                 height: 50,
                                 child: SfBarcodeGenerator(
-                                  value: '$urlBaseAppLink$keyRouteCheckListDetail/${modelCheckList!.docId}/$keyRouteCheckListCheckWithOutSlash',
+                                  value:
+                                      '$urlBaseAppLink$keyRouteCheckListDetail/${modelCheckList!.docId}/$keyRouteCheckListCheckWithOutSlash',
                                   symbology: QRCode(),
                                   showValue: false,
                                 ),
@@ -175,8 +176,7 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                               alignment: Alignment.topLeft,
                               child: Text(
                                 '인증 현황',
-                                style:
-                                    TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
+                                style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
                               ),
                             ),
 
@@ -292,8 +292,7 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                                         defaultBuilder: (context, day, focusedDay) {
                                           return ItemCalendar(
                                             dateTime: day,
-                                            listModelUserCheckHistory:
-                                                value.getDailyUserCheckHistoryCount(day),
+                                            listModelUserCheckHistory: value.getDailyUserCheckHistoryCount(day),
                                           );
                                         },
 
@@ -310,8 +309,7 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                                           return ItemCalendar(
                                             dateTime: day,
                                             isToday: true,
-                                            listModelUserCheckHistory:
-                                                value.getDailyUserCheckHistoryCount(day),
+                                            listModelUserCheckHistory: value.getDailyUserCheckHistoryCount(day),
                                           );
                                         },
 
@@ -372,7 +370,7 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                                     ),
                                     Text(
                                       '더보기',
-                                      style: TextStyle(color: Colors.orange , fontWeight: FontWeight.bold),
+                                      style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold),
                                     )
                                   ],
                                 ),
@@ -406,36 +404,29 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                                   style: CustomTextStyle.bigBlackBold(),
                                 ),
 
-
-
-
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    primary: Colors.orange, // Background color
+                                Visibility(
+                                  visible: MyApp.providerUser.modelUser?.id == modelCheckList!.modelSite.master,
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      primary: Colors.orange, // Background color
+                                    ),
+                                    onPressed: () {
+                                      Get.to(() => RouteNoticeNew(
+                                          modelSite: modelCheckList!.modelSite, modelCheckList: modelCheckList));
+                                    },
+                                    child: const Text(
+                                      '작성하기',
+                                      style: TextStyle(fontWeight: FontWeight.bold),
+                                    ),
                                   ),
-                                  onPressed: () {
-                                    Get.to(()=>RouteNoticeNew(modelSite: modelCheckList!.modelSite, modelCheckList: modelCheckList));
-                                  },
-                                  child: const Text('작성하기',style: TextStyle(fontWeight: FontWeight.bold),),
                                 ),
                               ],
                             ),
 
-
-
-
-
-                           // ItemNotice(),
-
-
-
-
-
+                            // ItemNotice(),
                           ],
                         ),
                       ),
-
-
 
                       ///체크 리스트
                       Container(
@@ -457,7 +448,7 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                             ListView.builder(
                               itemCount: modelCheckList!.listModelCheck.length,
                               itemBuilder: (context, index) => ItemCheck(
-                                modelCheck :  modelCheckList!.listModelCheck[index],
+                                modelCheck: modelCheckList!.listModelCheck[index],
                                 itemCheckType: ItemCheckType.none,
                               ),
                               shrinkWrap: true,
