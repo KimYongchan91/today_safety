@@ -18,8 +18,7 @@ import '../../const/value/layout_main.dart';
 
 const double sizeCheckImage = 60;
 
-///site detail, check list detail 등의 페이지에서
-///최근 인증한 직원들 목록 보여줄 때 사용
+///메인 루트에서 내 인증서를 보여줄 때 사용
 class ItemUserCheckHistoryBig extends StatelessWidget {
   final ModelUserCheckHistory modelUserCheckHistory;
   final ModelCheckList? modelCheckList;

@@ -1,8 +1,12 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:today_safety/service/provider/provider_user.dart';
 import 'package:today_safety/ui/item/item_user_check_history_big.dart';
+import 'package:today_safety/ui/item/item_user_check_history_big_empty.dart';
 import 'package:today_safety/ui/widget/widget_app_bar.dart';
 
 import '../../const/value/layout_main.dart';
@@ -20,62 +24,82 @@ class _ScreenMainCheckState extends State<ScreenMainCheck> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ProviderUserCheckHistoryOnMe>(
-      builder: (context, value, child) => value.modelUser != null
-
-          ///로그인 함
-          ? Stack(
-              children: [
-                ///앱 로고
-                const Align(
-                  alignment: Alignment.topCenter,
-                  child: WidgetAppBar(
-                    colorBackground: Colors.transparent,
-                  ),
-                ),
-
-                ///인증서 목록
-                Positioned.fill(
-                  child: PageView.builder(
-                    itemCount: value.listModelUserCheckHistory.length,
-                    itemBuilder: (context, index) => ItemUserCheckHistoryBig(
-                      value.listModelUserCheckHistory[index],
-                      padding: paddingMainItemUserCheckHistoryBig, //20
-                      key: ValueKey(value.listModelUserCheckHistory[index]),
-                    ),
-                    /*onPageChanged: (value) {
-                      pageController.jumpToPage(value);
-                    },*/
-                    controller: pageController,
-                  ),
-                ),
-
-                ///인증서 페이지 인디케이터
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 50),
-                    child: value.listModelUserCheckHistory.isNotEmpty
-                        ? SmoothPageIndicator(
-                            controller: pageController,
-                            count: value.listModelUserCheckHistory.length,
-                            effect: const ExpandingDotsEffect(
-                              dotWidth: 8,
-                              dotHeight: 8,
-                              dotColor: Colors.grey,
-                              activeDotColor: Colors.black,
-                            ),
-                          )
-                        : Container(),
-                  ),
-                )
-              ],
-            )
-
-          ///로그인 하기 전
-          : const Center(
-              child: Text('로그인을 해주세요.'),
+    return Consumer2<ProviderUser, ProviderUserCheckHistoryOnMe>(
+      builder: (context, providerUser, providerUserCheckHistoryOnMe, child) => Stack(
+        children: [
+          ///앱 로고
+          const Align(
+            alignment: Alignment.topCenter,
+            child: WidgetAppBar(
+              colorBackground: Colors.transparent,
             ),
+          ),
+
+          ///인증서 목록
+          //3가지 상황이 있음.
+          //1. 로그인 안함
+          //2. 로그인 했는데 인증서가 없음
+          //3. 로그인 했고 인증서가 있음.
+          Positioned.fill(
+            child: Builder(builder: (context) {
+              int itemCount;
+              Widget? Function(BuildContext, int) itemBuilder;
+              if (providerUser.modelUser == null) {
+                itemCount = 1;
+                itemBuilder = (context, index) => ItemUserCheckHistoryBigEmpty(
+                      ItemUserCheckHistoryBigEmptyType.notLogin,
+                      onTap: () {},
+                      padding: paddingMainItemUserCheckHistoryBig, //20
+                    );
+              } else {
+                itemCount = max(providerUserCheckHistoryOnMe.listModelUserCheckHistory.length, 1);
+                if (providerUserCheckHistoryOnMe.listModelUserCheckHistory.isNotEmpty) {
+                  itemBuilder = (context, index) => ItemUserCheckHistoryBig(
+                        providerUserCheckHistoryOnMe.listModelUserCheckHistory[index],
+                        padding: paddingMainItemUserCheckHistoryBig, //20
+                        key: ValueKey(providerUserCheckHistoryOnMe.listModelUserCheckHistory[index]),
+                      );
+                } else {
+                  itemBuilder = (context, index) => ItemUserCheckHistoryBigEmpty(
+                        ItemUserCheckHistoryBigEmptyType.empty,
+                        onTap: () {},
+                        padding: paddingMainItemUserCheckHistoryBig, //20
+                      );
+                }
+              }
+
+              return PageView.builder(
+                itemCount: itemCount,
+                itemBuilder: itemBuilder,
+                /*onPageChanged: (value) {
+                          pageController.jumpToPage(value);
+                        },*/
+                controller: pageController,
+              );
+            }),
+          ),
+
+          ///인증서 페이지 인디케이터
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 50),
+              child: providerUserCheckHistoryOnMe.listModelUserCheckHistory.isNotEmpty
+                  ? SmoothPageIndicator(
+                      controller: pageController,
+                      count: providerUserCheckHistoryOnMe.listModelUserCheckHistory.length,
+                      effect: const ExpandingDotsEffect(
+                        dotWidth: 8,
+                        dotHeight: 8,
+                        dotColor: Colors.grey,
+                        activeDotColor: Colors.black,
+                      ),
+                    )
+                  : Container(),
+            ),
+          )
+        ],
+      ),
     );
   }
 }
