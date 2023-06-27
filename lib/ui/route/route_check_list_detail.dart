@@ -380,6 +380,7 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                                 itemBuilder: (context, index) => ItemUserCheckHistorySmall(
                                   value.listModelUserCheckHistory[index],
                                   modelCheckList: modelCheckList,
+                                  //key: ValueKey('${value.listModelUserCheckHistory[index].docId}${DateTime.now().millisecondsSinceEpoch}'),
                                 ),
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),

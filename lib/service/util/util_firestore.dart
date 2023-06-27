@@ -119,7 +119,7 @@ List<ModelUserCheckHistory> getListModelUserCheckHistoryFromServer(dynamic list)
 
   if (list is List) {
     for (var element in list) {
-      result.add(ModelUserCheckHistory.fromJson(element));
+      result.add(ModelUserCheckHistory.fromJson(element,docId: element[keyDocId]));
     }
   }
 

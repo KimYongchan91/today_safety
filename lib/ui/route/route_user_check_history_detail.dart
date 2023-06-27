@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,6 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:syncfusion_flutter_barcodes/barcodes.dart';
 import 'package:today_safety/const/model/model_check_image.dart';
+import 'package:today_safety/const/value/key.dart';
 import 'package:today_safety/const/value/value.dart';
 import 'package:today_safety/custom/custom_text_style.dart';
 import 'package:today_safety/ui/route/route_check_image_detail.dart';
@@ -32,6 +34,9 @@ class RouteUserCheckHistoryDetail extends StatefulWidget {
 class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetail> {
   late Completer<bool> completerModelUserCheckHistory;
   ModelUserCheckHistory? modelUserCheckHistory;
+
+  //이 인증 확인 결과
+  final ValueNotifier<bool?> valueNotifierIsCheckGrant = ValueNotifier(null);
 
   @override
   void initState() {
@@ -79,20 +84,20 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
 
                       ///앱 아이콘
                       Row(
                         children: [
-                          Spacer(),
+                          const Spacer(),
                           AnimatedTextKit(
-                            pause: Duration(milliseconds: 1000),
+                            pause: const Duration(milliseconds: 1000),
                             repeatForever: true,
                             animatedTexts: [
                               ColorizeAnimatedText('오늘 안전',
-                                  textStyle: CustomTextStyle.bigBlackBold(),
+                                  textStyle: const CustomTextStyle.bigBlackBold(),
                                   colors: [
                                     Colors.yellow,
                                     Colors.green,
@@ -113,7 +118,7 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
                         ],
                       ),
 
-                      SizedBox(
+                      const SizedBox(
                         height: 30,
                       ),
 
@@ -122,78 +127,79 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
                         width: Get.width * 0.6,
                         height: Get.width * 0.6,
                         child: SfBarcodeGenerator(
-                          value: '$urlBaseAppLink$keyRouteUserCheckHistoryDetail/${Get.parameters[keyUserCheckHistoryId]}',
+                          value:
+                              '$urlBaseAppLink$keyRouteUserCheckHistoryDetail/${Get.parameters[keyUserCheckHistoryId]}',
                           symbology: QRCode(),
                           showValue: false,
                         ),
                       ),
 
-                      SizedBox(
+                      const SizedBox(
                         height: 30,
                       ),
 
                       ///사용자 이름
-                      Text(
+                      const Text(
                         '이름',
                         style: CustomTextStyle.smallBlackBold(),
                       ),
 
                       Text(
                         '${modelUserCheckHistory!.modelUser.name} (${modelUserCheckHistory!.modelUser.idExceptLT})',
-                        style: CustomTextStyle.bigBlackBold(),
+                        style: const CustomTextStyle.bigBlackBold(),
                       ),
 
-                      SizedBox(
+                      const SizedBox(
                         height: 30,
                       ),
 
                       ///근무지 이름
-                      Text(
+                      const Text(
                         '근무지',
                         style: CustomTextStyle.smallBlackBold(),
                       ),
 
                       Text(
                         modelUserCheckHistory!.modelCheckList.modelSite.name,
-                        style: CustomTextStyle.normalBlackBold(),
+                        style: const CustomTextStyle.normalBlackBold(),
                       ),
 
-                      SizedBox(
+                      const SizedBox(
                         height: 30,
                       ),
 
                       ///근무지 내 팀명
-                      Text(
+                      const Text(
                         '팀',
                         style: CustomTextStyle.smallBlackBold(),
                       ),
 
                       Text(
                         modelUserCheckHistory!.modelCheckList.name,
-                        style: CustomTextStyle.normalBlackBold(),
+                        style: const CustomTextStyle.normalBlackBold(),
                       ),
 
-                      SizedBox(
+                      const SizedBox(
                         height: 30,
                       ),
 
                       ///인증 날짜
-                      Text(
+                      const Text(
                         '인증일자',
                         style: CustomTextStyle.smallBlackBold(),
                       ),
 
                       Text(
                         DateFormat('yyyy-MM-dd hh:mm:ss').format(modelUserCheckHistory!.date.toDate()),
-                        style: CustomTextStyle.normalBlackBold(),
+                        style: const CustomTextStyle.normalBlackBold(),
                       ),
 
-                      SizedBox(
+                      const SizedBox(
                         height: 30,
                       ),
 
                       ///인증 날짜
-                      Text(
+                      const Text(
                         '유효기간',
                         style: CustomTextStyle.smallBlackBold(),
                       ),
@@ -201,10 +207,10 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
                       Text(
                         // +1 일
                         '${DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.fromMillisecondsSinceEpoch(modelUserCheckHistory!.date.toDate().millisecondsSinceEpoch + millisecondDay))} 까지',
-                        style: CustomTextStyle.normalBlackBold(),
+                        style: const CustomTextStyle.normalBlackBold(),
                       ),
 
-                      SizedBox(
+                      const SizedBox(
                         height: 30,
                       ),
 
@@ -213,7 +219,7 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
                         header: Container(
                           height: 40,
                           //decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
-                          child: Align(
+                          child: const Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
                               '인증 사진',
@@ -221,7 +227,7 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
                             ),
                           ),
                         ),
-                        theme: ExpandableThemeData(
+                        theme: const ExpandableThemeData(
                           tapBodyToExpand: true,
                         ),
                         collapsed: Container(),
@@ -236,19 +242,69 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
                                   },
                                   child: _ItemCheckImage(modelUserCheckHistory!.listModelCheckImage[index])),
                               shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              separatorBuilder: (context, index) => SizedBox(
+                              physics: const NeverScrollableScrollPhysics(),
+                              separatorBuilder: (context, index) => const SizedBox(
                                 height: 20,
                               ),
-                            )
+                            ),
                           ],
                         ),
+                      ),
+
+                      const SizedBox(
+                        height: 30,
+                      ),
+
+                      ///관리자라면 보이는 승인, 거절 버튼 영역
+                      Builder(
+                        builder: (context) {
+                          MyApp.logger.d(
+                              "modelUserCheckHistory!.modelCheckList.modelSite.master : ${modelUserCheckHistory!.modelCheckList.modelSite.master}\n"
+                              "MyApp.providerUser.modelUser?.id : ${MyApp.providerUser.modelUser?.id}");
+                          return modelUserCheckHistory!.modelCheckList.modelSite.master ==
+                                  MyApp.providerUser.modelUser?.id
+                              ? Row(
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        setCheckResult(false);
+                                      },
+                                      child: const Text('거절'),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        setCheckResult(true);
+                                      },
+                                      child: const Text('승인'),
+                                    ),
+                                    ValueListenableBuilder(
+                                      valueListenable: valueNotifierIsCheckGrant,
+                                      builder: (context, value, child) {
+                                        if (value == true) {
+                                          return const Text(
+                                            '승인했어요.',
+                                            style: CustomTextStyle.normalBlack(),
+                                          );
+                                        } else if (value == false) {
+                                          return const Text(
+                                            '거절했어요.',
+                                            style: CustomTextStyle.normalBlack(),
+                                          );
+                                        } else {
+                                          return Container();
+                                        }
+                                      },
+                                    ),
+                                  ],
+                                )
+                              : Container();
+                        },
                       ),
                     ],
                   ),
                 );
               } else {
-                return Center(
+                return const Center(
                   child: IconError(),
                 );
               }
@@ -268,6 +324,22 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
         modelDevice: modelUserCheckHistory!.modelDevice,
       ),
     );
+  }
+
+  setCheckResult(bool isGrant) async {
+    try {
+
+      MyApp.logger.d("modelUserCheckHistory!.docId : ${modelUserCheckHistory!.docId}");
+
+      await FirebaseFirestore.instance
+          .collection(keyUserCheckHistories)
+          .doc(modelUserCheckHistory!.docId)
+          .update({keyState: isGrant ? keyOn : keyReject});
+
+      valueNotifierIsCheckGrant.value = isGrant;
+    } catch (e) {
+      MyApp.logger.wtf("setCheckResult 실패 : ${e.toString()}");
+    }
   }
 }
 

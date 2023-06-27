@@ -57,7 +57,7 @@ class ProviderUserCheckHistoryOnCheckList extends ChangeNotifier {
     query = query.limit(limit);
 
     ///최근 인증 근무자 첫 수신
-    query.get().then((value) {
+    /*query.get().then((value) {
       for (var element in value.docs) {
         ModelUserCheckHistory modelUserCheckHistory =
             ModelUserCheckHistory.fromJson(element.data() as Map, docId: element.id);
@@ -65,22 +65,27 @@ class ProviderUserCheckHistoryOnCheckList extends ChangeNotifier {
       }
 
       notifyListeners();
-    });
+    });*/
 
     ///최근 인증 근무자 변경점 수신
     ///변경점 수신까지는 하지 않는 걸로 함
-    /*query = query.where(keyDate,isGreaterThan: )
     streamSubscription = query.snapshots().listen((event) {
       for (var element in event.docChanges) {
-        ModelUserCheckHistory modelUserCheckHistory = ModelUserCheckHistory.fromJson(element.doc.data() as Map, element.doc.id);
+        ModelUserCheckHistory modelUserCheckHistory =
+            ModelUserCheckHistory.fromJson(element.doc.data() as Map, docId: element.doc.id);
 
         switch (element.type) {
           case DocumentChangeType.added:
             listModelUserCheckHistory.add(modelUserCheckHistory);
             break;
           case DocumentChangeType.modified:
-            listModelUserCheckHistory.removeWhere((element) => element == modelUserCheckHistory);
-            listModelUserCheckHistory.add(modelUserCheckHistory);
+            MyApp.logger.d("수정 수신");
+            int index = listModelUserCheckHistory.indexOf(modelUserCheckHistory);
+            if(index != -1){
+              listModelUserCheckHistory.removeAt(index);
+              listModelUserCheckHistory.insert(index,modelUserCheckHistory);
+            }
+
             break;
           case DocumentChangeType.removed:
             listModelUserCheckHistory.removeWhere((element) => element == modelUserCheckHistory);
@@ -89,9 +94,11 @@ class ProviderUserCheckHistoryOnCheckList extends ChangeNotifier {
 
         //정렬
 
+
+        notifyListeners();
         //sort
       }
-    });*/
+    });
 
     ///일별 인증 통계
     List<String> listDateDisplay = [];

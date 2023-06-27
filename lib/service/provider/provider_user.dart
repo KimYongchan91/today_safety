@@ -50,8 +50,8 @@ class ProviderUser extends ChangeNotifier {
 
       if (querySnapshot.docs.isNotEmpty) {
         //유저 문서가 존재함
-        ModelUser modelUser =
-            ModelUser.fromJson(querySnapshot.docs.first.data() as Map<dynamic, dynamic>, querySnapshot.docs.first.id);
+        ModelUser modelUser = ModelUser.fromJson(
+            querySnapshot.docs.first.data() as Map<dynamic, dynamic>, querySnapshot.docs.first.id);
         if (modelUser.state == keyOn) {
           //MyApp.logger.d("유저 문서가 존재함");
           this.modelUser = modelUser;
@@ -141,7 +141,8 @@ class ProviderUser extends ChangeNotifier {
           //회원가입 성공
 
           //FirebaseAuth 로그인 적용
-          await loginWithToken(resultJoin[keyToken], ModelUser.fromJson(modelUserNew.toJson(), resultJoin[keyDocId]));
+          await loginWithToken(
+              resultJoin[keyToken], ModelUser.fromJson(modelUserNew.toJson(), resultJoin[keyDocId]));
         } on Exception catch (e) {
           MyApp.logger.wtf("회원 가입 중에 에러 발생 : ${e.toString()}");
           showSnackBarOnRoute(messageJoinFail);
@@ -508,6 +509,7 @@ class ProviderUser extends ChangeNotifier {
 
       //최근에 내가 인증한 site를 조회
       try {
+
         QuerySnapshot querySnapshot = await FirebaseFirestore.instance
             .collection(keyUserCheckHistories)
             .where('$keyUser.$keyId', isEqualTo: modelUser!.id)
@@ -526,16 +528,22 @@ class ProviderUser extends ChangeNotifier {
               .limit(1)
               .get();
 
+
+
           if (querySnapshot.docs.isEmpty) {
             throw Exception("querySnapshot.docs.isEmpty");
           }
+
+          siteDocIdListenNotice = querySnapshot.docs.first.id;
+        } else {
+          Map json = (querySnapshot.docs.first.data() as Map)[keyCheckList]?[keySite] ?? {};
+          ModelSite modelSite = ModelSite.fromJson(json, json[keyDocId] ?? '');
+          siteDocIdListenNotice = modelSite.docId;
         }
 
-        Map json = (querySnapshot.docs.first.data() as Map)[keyCheckList]?[keySite] ?? {};
-        ModelSite modelSite = ModelSite.fromJson(json, json[keyDocId] ?? '');
-        siteDocIdListenNotice = modelSite.docId;
-        MyApp.logger.d("modelSite ${modelSite.toJson().toString()}");
-        MyApp.logger.d("siteDocIdListenNotice $siteDocIdListenNotice");
+
+        //MyApp.logger.d("modelSite ${modelSite.toJson().toString()}");
+        //MyApp.logger.d("siteDocIdListenNotice $siteDocIdListenNotice");
 
         //공지사항 구하기
         subscriptionNoticeRecent = FirebaseFirestore.instance
@@ -576,7 +584,9 @@ class ProviderUser extends ChangeNotifier {
     }
 
     //토큰이 없다면 추가
-    if (modelUser != null && MyApp.tokenFcm != null && modelUser!.listToken.contains(MyApp.tokenFcm) == false) {
+    if (modelUser != null &&
+        MyApp.tokenFcm != null &&
+        modelUser!.listToken.contains(MyApp.tokenFcm) == false) {
       await FirebaseFirestore.instance.collection(keyUserS).doc(modelUser!.docId).update({
         keyToken: FieldValue.arrayUnion([MyApp.tokenFcm]),
       });

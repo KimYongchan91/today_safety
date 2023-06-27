@@ -380,7 +380,8 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
                                                           alignment: Alignment.center,
                                                           decoration: BoxDecoration(
                                                             color: b.values.length ==
-                                                                    widget.modelCheckList.listModelCheck.length
+                                                                    widget
+                                                                        .modelCheckList.listModelCheck.length
 
                                                                 ///모든 인증이 완료되었을 때
                                                                 ? Colors.greenAccent
@@ -479,8 +480,8 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
                                                               decoration: BoxDecoration(
                                                                   shape: BoxShape.circle,
                                                                   color: Colors.white,
-                                                                  border:
-                                                                      Border.all(width: 0.5, color: Colors.black45)),
+                                                                  border: Border.all(
+                                                                      width: 0.5, color: Colors.black45)),
                                                             ),
                                                           ),
                                                         ),
@@ -690,8 +691,9 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
     );
 
     ///user_check_history 문서 생성
-    DocumentReference documentReference =
-        await FirebaseFirestore.instance.collection(keyUserCheckHistories).add(modelUserCheckHistory.toJson());
+    DocumentReference documentReference = await FirebaseFirestore.instance
+        .collection(keyUserCheckHistories)
+        .add(modelUserCheckHistory.toJson());
     modelUserCheckHistory.docId = documentReference.id;
 
     ///이미지 전송
@@ -737,7 +739,9 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
     await Future.wait([...listCompleterUploadImageToServer.map((e) => e.future).toList()]);
 
     ///전송된 이미지들 정렬
-    List<String> listName = [...valueNotifierMapCheckImageLocal.value.values.map((e) => e.modelCheck.name).toList()];
+    List<String> listName = [
+      ...valueNotifierMapCheckImageLocal.value.values.map((e) => e.modelCheck.name).toList()
+    ];
     listModelCheckImage.sort(
       (a, b) {
         return listName.indexOf(a.name).compareTo(listName.indexOf(b.name));
@@ -753,39 +757,42 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
     ///추후에 할 예정
     //먼저 문서가 있나 조회
 
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+    FirebaseFirestore.instance
         .collection(keyCheckListS)
         .doc(widget.modelCheckList.docId)
         .collection(keyDailyCheckHistories)
         .where(keyDateDisplay, isEqualTo: displayDateToday)
         .limit(1)
-        .get();
+        .get()
+        .then((querySnapshot) {
+      Map<String, dynamic> data = modelUserCheckHistory.toJson();
 
-    //문서가 있음
-    if (querySnapshot.docs.isNotEmpty) {
-      querySnapshot.docs.first.reference.update({
-        keyUserCheckHistoryCount: FieldValue.increment(1),
-        keyUserCheckHistory: FieldValue.arrayUnion([
-          modelUserCheckHistory.toJson(),
-        ])
-      });
-    } else {
-      //문서가 없음
+      //문서가 있음
+      if (querySnapshot.docs.isNotEmpty) {
+        querySnapshot.docs.first.reference.update({
+          keyUserCheckHistoryCount: FieldValue.increment(1),
+          keyUserCheckHistory: FieldValue.arrayUnion([
+            modelUserCheckHistory.toJson(),
+          ])
+        });
+      } else {
+        //문서가 없음
 
-      await FirebaseFirestore.instance
-          .collection(keyCheckListS)
-          .doc(widget.modelCheckList.docId)
-          .collection(keyDailyCheckHistories)
-          .add({
-        keyDate: timestampNow,
-        keyDateDisplay: displayDateToday,
-        keyDateWeek: timestampNow.toDate().weekday,
-        keyUserCheckHistoryCount: 1,
-        keyUserCheckHistory: [
-          modelUserCheckHistory.toJson(),
-        ],
-      });
-    }
+        FirebaseFirestore.instance
+            .collection(keyCheckListS)
+            .doc(widget.modelCheckList.docId)
+            .collection(keyDailyCheckHistories)
+            .add({
+          keyDate: timestampNow,
+          keyDateDisplay: displayDateToday,
+          keyDateWeek: timestampNow.toDate().weekday,
+          keyUserCheckHistoryCount: 1,
+          keyUserCheckHistory: [
+            modelUserCheckHistory.toJson(),
+          ],
+        });
+      }
+    });
 
     valueNotifierIsUploadingToServer.value = false;
 
@@ -798,8 +805,8 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
     //user check history detail 페이지로 이동
 
     //Get.offNamed('$keyRouteUserCheckHistoryDetail/${documentReference.id}');
-    Get.offNamedUntil(
-        '$keyRouteUserCheckHistoryDetail/${documentReference.id}', (route) => route.settings.name == keyRouteMain);
+    Get.offNamedUntil('$keyRouteUserCheckHistoryDetail/${documentReference.id}',
+        (route) => route.settings.name == keyRouteMain);
 
     showSnackBarOnRoute('인증을 완료했어요.');
     //await FirebaseFirestore.instance.collection(keyUserChecks).add({});
@@ -818,7 +825,8 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
         throw Exception("문서 없음");
       }
 
-      ModelUser modelUser = ModelUser.fromJson(querySnapshot.docs.first.data() as Map, querySnapshot.docs.first.id);
+      ModelUser modelUser =
+          ModelUser.fromJson(querySnapshot.docs.first.data() as Map, querySnapshot.docs.first.id);
 
       ///fcm 전송
       /*data = {

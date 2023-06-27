@@ -29,7 +29,8 @@ class ItemUserCheckHistoryBig extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int millisecondGap = DateTime.now().millisecondsSinceEpoch - modelUserCheckHistory.date.millisecondsSinceEpoch;
+    int millisecondGap =
+        DateTime.now().millisecondsSinceEpoch - modelUserCheckHistory.date.millisecondsSinceEpoch;
     String millisecondGapFormatted;
     if (millisecondGap < millisecondMinute) {
       millisecondGapFormatted = "방금";
@@ -77,7 +78,8 @@ class ItemUserCheckHistoryBig extends StatelessWidget {
                                 left: 10,
                                 child: Container(
                                   decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(12), color: Colors.black.withOpacity(0.5)),
+                                      borderRadius: BorderRadius.circular(12),
+                                      color: Colors.black.withOpacity(0.5)),
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                                     child: Row(
@@ -86,7 +88,8 @@ class ItemUserCheckHistoryBig extends StatelessWidget {
                                         ClipRRect(
                                           borderRadius: BorderRadius.circular(12),
                                           child: CachedNetworkImage(
-                                            imageUrl: modelUserCheckHistory.modelCheckList.modelSite.urlLogoImage,
+                                            imageUrl:
+                                                modelUserCheckHistory.modelCheckList.modelSite.urlLogoImage,
                                             width: 50,
                                             height: 50,
                                             fit: BoxFit.cover,
@@ -122,7 +125,11 @@ class ItemUserCheckHistoryBig extends StatelessWidget {
                                       height: 20,
                                       decoration: BoxDecoration(
                                         shape: BoxShape.circle,
-                                        color: modelUserCheckHistory.state == keyPend ? Colors.green : Colors.orange,
+                                        color: modelUserCheckHistory.state == keyOn
+                                            ? Colors.green
+                                            : modelUserCheckHistory.state == keyPend
+                                                ? Colors.orange
+                                                : Colors.red,
                                       ),
                                     ),
                                   ),
