@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:today_safety/custom/custom_text_style.dart';
 import 'package:today_safety/ui/widget/icon_error.dart';
@@ -74,56 +76,123 @@ class _RouteNoticeDetailState extends State<RouteNoticeDetail> {
                 return Column(
                   children: [
                     Container(
-padding: const EdgeInsets.symmetric(horizontal: 20),
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
                       width: Get.width,
                       height: 60,
                       color: Colors.white,
                       child: Row(
                         children: [
                           InkWell(
-                            onTap: (){
+                            onTap: () {
                               Get.back();
                             },
-                            child: FaIcon(FontAwesomeIcons.angleLeft),
+                            child: const FaIcon(FontAwesomeIcons.angleLeft),
                           ),
-
-                          const SizedBox(width: 20,),
+                          const SizedBox(
+                            width: 20,
+                          ),
                           const Text(
                             '공지사항',
                             style: CustomTextStyle.bigBlackBold(),
                           ),
-
-
-
                         ],
                       ),
                     ),
-
                     Container(
                       height: 1,
                       width: Get.width,
                       color: Colors.black54,
                     ),
+                    const SizedBox(
+                      height: 30,
+                    ),
 
-                    const SizedBox(height: 50,),
+                    ///회사 정보 영역
+                    Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
 
+                            ///회사 로고
+                            child: CachedNetworkImage(
+                              imageUrl: modelNotice!.modelSite.urlLogoImage,
+                              width: 50,
+                              height: 50,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ///회사 이름
+                              Text(
+                                modelNotice!.modelSite.name,
+                                style: const CustomTextStyle.normalBlackBold(),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
 
+                              ///팀 이름
+                              Text(
+                                [...modelNotice!.listModelCheckList.map((e) => e.name)]
+                                    .toString()
+                                    .replaceAll('[', '')
+                                    .replaceAll(']', ''),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
 
+                    ///제목
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Text(
+                        modelNotice!.title,
+                        style: const CustomTextStyle.bigBlackBold(),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
 
-                    Text(modelNotice!.title,style: const CustomTextStyle.bigBlackBold(),),
+                    ///시간
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Text(
+                          DateFormat('yyyy-MM-dd hh:mm:ss').format(modelNotice!.date.toDate()),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 40,
+                    ),
 
-                    const SizedBox(height: 20,),
-                    const Align(
-                        alignment: Alignment.centerRight,
-                        child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
-                            child: Text('시간'))),
-                    const SizedBox(height: 40,),
-                    Text(modelNotice!.body, style: TextStyle(fontWeight: FontWeight.w700, fontSize: 17),),
+                    ///본문
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Text(
+                        modelNotice!.body,
+                        style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 17),
+                      ),
+                    ),
                   ],
                 );
               } else {
-                return Center(
+                return const Center(
                   child: IconError(),
                 );
               }

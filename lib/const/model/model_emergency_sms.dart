@@ -2,7 +2,7 @@ class ModelEmergencySms {
   final DateTime dateTime;
   final String id;
   final String locationId;
-  final String locationName;
+   String locationName;
   final String msg;
   bool isNearRegion; //내가 속한 지역이라면
 

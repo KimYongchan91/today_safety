@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:today_safety/const/value/router.dart';
@@ -12,6 +13,7 @@ import 'package:today_safety/ui/route/route_site_detail.dart';
 import 'package:today_safety/ui/route/route_site_new.dart';
 import 'package:today_safety/ui/route/route_site_search.dart';
 import 'package:today_safety/ui/route/route_check_list_check.dart';
+import 'package:today_safety/ui/route/route_unknown.dart';
 import 'package:today_safety/ui/route/route_user_check_history_detail.dart';
 
 import 'route_main.dart';
@@ -31,7 +33,7 @@ class RouteRouter extends StatelessWidget {
         highlightColor: Colors.transparent,
       ),
       onUnknownRoute: (settings) {
-        //MyApp.logger.wtf('onUnknownRoute : ${settings.name}');
+        return GetPageRoute(settings: RouteSettings(name: keyRouteUnknown, arguments: settings.arguments));
       },
       navigatorObservers: const [
         //GetObserver(),
@@ -45,6 +47,11 @@ class RouteRouter extends StatelessWidget {
         GetPage(
           name: keyRouteMain,
           page: () => const RouteMain(),
+        ),
+
+        GetPage(
+          name: keyRouteUnknown,
+          page: () => const RouteUnknown(),
         ),
         GetPage(
           name: keyRouteLogin,

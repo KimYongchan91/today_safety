@@ -25,7 +25,7 @@ import '../../service/util/util_app_link.dart';
 import '../../service/util/util_chart.dart';
 import '../../service/util/util_check_list.dart';
 import '../item/item_calendar.dart';
-import '../item/item_notice.dart';
+import '../item/item_notice_big.dart';
 
 class RouteCheckListDetail extends StatefulWidget {
   const RouteCheckListDetail({Key? key}) : super(key: key);

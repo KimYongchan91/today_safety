@@ -2,6 +2,9 @@ const String keyRouteInit = "/";
 const String keyRouteMain = "/main";
 const String keyRouteLogin = "/login";
 
+const String keyRouteUnknown = "/unknown";
+
+
 const String keyRouteSiteNew = "/site/new";
 const String keyRouteSiteSearch = "/site/search";
 const String keyRouteSiteDetail = "/site";

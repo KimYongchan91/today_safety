@@ -784,6 +784,9 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
 
     valueNotifierIsUploadingToServer.value = false;
     showSnackBarOnRoute('인증을 완료했어요.');
+
+    //이 site에 대한 리스너 등록
+    MyApp.providerUser.getModelNotice(siteDocIdNew: widget.modelCheckList.modelSite.docId);
     //await FirebaseFirestore.instance.collection(keyUserChecks).add({});
   }
 }

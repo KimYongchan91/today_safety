@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:chaleno/chaleno.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:today_safety/const/model/model_user_check_history.dart';
 import 'package:today_safety/const/value/key.dart';
@@ -35,6 +36,10 @@ class _RouteTestState extends State<RouteTest> {
             ElevatedButton(
               onPressed: changeDataUserCheckHistoryStatePend,
               child: const Text('모든 인증 이력 state = pend로 변경'),
+            ),
+            ElevatedButton(
+              onPressed: goToRouteUnknown,
+              child: const Text('Unknown 페이지로!'),
             ),
           ],
         ),
@@ -137,5 +142,8 @@ class _RouteTestState extends State<RouteTest> {
         element.reference.update({keyState: keyPend});
       }
     });
+  }
+  goToRouteUnknown(){
+    Get.toNamed('sfdfds');
   }
 }

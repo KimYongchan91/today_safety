@@ -20,7 +20,7 @@ class ItemEmergencySms extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 5),
         child: Container(
           alignment: Alignment.center,
-          padding: const EdgeInsets.symmetric(horizontal: 20,vertical:15),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           decoration: BoxDecoration(
             ///내 지역의 재난 문자라면 강조
             borderRadius: BorderRadius.circular(20),
@@ -28,9 +28,9 @@ class ItemEmergencySms extends StatelessWidget {
           ),
           width: Get.width,
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Row(
-
                 children: [
                   ///제목
                   Expanded(
@@ -68,7 +68,9 @@ class ItemEmergencySms extends StatelessWidget {
                     style: TextStyle(
                         color: modelEmergencySms.isNearRegion ? Colors.white : Colors.black54,
                         fontWeight: FontWeight.bold),
-                    modelEmergencySms.locationName,
+                    modelEmergencySms.locationName.contains(',')
+                        ? '${modelEmergencySms.locationName.split(",").first} 외 ${modelEmergencySms.locationName.split(",").length - 1}지역'
+                        : modelEmergencySms.locationName,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),

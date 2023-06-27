@@ -12,8 +12,10 @@ import 'package:kakao_map_plugin/kakao_map_plugin.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'package:today_safety/const/value/color.dart';
-import 'package:today_safety/ui/item/item_notice.dart';
+import 'package:today_safety/service/provider/provider_user.dart';
+import 'package:today_safety/ui/item/item_notice_big.dart';
 
 import '../../const/model/model_article.dart';
 import '../../const/model/model_emergency_sms.dart';
@@ -49,8 +51,10 @@ class _ScreenMainInfoState extends State<ScreenMainInfo> with SingleTickerProvid
   ValueNotifier<List<ModelArticle>?> valueNotifierListModelArticle = ValueNotifier(null);
 
   //재난 문자
-  ValueNotifier<List<ModelEmergencySms>?> valueNotifierListModelEmergencySmsDisaster = ValueNotifier(null); //재난
-  ValueNotifier<List<ModelEmergencySms>?> valueNotifierListModelEmergencySmsMissing = ValueNotifier(null); //실종
+  ValueNotifier<List<ModelEmergencySms>?> valueNotifierListModelEmergencySmsDisaster =
+      ValueNotifier(null); //재난
+  ValueNotifier<List<ModelEmergencySms>?> valueNotifierListModelEmergencySmsMissing =
+      ValueNotifier(null); //실종
 
   //기사, 재난문자 page 관련
   Timer? timer;
@@ -83,14 +87,16 @@ class _ScreenMainInfoState extends State<ScreenMainInfo> with SingleTickerProvid
         int currentPage = controllerArticle.page!.toInt();
         int nextPage = currentPage + 1;
         if (nextPage <= valueNotifierListModelArticle.value!.length - 1) {
-          controllerArticle.animateToPage(nextPage, duration: const Duration(seconds: 2), curve: Curves.decelerate);
+          controllerArticle.animateToPage(nextPage,
+              duration: const Duration(seconds: 2), curve: Curves.decelerate);
         } else {
           controllerArticle.animateToPage(0, duration: const Duration(seconds: 2), curve: Curves.decelerate);
         }
       }
 
       //재난 문자(재난)
-      if (valueNotifierListModelEmergencySmsDisaster.value != null && controllerEmergencySmsDisaster.page != null) {
+      if (valueNotifierListModelEmergencySmsDisaster.value != null &&
+          controllerEmergencySmsDisaster.page != null) {
         int currentPage = controllerEmergencySmsDisaster.page!.toInt();
         int nextPage = currentPage + 1;
         if (nextPage <= valueNotifierListModelEmergencySmsDisaster.value!.length - 1) {
@@ -147,9 +153,7 @@ class _ScreenMainInfoState extends State<ScreenMainInfo> with SingleTickerProvid
             ),
           ),
 
-
-          ItemNotice(),
-
+          Consumer<ProviderUser>(builder: (context, value, child) => ItemNoticeBig(value.modelNotice)),
 
           Container(
             color: Colors.white,
@@ -164,7 +168,7 @@ class _ScreenMainInfoState extends State<ScreenMainInfo> with SingleTickerProvid
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       const Text(
-                        '최근 사망 사고 기사',
+                        '사망 사고 기사',
                         style: CustomTextStyle.bigBlackBold(),
                       ),
 
@@ -186,7 +190,8 @@ class _ScreenMainInfoState extends State<ScreenMainInfo> with SingleTickerProvid
                       CustomValueListenableBuilder2(
                         a: valueNotifierListModelArticle,
                         b: valueNotifierPageArticle,
-                        builder: (context, a, b, child) => a != null ? Text('${b + 1}/${a.length}') : Container(),
+                        builder: (context, a, b, child) =>
+                            a != null ? Text('${b + 1}/${a.length}') : Container(),
                       ),
                     ],
                   ),
@@ -493,7 +498,8 @@ class _ScreenMainInfoState extends State<ScreenMainInfo> with SingleTickerProvid
       try {
         String? href = element.href;
         String? date = regExpDate.stringMatch(innerHtmlFormatted)?.replaceAll('[', '').replaceAll(',', '');
-        String? region = regExpRegion.stringMatch(innerHtmlFormatted)?.replaceAll(']', '').replaceAll(',', '').trim();
+        String? region =
+            regExpRegion.stringMatch(innerHtmlFormatted)?.replaceAll(']', '').replaceAll(',', '').trim();
         String? title = innerHtmlFormatted.substring(innerHtmlFormatted.indexOf(']') + 1).trim();
 
         //https://www.kosha.or.kr/kosha/report/kosha_news.do?mode=view&articleNo=442620
@@ -532,6 +538,8 @@ class _ScreenMainInfoState extends State<ScreenMainInfo> with SingleTickerProvid
   }
 
   getEmergencySMS() async {
+    final DateTime dateTimeNow = DateTime.now();
+
     String urlBase = 'http://apis.data.go.kr/1741000/DisasterMsg3/getDisasterMsg1List';
     String keyService =
         '%2B%2BaANJW%2BGmM22jn4uU%2FTCiFfH58TiKg9euCqOwFAm%2FHNtf4K%2FlQ6zPxgMmXiuj7pPzt2LMOhS5yQBBFhm5IUrA%3D%3D';
@@ -615,6 +623,10 @@ class _ScreenMainInfoState extends State<ScreenMainInfo> with SingleTickerProvid
               if (isContainMissingKeyword) {
                 listModelEmergencySmsMissingNew.add(modelEmergencySms);
               } else {
+                if (dateTimeNow.millisecondsSinceEpoch - modelEmergencySms.dateTime.millisecondsSinceEpoch >
+                    millisecondDay) {
+                  continue;
+                }
                 listModelEmergencySmsDisasterNew.add(modelEmergencySms);
               }
             } catch (e) {

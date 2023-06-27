@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart' as ks;
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
+import 'package:today_safety/const/model/model_notice.dart';
 import 'package:today_safety/const/model/model_site.dart';
 import 'package:today_safety/const/model/model_user.dart';
 import 'package:today_safety/const/model/model_user_easy_login.dart';
@@ -32,6 +33,11 @@ class ProviderUser extends ChangeNotifier {
   ModelUser? modelUser;
   ModelSite? modelSiteMy;
   StreamSubscription? subscriptionSiteMy;
+
+  //공지사항 관련
+  StreamSubscription? subscriptionNoticeRecent;
+  ModelNotice? modelNotice;
+  String? siteDocIdListenNotice;
 
   ///자동 로그인 시작
   loginAuto() async {
@@ -460,12 +466,12 @@ class ProviderUser extends ChangeNotifier {
 
   ///로그인 성공 후의 작업
   jobAfterLoginSuccess() async {
-    //내 인증서 리스너 등록
+    ///내 인증서 리스너 등록
     if (modelUser != null) {
       MyApp.providerUserCheckHistoryOnMe.set(modelUser!);
     }
 
-    //내가 관리하는 근무지에 대한 리스너 등록
+    ///내가 관리하는 근무지에 대한 리스너 등록
     subscriptionSiteMy = FirebaseFirestore.instance
         .collection(keySites)
         .where(keyMaster, isEqualTo: modelUser?.id ?? '')
@@ -487,8 +493,69 @@ class ProviderUser extends ChangeNotifier {
       }
     });
 
-    //토큰이 바뀌었다면 수정해줌
+    ///최근에 내가 인증한 site의 공지사항에 대한 리스너 등록
+    getModelNotice();
+
+    ///토큰이 바뀌었다면 수정해줌
     _addToken();
+  }
+
+  getModelNotice({String? siteDocIdNew}) async {
+    //처음이거나, 새로운 site라면 초기화
+    if (siteDocIdListenNotice == null ||
+        (siteDocIdListenNotice != null && siteDocIdNew != null && siteDocIdListenNotice != siteDocIdNew)) {
+      subscriptionNoticeRecent?.cancel();
+      clearProviderNotice();
+
+      //최근에 내가 인증한 site를 조회
+      try {
+        QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+            .collection(keyUserCheckHistories)
+            .where('$keyUser.$keyId', isEqualTo: modelUser!.id)
+            .orderBy(keyDate, descending: true)
+            .limit(1)
+            .get();
+
+        if (querySnapshot.docs.isEmpty) {
+          throw Exception("querySnapshot.docs.isEmpty");
+        }
+
+        Map json = (querySnapshot.docs.first.data() as Map)[keyCheckList]?[keySite] ??{};
+        ModelSite modelSite = ModelSite.fromJson(json , json[keyDocId] ??'');
+        siteDocIdListenNotice = modelSite.docId;
+        MyApp.logger.d("modelSite ${modelSite.toJson().toString()}");
+        MyApp.logger.d("siteDocIdListenNotice $siteDocIdListenNotice");
+
+        //공지사항 구하기
+        subscriptionNoticeRecent = FirebaseFirestore.instance
+            .collection(keyNoticeS)
+            .where('$keySite.$keyDocId', isEqualTo: siteDocIdListenNotice)
+            .orderBy(keyDate, descending: true)
+            .limit(1)
+            .snapshots()
+            .listen((event) {
+          for (var element in event.docChanges) {
+            ModelNotice modelNoticeNew = ModelNotice.fromJson(element.doc.data() as Map, element.doc.id);
+            MyApp.logger.d("modelNoticeNew ${modelNoticeNew.toJson().toString()}");
+
+            switch (element.type) {
+              case DocumentChangeType.added:
+              case DocumentChangeType.modified:
+                modelNotice = modelNoticeNew;
+                notifyListeners();
+                break;
+              case DocumentChangeType.removed:
+                MyApp.logger.d("공지사항 삭제됨?? ${modelNoticeNew.title}");
+                break;
+            }
+          }
+        });
+      } catch (e) {
+        MyApp.logger.wtf("getModelNotice 실패 : ${e.toString()}");
+      }
+    } else {
+      MyApp.logger.d("getModelNotice 유지함.");
+    }
   }
 
   _addToken() async {
@@ -506,23 +573,6 @@ class ProviderUser extends ChangeNotifier {
       });
       //modelUser!.listToken.add(MyApp.tokenFcm);
     }
-  }
-
-  clearProvider({bool isNotify = true}) async {
-    modelUser = null;
-    if (isNotify) notifyListeners();
-    MyApp.providerUserCheckHistoryOnMe.clearProvider();
-
-    logoutFromAll();
-
-    /*List<Future> listFutureLogOut = [];
-    listFutureLogOut.add(FirebaseAuth.instance.signOut());
-    listFutureLogOut.add(ks.UserApi.instance.me().then((value) {
-      if (value.kakaoAccount != null) {
-
-      }
-    }));
-    await Future.wait(listFutureLogOut);*/
   }
 
   logoutFromAll() async {
@@ -544,5 +594,29 @@ class ProviderUser extends ChangeNotifier {
     }
 
     subscriptionSiteMy?.cancel();
+    clearProviderNotice();
+  }
+
+  clearProviderNotice() {
+    subscriptionNoticeRecent?.cancel();
+    siteDocIdListenNotice = null;
+    modelNotice = null;
+  }
+
+  clearProvider({bool isNotify = true}) async {
+    modelUser = null;
+    if (isNotify) notifyListeners();
+    MyApp.providerUserCheckHistoryOnMe.clearProvider();
+
+    logoutFromAll();
+
+    /*List<Future> listFutureLogOut = [];
+    listFutureLogOut.add(FirebaseAuth.instance.signOut());
+    listFutureLogOut.add(ks.UserApi.instance.me().then((value) {
+      if (value.kakaoAccount != null) {
+
+      }
+    }));
+    await Future.wait(listFutureLogOut);*/
   }
 }

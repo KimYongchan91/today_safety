@@ -31,7 +31,6 @@ class ItemArticle extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
 
-
               Row(
                 children: [
                   ///제목
@@ -50,7 +49,7 @@ class ItemArticle extends StatelessWidget {
                 ],
               ),
 
-              const SizedBox(height: 20,),
+              const SizedBox(height: 10,),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [

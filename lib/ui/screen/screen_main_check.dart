@@ -49,10 +49,12 @@ class _ScreenMainCheckState extends State<ScreenMainCheck> {
                     controller: pageController,
                   ),
                 ),
+
+                ///인증서 페이지 인디케이터
                 Align(
-                  alignment: Alignment.topCenter,
+                  alignment: Alignment.bottomCenter,
                   child: Padding(
-                    padding: EdgeInsets.only(top: 50),
+                    padding: EdgeInsets.only(bottom: 50),
                     child: value.listModelUserCheckHistory.length != 0
                         ? SmoothPageIndicator(
                             controller: pageController,
