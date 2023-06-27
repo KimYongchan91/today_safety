@@ -11,6 +11,7 @@ import 'package:today_safety/const/model/model_check_list.dart';
 import 'package:today_safety/const/model/model_notice.dart';
 import 'package:today_safety/const/model/model_site.dart';
 import 'package:today_safety/const/model/model_user.dart';
+import 'package:today_safety/const/value/color.dart';
 import 'package:today_safety/const/value/key.dart';
 import 'package:today_safety/const/value/router.dart';
 import 'package:today_safety/const/value/value.dart';
@@ -57,6 +58,8 @@ class _RouteNoticeNewState extends State<RouteNoticeNew> {
 
   //전송 관련
   ValueNotifier<bool> valueNotifierIsUploading = ValueNotifier(false);
+
+
 
   @override
   void initState() {
@@ -111,148 +114,195 @@ class _RouteNoticeNewState extends State<RouteNoticeNew> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: colorBackground,
       body: SafeArea(
         child: Column(
           children: [
             Expanded(
               child: SingleChildScrollView(
-                child: Padding(
-                  padding: EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      InkWell(
-                          onTap: (){
-                            Get.back();
-                          },
-                          child: const FaIcon(FontAwesomeIcons.angleLeft)),
-
-                      const SizedBox(height: 30,),
-                      const Text(
-                        '새 공지 사항',
-                        style: CustomTextStyle.bigBlackBold(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      color: Colors.white,
+                      width: Get.width,
+                      height: 60,
+                      child: Row(
+                        children: [
+                          InkWell(
+                              onTap: (){
+                                Get.back();
+                              },
+                              child: const FaIcon(FontAwesomeIcons.angleLeft)),
+                          const SizedBox(width: 20,),
+                          const Text(
+                            '공지사항 작성하기',
+                            style: CustomTextStyle.bigBlackBold(),
+                          ),
+                        ],
                       ),
-                      const SizedBox(
-                        height: 50,
-                      ),
+                    ),
 
-                      const Text(
-                        '대상 팀',
-                        style: CustomTextStyle.normalBlackBold(),
-                      ),
+                    Container(
+                      width: Get.width,
+                      height: 0.5 ,
+                        color: Colors.black45,
+                    ),
 
-                      ///대상 팀 리스트뷰
-                      FutureBuilder(
-                        future: completerLoadListModelCheckListAll.future,
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData == false) {
-                            return Padding(
-                              padding: const EdgeInsets.all(20),
-                              child: LoadingAnimationWidget.inkDrop(color: Colors.green, size: 48),
-                            );
-                          } else {
-                            if (snapshot.data == true) {
-                              return ValueListenableBuilder(
-                                  valueListenable: valueNotifierSelectedListModelCheckList,
-                                  builder: (context, value, child) => Wrap(
+
+
+
+
+
+SizedBox(height: 10,),
+                    Container(
+                      width: Get.width,
+                      padding: EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+                      color: Colors.white,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+
+                          ///제목
+                          const Text(
+                            '제목',
+                            style: CustomTextStyle.normalBlackBold(),
+                          ),
+
+                          const SizedBox(height: 20,),
+
+                          TextField(
+                            maxLines: 1,
+                            controller: textEditingControllerTitle,
+                            maxLength: _lengthTitleMax,
+                            decoration: const InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                ),
+                                focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.blueAccent)),
+                                enabledBorder: OutlineInputBorder(),
+                                isDense: true,
+                                contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                                hintText: '제목'),
+                          ),
+
+
+                        ],
+                      ),
+                    ),
+
+const SizedBox(height: 10,),
+                    Container(
+                      width: Get.width,
+                      padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+                      color: Colors.white,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ///본문
+                          const Text(
+                            '본문',
+                            style: CustomTextStyle.normalBlackBold(),
+                          ),
+
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          TextField(
+                            maxLength: _lengthBodyMax,
+                            minLines: 8,
+                            maxLines: 8,
+                            controller: textEditingControllerBody,
+                            decoration: const InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                ),
+                                focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.blueAccent)),
+                                enabledBorder: OutlineInputBorder(),
+                                isDense: true,
+                                contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                                hintText: '내용을 입력하세요'),
+                          ),
+
+
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 10,),
+
+                    Container(
+
+                      width: Get.width,
+                      padding: EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+                      color: Colors.white,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            '대상 팀',
+                            style: CustomTextStyle.normalBlackBold(),
+                          ),
+                          const SizedBox(height: 40,),
+
+                          ///대상 팀 리스트뷰
+                          FutureBuilder(
+                            future: completerLoadListModelCheckListAll.future,
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData == false) {
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                                  child: LoadingAnimationWidget.inkDrop(color: Colors.green, size: 48),
+                                );
+                              } else {
+                                if (snapshot.data == true) {
+                                  return ValueListenableBuilder(
+                                      valueListenable: valueNotifierSelectedListModelCheckList,
+                                      builder: (context, value, child) => Wrap(
                                         children: [
                                           ...listModelCheckListAll
                                               .map((e) => _ItemSelectedModelCheckList(e, value.contains(e), onTap))
                                         ],
                                       ));
-                            } else {
-                              return const IconError();
-                            }
-                          }
-                        },
-                      ),
+                                } else {
+                                  return const IconError();
+                                }
+                              }
+                            },
+                          ),
 
-                      const SizedBox(
-                        height: 40,
-                      ),
-
-                      ///제목
-                      const Text(
-                        '제목',
-                        style: CustomTextStyle.normalBlackBold(),
-                      ),
-
-                      const SizedBox(height: 20,),
-
-                      TextField(
-                        maxLines: 1,
-                        controller: textEditingControllerTitle,
-                        maxLength: _lengthTitleMax,
-                        decoration: const InputDecoration(
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide.none,
+                          ValueListenableBuilder(
+                            valueListenable: valueNotifierIsSendFcm,
+                            builder: (context, value, child) => Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Checkbox(
+                                  value: value,
+                                  onChanged: (value) {
+                                    if (value != null) {
+                                      valueNotifierIsSendFcm.value = value;
+                                    }
+                                  },
+                                ),
+                                const Text('사용자에게 알림 전송')
+                              ],
                             ),
-                            focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.blueAccent)),
-                            enabledBorder: OutlineInputBorder(),
-                            isDense: true,
-                            contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                            hintText: '제목'),
+                          ),
+                        ],
                       ),
-
-                      const SizedBox(
-                        height: 40,
-                      ),
-
-                      ///본문
-                      const Text(
-                        '본문',
-                        style: CustomTextStyle.normalBlackBold(),
-                      ),
-
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      TextField(
-                        maxLength: _lengthBodyMax,
-                        minLines: 8,
-                        maxLines: 8,
-                        controller: textEditingControllerBody,
-                        decoration: const InputDecoration(
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide.none,
-                            ),
-                            focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.blueAccent)),
-                            enabledBorder: OutlineInputBorder(),
-                            isDense: true,
-                            contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                            hintText: '제목'),
-                      ),
-
-                      const SizedBox(
-                        height: 20,
-                      ),
+                    ),
 
 
-                    ],
-                  ),
+
+                  ],
                 ),
               ),
             ),
 
 
-            ValueListenableBuilder(
-              valueListenable: valueNotifierIsSendFcm,
-              builder: (context, value, child) => Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Checkbox(
-                    value: value,
-                    onChanged: (value) {
-                      if (value != null) {
-                        valueNotifierIsSendFcm.value = value;
-                      }
-                    },
-                  ),
-                  const Text('사용자에게 알림 전송')
-                ],
-              ),
-            ),
+
+
 
 
             ///완료 버튼
