@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../route/test/route_test.dart';
 
 class WidgetAppBar extends StatelessWidget {
   final Color colorBackground;
   final double paddingHorizontal;
-  const WidgetAppBar({this.colorBackground = Colors.white, this.paddingHorizontal = 20, Key? key}) : super(key: key);
+  const WidgetAppBar({this.colorBackground = Colors.white, this.paddingHorizontal = 10, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,16 +34,16 @@ class WidgetAppBar extends StatelessWidget {
                   color: Colors.yellow.shade700,
                   borderRadius: BorderRadius.circular(5),
                 ),
-                child:Image.asset('assets/images/logo/app_logo_720.png',width: 40,height: 40,),
+                child:Image.asset('assets/images/logo/appIcon.png',width: 40,height: 40,),
               ),
             ),
           ),
           const SizedBox(
             width: 10,
           ),
-          const Text(
+           const Text(
             '오늘안전',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+           style: TextStyle(fontFamily: "SANGJU",fontSize: 23),
           ),
         ],
       ),

@@ -37,7 +37,7 @@ class _ScreenLoginLoginState extends State<ScreenLoginLogin> {
             ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: Image.asset(
-                  'assets/images/logo/app_logo_720.png',
+                  'assets/images/logo/appIcon.png',
                   width: 150,
                   height: 150,
                 )),
@@ -45,11 +45,12 @@ class _ScreenLoginLoginState extends State<ScreenLoginLogin> {
               height: 20,
             ),
             const Text(
-              '오늘 안전',
+              '오늘안전',
               style: TextStyle(
+                fontFamily: "SANGJU",
                 fontWeight: FontWeight.bold,
                 color: Colors.black,
-                fontSize: 25,
+                fontSize: 30,
               ),
             )
           ]),
