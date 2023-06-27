@@ -51,8 +51,8 @@ class ModelUserCheckHistory {
         listModelCheckImage = getListModelCheckImageFromServer(json[keyImage]),
         state = json[keyState] ?? '';
 
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson({bool isForServerForm = false}) {
+    Map<String, dynamic> result = {
       keyDocId: docId,
       keyCheckList: modelCheckList.toJson(),
       //keySite : modelSite.toJson(),
@@ -65,6 +65,8 @@ class ModelUserCheckHistory {
       keyImage: getListModelCheckImageFromLocal(listModelCheckImage),
       keyState: state,
     };
+
+    return isForServerForm ? transformForServerDataType(result) : result;
   }
 
   @override

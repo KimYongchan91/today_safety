@@ -92,17 +92,8 @@ void handlerRemoteMessage(dynamic data) {
       throw Exception("data == null");
     }
 
-    Map<String, dynamic> dataParsed;
 
-    if (data is String) {
-      dataParsed = jsonDecode(data);
-    } else if (data is Map) {
-      dataParsed = data as Map<String, dynamic>;
-    } else {
-      throw Exception('type error');
-    }
-
-    /*
+    /* 예시
   json >>>
     "data": {
       'fcm_type': FCM_TYPE_NOTICE_NEW,
@@ -113,12 +104,32 @@ void handlerRemoteMessage(dynamic data) {
   },
  */
 
-    String? noticeId = dataParsed['notice_id'];
-    if (noticeId == null) {
-      throw Exception();
+    Map<String, dynamic> dataParsed;
+
+    if (data is String) {
+      dataParsed = jsonDecode(data);
+    } else if (data is Map) {
+      dataParsed = data as Map<String, dynamic>;
     } else {
-      Get.toNamed('$keyRouteNoticeDetail/$noticeId');
+      throw Exception('type error');
     }
+
+    if (dataParsed['fcm_type'] == 'NEW_NOTICE') {
+      String? noticeId = dataParsed['notice_id'];
+      if (noticeId == null) {
+        throw Exception('noticeId == null');
+      } else {
+        Get.toNamed('$keyRouteNoticeDetail/$noticeId');
+      }
+    } else if (dataParsed['fcm_type'] == 'NEW_CHECK') {
+      String? checkId = dataParsed['check_id'];
+      if (checkId == null) {
+        throw Exception('checkId == null');
+      } else {
+        Get.toNamed('$keyRouteUserCheckHistoryDetail/$checkId');
+      }
+    }
+
   } catch (e) {
     MyApp.logger.d("_handlerRemoteMessage 에러 : ${e.toString()}");
     return;

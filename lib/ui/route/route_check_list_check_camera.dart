@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:device_info/device_info.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -14,9 +15,12 @@ import 'package:today_safety/const/model/model_check.dart';
 import 'package:today_safety/const/model/model_check_list.dart';
 import 'package:today_safety/const/model/model_device.dart';
 import 'package:today_safety/const/model/model_location.dart';
+import 'package:today_safety/const/model/model_notice.dart';
+import 'package:today_safety/const/model/model_user.dart';
 import 'package:today_safety/const/model/model_user_check_history.dart';
 import 'package:today_safety/const/value/color.dart';
 import 'package:today_safety/const/value/key.dart';
+import 'package:today_safety/const/value/router.dart';
 import 'package:today_safety/custom/custom_text_style.dart';
 import 'package:today_safety/custom/custom_value_listenable_builder2.dart';
 import 'package:today_safety/service/util/util_location.dart';
@@ -783,10 +787,70 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
     }
 
     valueNotifierIsUploadingToServer.value = false;
-    showSnackBarOnRoute('인증을 완료했어요.');
 
     //이 site에 대한 리스너 등록
     MyApp.providerUser.getModelNotice(siteDocIdNew: widget.modelCheckList.modelSite.docId);
+
+    //관리자에게 fcm 전송
+    sendFcm(modelUserCheckHistory, documentReference.id);
+
+    //user check history detail 페이지로 이동
+    Get.offNamed('$keyRouteUserCheckHistoryDetail/${documentReference.id}');
+
+    showSnackBarOnRoute('인증을 완료했어요.');
     //await FirebaseFirestore.instance.collection(keyUserChecks).add({});
+  }
+
+  sendFcm(ModelUserCheckHistory modelUserCheckHistory, String docId) async {
+    //유저 정보 조회
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection(keyUserS)
+          .where(keyId, isEqualTo: modelUserCheckHistory.modelCheckList.modelSite.master)
+          .limit(1)
+          .get();
+
+      if (querySnapshot.docs.isEmpty) {
+        throw Exception("문서 없음");
+      }
+
+      ModelUser modelUser = ModelUser.fromJson(querySnapshot.docs.first.data() as Map, querySnapshot.docs.first.id);
+
+      ///fcm 전송
+      /*data = {
+         tokens : [...token],
+         check : {...유저 인증 내용}
+       }*/
+
+      Map<String, dynamic> dataUserCheckHistory = {
+        keySite: {
+          keyName: modelUserCheckHistory.modelCheckList.modelSite.name,
+        },
+        keyCheckList: {
+          keyName: modelUserCheckHistory.modelCheckList.name,
+        },
+        keyUser: {
+          keyName: modelUserCheckHistory.modelUser.name,
+          keyId: modelUserCheckHistory.modelUser.id,
+        }
+      };
+
+      dataUserCheckHistory[keyDocId] = docId;
+      MyApp.logger.d("요청 데이터 : ${dataUserCheckHistory.toString()}");
+
+      //전송 시작
+      HttpsCallableResult<dynamic> result = await FirebaseFunctions.instanceFor(region: "asia-northeast3")
+          .httpsCallable('sendFcmCheckNew')
+          .call(<String, dynamic>{
+        'tokens': modelUser.listToken ,
+        'check': dataUserCheckHistory,
+      });
+
+      MyApp.logger.d("응답 결과 : ${result.data}");
+
+      //if (result.data[keyAuthenticated] == true) {}
+    } catch (e) {
+      MyApp.logger.wtf("sendFcm 실패 : ${e.toString()}");
+    }
   }
 }

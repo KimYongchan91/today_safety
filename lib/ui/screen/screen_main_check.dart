@@ -27,7 +27,7 @@ class _ScreenMainCheckState extends State<ScreenMainCheck> {
           ? Stack(
               children: [
                 ///앱 로고
-                Align(
+                const Align(
                   alignment: Alignment.topCenter,
                   child: WidgetAppBar(
                     colorBackground: Colors.transparent,
@@ -54,12 +54,12 @@ class _ScreenMainCheckState extends State<ScreenMainCheck> {
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Padding(
-                    padding: EdgeInsets.only(bottom: 50),
-                    child: value.listModelUserCheckHistory.length != 0
+                    padding: const EdgeInsets.only(bottom: 50),
+                    child: value.listModelUserCheckHistory.isNotEmpty
                         ? SmoothPageIndicator(
                             controller: pageController,
                             count: value.listModelUserCheckHistory.length,
-                            effect: ExpandingDotsEffect(
+                            effect: const ExpandingDotsEffect(
                               dotWidth: 8,
                               dotHeight: 8,
                               dotColor: Colors.grey,
@@ -73,7 +73,7 @@ class _ScreenMainCheckState extends State<ScreenMainCheck> {
             )
 
           ///로그인 하기 전
-          : Center(
+          : const Center(
               child: Text('로그인을 해주세요.'),
             ),
     );

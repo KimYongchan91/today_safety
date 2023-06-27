@@ -36,9 +36,16 @@ Map<String, dynamic> transformForServerDataType(Map<String, dynamic> mapOld) {
     if (value is Map) {
       //타입이 맵이라면
       //또 한번 변환
-      mapNew[key] = _transformMap(value);
+      value = transformForServerDataType(value as Map<String, dynamic>);
+    } else if (value is List) {
+      //리스트라면
+      //죄다 변환
+      for (var element in value) {
+        element = transformForServerDataType(element);
+      }
     } else {
-      //맵이 아니라면
+      //맵도 아니고 리스트도 아니면
+      //비로소 변환
       if (mapNew[key] is Timestamp) {
         mapNew[key] = (mapNew[key] as Timestamp).millisecondsSinceEpoch;
       }
