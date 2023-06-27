@@ -14,7 +14,7 @@ class ItemNoticeBig extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+      padding: const EdgeInsets.only(bottom: 10),
       child: InkWell(
         onTap: () {
           if (modelNotice == null) {
@@ -26,35 +26,33 @@ class ItemNoticeBig extends StatelessWidget {
               arguments: {keyModelNotice: modelNotice!});
         },
         child: Container(
-          decoration: BoxDecoration(
-            color: Colors.redAccent,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          width: Get.width,
-          height: 70,
+          padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 15),
+          color: Colors.redAccent,
           child: Row(
             children: [
               Container(
                   padding: const EdgeInsets.all(10),
                   decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
                   child: const FaIcon(
-                    FontAwesomeIcons.bullhorn,
+                    FontAwesomeIcons.bullhorn,size: 20,
                     color: Colors.redAccent,
                   )),
               const SizedBox(
                 width: 20,
               ),
+
               Expanded(
                   child: Text(
-                modelNotice == null ? '공지사항' : modelNotice!.title,
-                style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
-              )),
+                    modelNotice == null ? '공지사항' : modelNotice!.title,
+                    style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
+                  )),
               const FaIcon(
                 FontAwesomeIcons.angleRight,
                 color: Colors.white,
               ),
+
             ],
+
           ),
         ),
       ),

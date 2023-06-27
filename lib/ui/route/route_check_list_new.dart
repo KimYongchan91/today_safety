@@ -139,11 +139,12 @@ class _RouteCheckListNewState extends State<RouteCheckListNew> {
                                   ),
                                 ),
                               ),
+                              const SizedBox(height: 40,),
                               const Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 20),
-                                  child: Text('추가됨')),
+                                  padding: EdgeInsets.symmetric(horizontal: 20,),
+                                  child: Text('선택된 항목',style: TextStyle(color: Colors.orange,fontWeight: FontWeight.bold,fontSize: 16),)),
                               const SizedBox(
-                                height: 20,
+                                height: 10,
                               ),
 
                               ///이미 추가된 항목 리스트뷰
@@ -165,11 +166,15 @@ class _RouteCheckListNewState extends State<RouteCheckListNew> {
                                 ),
                               ),
                               const SizedBox(
-                                height: 20,
+                                height: 40,
                               ),
                               const Padding(
                                   padding: EdgeInsets.symmetric(horizontal: 20),
-                                  child: Text('추가할 수 있는 항목')),
+                                  child: Text('추가할 수 있는 항목',style: TextStyle(color: Colors.orange,fontWeight: FontWeight.bold,fontSize: 16),)),
+
+                              const SizedBox(
+                                height: 10,
+                              ),
 
                               ///추가할 수 있는 항목 리스트뷰
                               ValueListenableBuilder(
@@ -343,18 +348,26 @@ class _RouteCheckListNewState extends State<RouteCheckListNew> {
                         height: 30,
                       ),
 
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: InkWell(
-                          onTap: (){
-                            Get.back();
-                          },
-                          child: FaIcon(FontAwesomeIcons.angleLeft),
-                        ),
+                      Row(
+                        children: [
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: InkWell(
+                              onTap: (){
+                                Get.back();
+                              },
+                              child: FaIcon(FontAwesomeIcons.angleLeft),
+                            ),
+                          ),
+
+                          SizedBox(width: 20,),
+                          Text('새로운 그룹 만들기',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 25,),),
+
+                        ],
                       ),
 
                       const SizedBox(
-                        height: 30,
+                        height: 50,
                       ),
                       const Align(
                         alignment: Alignment.centerLeft,

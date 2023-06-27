@@ -27,7 +27,7 @@ class ItemFucPreset extends StatelessWidget {
             Spacer(),*/
             Text(
               modelFucPreset.name,
-              style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500,fontSize: 16),
+              style: TextStyle(color: Colors.black54, fontWeight: FontWeight.w700,fontSize: 16),
             )
           ],
         ),

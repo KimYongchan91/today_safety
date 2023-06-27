@@ -15,6 +15,7 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:today_safety/const/value/color.dart';
 import 'package:today_safety/service/provider/provider_user.dart';
+import 'package:today_safety/service/util/util_campaign_list.dart';
 import 'package:today_safety/ui/item/item_notice_big.dart';
 
 import '../../const/model/model_article.dart';
@@ -140,6 +141,9 @@ class _ScreenMainInfoState extends State<ScreenMainInfo> with SingleTickerProvid
           ///앱바 영역
           WidgetAppBar(),
 
+
+          Consumer<ProviderUser>(builder: (context, value, child) => ItemNoticeBig(value.modelNotice)),
+
           ///날씨 정보 영역
           ValueListenableBuilder(
             valueListenable: valueNotifierWeather,
@@ -153,7 +157,16 @@ class _ScreenMainInfoState extends State<ScreenMainInfo> with SingleTickerProvid
             ),
           ),
 
-          Consumer<ProviderUser>(builder: (context, value, child) => ItemNoticeBig(value.modelNotice)),
+
+
+          const SizedBox(
+            height: 10,
+          ),
+
+         // UtilCampaignList(),
+
+
+
 
           Container(
             color: Colors.white,

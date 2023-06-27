@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:today_safety/service/provider/provider_user.dart';
+import 'package:today_safety/ui/item/item_banner.dart';
 
 import '../../const/value/router.dart';
 import '../../my_app.dart';
@@ -248,6 +249,9 @@ class _ScreenLoginProfileState extends State<ScreenLoginProfile> {
                   ),
                 ),
               ),
+
+
+        const ItemMainBanner(),
         const Spacer(),
 
         ///로그아웃

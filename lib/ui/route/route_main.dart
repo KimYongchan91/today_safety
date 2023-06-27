@@ -78,6 +78,7 @@ class _RouteMainState extends State<RouteMain> {
 
         ///플로팅 액션 버튼
         floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.orange,
           child: const Icon(Icons.qr_code),
           onPressed: () async {
             bool isPermissionGranted = await requestPermission(Permission.camera);
