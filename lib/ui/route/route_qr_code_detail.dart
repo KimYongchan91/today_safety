@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:path_provider/path_provider.dart';
@@ -34,27 +35,89 @@ class _RouteQrCodeDetailState extends State<RouteQrCodeDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: colorBackground,
       body: SafeArea(
-        child: Stack(
+        child: Column(
           children: [
-            ///가운데 노란색 영역
-            ///A4 사이즈 비율임
-            Center(
-              child: WidgetsToImage(
-                controller: widgetsToImageController,
-                child: Container(
-                  width: Get.width * 0.9,
-                  decoration: const BoxDecoration(
-                    color: colorAppPrimary,
+            Container(
+              width: Get.width,
+              height: 70,
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              color: Colors.white,
+              child: Row(
+                children: [
+                  InkWell(
+                    onTap: () {
+                      Get.back();
+                    },
+                    child: const FaIcon(FontAwesomeIcons.angleLeft),
                   ),
-                  child: AspectRatio(
-                    aspectRatio: _aspectRatioA4,
-                    child: Stack(
-                      children: [
-                        Center(
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  const Spacer(),
+                  InkWell(
+                    onTap: captureWidgetToImage,
+                    child: Padding(
+                      padding: EdgeInsets.all(10),
+                      child: ValueListenableBuilder(
+                        valueListenable: valueNotifierIsProcessingImage,
+                        builder: (context, value, child) => value == false
+                            ? Icon(Icons.share)
+                            : LoadingAnimationWidget.inkDrop(color: Colors.black, size: 24),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              width: Get.width,
+              height: 0.5,
+              color: Colors.black45,
+            ),
+
+
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                WidgetsToImage(
+                  controller: widgetsToImageController,
+                  child: Card(
+                    elevation: 2,
+                    child: Container(
+
+                      width: Get.width * 0.9,
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                      ),
+                      child: AspectRatio(
+                        aspectRatio: _aspectRatioA4,
+                        child: Center(
                           child: Column(
-                            mainAxisSize: MainAxisSize.min,
+                           // mainAxisSize: MainAxisSize.min,
                             children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+                                child: Row(children: [
+                                  Image.asset(
+                                    'assets/images/logo/appIcon.png',
+                                    width: 25,
+                                    height: 25,
+                                  ),
+
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  const Text(
+                                    '오늘안전',
+                                    style: TextStyle(color: Colors.black, fontFamily: "SANGJU", fontSize: 15),
+                                  ),
+
+                                ],),
+                              ),
+
+
                               ///QR 코드 영역
                               SizedBox(
                                 width: Get.width * 0.7,
@@ -67,7 +130,7 @@ class _RouteQrCodeDetailState extends State<RouteQrCodeDetail> {
                                 ),
                               ),
                               const SizedBox(
-                                height: 20,
+                                height: 30,
                               ),
 
                               ///근무지 이름
@@ -76,7 +139,7 @@ class _RouteQrCodeDetailState extends State<RouteQrCodeDetail> {
                                 style: const CustomTextStyle.bigBlackBold(),
                               ),
                               const SizedBox(
-                                height: 10,
+                                height: 20,
                               ),
 
                               ///팀 이름
@@ -87,40 +150,12 @@ class _RouteQrCodeDetailState extends State<RouteQrCodeDetail> {
                             ],
                           ),
                         ),
-
-                        ///앱 이름
-                        const Positioned(
-                          bottom: 5,
-                          right: 5,
-                          child: Text(
-                            '오늘 안전',
-                            style: CustomTextStyle.normalWhiteBold(),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
-              ),
+              ],
             ),
-
-            ///공유하기 버튼
-            Positioned(
-              top: 10,
-              right: 10,
-              child: InkWell(
-                onTap: captureWidgetToImage,
-                child: Padding(
-                  padding: EdgeInsets.all(10),
-                  child: ValueListenableBuilder(
-                    valueListenable: valueNotifierIsProcessingImage,
-                    builder: (context, value, child) => value == false
-                        ? Icon(Icons.share)
-                        : LoadingAnimationWidget.inkDrop(color: Colors.black, size: 24),
-                  ),
-                ),
-              ),
-            )
           ],
         ),
       ),

@@ -145,6 +145,10 @@ flutter:
         - asset: fonts/Pretendard-Regular.ttf
         - asset: fonts/Pretendard-SemiBold.ttf
         - asset: fonts/Pretendard-Thin.ttf
+    - family: SANGJU
+      fonts:
+        - asset: assets/fonts/SANGJU Gotgam.otf
+        - asset: assets/fonts/SANGJU Gotgam.ttf
 
 
   # To add assets to your application, add an assets section, like this:
