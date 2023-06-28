@@ -4,6 +4,7 @@ import 'dart:ui' as ui;
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -18,6 +19,7 @@ import 'package:today_safety/ui/route/route_check_image_detail.dart';
 import 'package:today_safety/ui/widget/icon_error.dart';
 
 import '../../const/model/model_check_list.dart';
+import '../../const/model/model_user.dart';
 import '../../const/model/model_user_check_history.dart';
 import '../../const/value/router.dart';
 import '../../my_app.dart';
@@ -349,8 +351,66 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
           .update({keyState: isGrant ? keyOn : keyReject});
 
       valueNotifierIsCheckGrant.value = isGrant;
+
+      //fcm 전송
+      sendFcm(isGrant);
     } catch (e) {
       MyApp.logger.wtf("setCheckResult 실패 : ${e.toString()}");
+    }
+  }
+
+  sendFcm(bool isGrant) async {
+    //유저 정보 조회
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection(keyUserS)
+          .where(keyId, isEqualTo: modelUserCheckHistory!.modelUser.id)
+          .limit(1)
+          .get();
+
+      if (querySnapshot.docs.isEmpty) {
+        throw Exception("문서 없음");
+      }
+
+      ModelUser modelUser =
+          ModelUser.fromJson(querySnapshot.docs.first.data() as Map, querySnapshot.docs.first.id);
+
+      ///fcm 전송
+      /*data = {
+         tokens : [...token],
+         check : {...유저 인증 내용}
+       }*/
+
+      Map<String, dynamic> dataUserCheckHistory = {
+        keySite: {
+          keyName: modelUserCheckHistory!.modelCheckList.modelSite.name,
+        },
+        keyCheckList: {
+          keyName: modelUserCheckHistory!.modelCheckList.name,
+        },
+        keyUser: {
+          keyName: modelUserCheckHistory!.modelUser.name,
+          keyId: modelUserCheckHistory!.modelUser.id,
+        }
+      };
+
+      dataUserCheckHistory[keyDocId] = Get.parameters[keyUserCheckHistoryId]!;
+      MyApp.logger.d("요청 데이터 : ${dataUserCheckHistory.toString()}");
+
+      //전송 시작
+      HttpsCallableResult<dynamic> result = await FirebaseFunctions.instanceFor(region: "asia-northeast3")
+          .httpsCallable('sendFcmCheckResult')
+          .call(<String, dynamic>{
+        'tokens': modelUser.listToken,
+        'check': dataUserCheckHistory,
+        'result': isGrant ? keyOn : keyReject,
+      });
+
+      MyApp.logger.d("응답 결과 : ${result.data}");
+
+      //if (result.data[keyAuthenticated] == true) {}
+    } catch (e) {
+      MyApp.logger.wtf("sendFcm 실패 : ${e.toString()}");
     }
   }
 }
