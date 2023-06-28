@@ -74,11 +74,11 @@ class _RouteCheckImageDetailState extends State<RouteCheckImageDetail> {
               child: ValueListenableBuilder(
                 valueListenable: valueNotifierIndexCurrentImage,
                 builder: (context, value, child) => Container(
-                  width: Get.width * 0.8,
-                  decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.3), borderRadius: BorderRadius.circular(12)),
+                  width: Get.width,
+                  decoration: const BoxDecoration(
+                      color: Colors.black, ),
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
@@ -103,7 +103,7 @@ class _RouteCheckImageDetailState extends State<RouteCheckImageDetail> {
                             ),
                           ],
                         ),
-
+                        SizedBox(height: 10,),
                         ///회원 정보
                         ///null이면 제거
                         widget.modelUser != null
@@ -120,7 +120,7 @@ class _RouteCheckImageDetailState extends State<RouteCheckImageDetail> {
                           '촬영 시간 : ${DateFormat('yyyy-MM-dd HH:mm:ss').format(widget.listModelCheckImage[value].date.toDate())}',
                           style: const CustomTextStyle.normalWhite(),
                         ),
-
+                        SizedBox(height: 5,),
 
                         ///기기 모델명 정보
                         ///null이면 제거
@@ -130,7 +130,7 @@ class _RouteCheckImageDetailState extends State<RouteCheckImageDetail> {
                                 style: const CustomTextStyle.normalWhite(),
                               )
                             : Container(),
-
+                        SizedBox(height: 5,),
                         ///전면, 후면 카메라인지
                         Text(
                           '카메라 방향 : ${widget.listModelCheckImage[value].cameraDirection == keyBack ? '후면' : '전면'}',

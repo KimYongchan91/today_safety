@@ -28,12 +28,9 @@ class _ScreenMainCheckState extends State<ScreenMainCheck> {
       builder: (context, providerUser, providerUserCheckHistoryOnMe, child) => Stack(
         children: [
           ///앱 로고
-          const Align(
-            alignment: Alignment.topCenter,
-            child: WidgetAppBar(
-              colorBackground: Colors.transparent,
-            ),
-          ),
+           const WidgetAppBar(
+
+           ),
 
           ///인증서 목록
           //3가지 상황이 있음.

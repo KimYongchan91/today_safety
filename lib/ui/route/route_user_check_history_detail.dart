@@ -7,12 +7,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:syncfusion_flutter_barcodes/barcodes.dart';
 import 'package:today_safety/const/model/model_check.dart';
 import 'package:today_safety/const/model/model_check_image.dart';
+import 'package:today_safety/const/value/color.dart';
 import 'package:today_safety/const/value/fuc.dart';
 import 'package:today_safety/const/value/key.dart';
 import 'package:today_safety/const/value/value.dart';
@@ -28,6 +30,7 @@ import '../../my_app.dart';
 import '../../service/util/util_app_link.dart';
 import '../../service/util/util_user_check_history.dart';
 import '../item/item_check.dart';
+import '../widget/widget_app_bar.dart';
 
 class RouteUserCheckHistoryDetail extends StatefulWidget {
   const RouteUserCheckHistoryDetail({Key? key}) : super(key: key);
@@ -88,6 +91,7 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: colorBackground,
       body: SafeArea(
         child: FutureBuilder(
           future: completerModelUserCheckHistory.future,
@@ -102,131 +106,147 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      const WidgetAppBar(),
+
                       const SizedBox(
                         height: 10,
                       ),
 
-                      ///앱 아이콘
-                      Row(
-                        children: [
-                          const Spacer(),
-                          AnimatedTextKit(
-                            pause: const Duration(milliseconds: 1000),
-                            repeatForever: true,
-                            animatedTexts: [
-                              ColorizeAnimatedText('오늘 안전',
-                                  textStyle: const CustomTextStyle.bigBlackBold(),
-                                  colors: [
-                                    Colors.yellow,
-                                    Colors.green,
-                                    Colors.orange,
-                                  ],
-                                  speed: const Duration(milliseconds: 1000)),
-                            ],
-                            isRepeatingAnimation: true,
-                            onTap: () {
-                              print("Tap Event");
-                            },
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
                           ),
-                          Image.asset(
-                            'assets/images/logo/sample_logo_230625.jpg',
-                            width: 40,
-                            height: 40,
-                          )
-                        ],
-                      ),
+                          color: Colors.white,
+                          child: Container(
+                            width: Get.width,
+                            padding: const EdgeInsets.symmetric(vertical: 30,horizontal: 20),
+                            child: Column(
+                              children: [
+                                Text(
+                                  modelUserCheckHistory!.modelCheckList.modelSite.name,
+                                  style: const CustomTextStyle.bigBlackBold(),
+                                ),
 
-                      const SizedBox(
-                        height: 30,
-                      ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
 
-                      ///QR 코드 부분
-                      SizedBox(
-                        width: Get.width * 0.6,
-                        height: Get.width * 0.6,
-                        child: SfBarcodeGenerator(
-                          value:
-                              '$urlBaseAppLink$keyRouteUserCheckHistoryDetail/${Get.parameters[keyUserCheckHistoryId]}',
-                          symbology: QRCode(),
-                          showValue: false,
+                                Text(
+                                  modelUserCheckHistory!.modelCheckList.name,
+                                  style: const CustomTextStyle.bigBlackBold().copyWith(fontSize: 25),
+                                ),
+
+
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                ///QR 코드 부분
+                                SizedBox(
+                                  width: Get.width * 0.5,
+                                  height: Get.width * 0.5,
+                                  child: SfBarcodeGenerator(
+                                    value:
+                                        '$urlBaseAppLink$keyRouteUserCheckHistoryDetail/${Get.parameters[keyUserCheckHistoryId]}',
+                                    symbology: QRCode(),
+                                    showValue: false,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                Text(
+                                  '${modelUserCheckHistory!.modelUser.name}',
+                                  style: const CustomTextStyle.normalBlackBold().copyWith(fontSize: 20),
+                                ),
+const SizedBox(height: 5,),
+                                Text(
+                                  '${modelUserCheckHistory!.modelUser.idExceptLT}',
+                                  style: const CustomTextStyle.normalBlackBold(),
+                                ),
+
+
+                                const SizedBox(
+                                  height: 50,
+                                ),
+
+                                ///인증 날짜
+                                const Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    '인증일자',
+                                    style: CustomTextStyle.smallBlackBold(),
+                                  ),
+                                ),
+                              const  SizedBox(
+                                  height: 5,
+                                ),
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    DateFormat('yyyy-MM-dd hh:mm:ss').format(modelUserCheckHistory!.date.toDate()),
+                                    style: const CustomTextStyle.normalBlackBold(),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                ///인증 날짜
+                                const Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    '유효기간',
+                                    style: CustomTextStyle.smallBlackBold(),
+                                  ),
+                                ),
+                              const  SizedBox(
+                                  height: 5,
+                                ),
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    // +1 일
+                                    '${DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.fromMillisecondsSinceEpoch(modelUserCheckHistory!.date.toDate().millisecondsSinceEpoch + millisecondDay))} 까지',
+                                    style: const CustomTextStyle.normalBlackBold(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
 
-                      const SizedBox(
-                        height: 30,
+
+                      Padding(padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: Card(
+                        elevation: 2,
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(vertical: 30,horizontal: 20),
+                          width: Get.width,
+
+                          child: InkWell(
+                            onTap: (){
+
+                            },
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('인증내역보기' , style: TextStyle(fontWeight: FontWeight.w800),),
+                                FaIcon(FontAwesomeIcons.angleRight,),
+
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
 
-                      ///사용자 이름
-                      const Text(
-                        '이름',
-                        style: CustomTextStyle.smallBlackBold(),
                       ),
 
-                      Text(
-                        '${modelUserCheckHistory!.modelUser.name} (${modelUserCheckHistory!.modelUser.idExceptLT})',
-                        style: const CustomTextStyle.bigBlackBold(),
-                      ),
-
-                      const SizedBox(
-                        height: 30,
-                      ),
-
-                      ///근무지 이름
-                      const Text(
-                        '근무지',
-                        style: CustomTextStyle.smallBlackBold(),
-                      ),
-
-                      Text(
-                        modelUserCheckHistory!.modelCheckList.modelSite.name,
-                        style: const CustomTextStyle.normalBlackBold(),
-                      ),
-
-                      const SizedBox(
-                        height: 30,
-                      ),
-
-                      ///근무지 내 팀명
-                      const Text(
-                        '팀',
-                        style: CustomTextStyle.smallBlackBold(),
-                      ),
-
-                      Text(
-                        modelUserCheckHistory!.modelCheckList.name,
-                        style: const CustomTextStyle.normalBlackBold(),
-                      ),
-
-                      const SizedBox(
-                        height: 30,
-                      ),
-
-                      ///인증 날짜
-                      const Text(
-                        '인증일자',
-                        style: CustomTextStyle.smallBlackBold(),
-                      ),
-
-                      Text(
-                        DateFormat('yyyy-MM-dd hh:mm:ss').format(modelUserCheckHistory!.date.toDate()),
-                        style: const CustomTextStyle.normalBlackBold(),
-                      ),
-
-                      const SizedBox(
-                        height: 30,
-                      ),
-
-                      ///인증 날짜
-                      const Text(
-                        '유효기간',
-                        style: CustomTextStyle.smallBlackBold(),
-                      ),
-
-                      Text(
-                        // +1 일
-                        '${DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.fromMillisecondsSinceEpoch(modelUserCheckHistory!.date.toDate().millisecondsSinceEpoch + millisecondDay))} 까지',
-                        style: const CustomTextStyle.normalBlackBold(),
-                      ),
 
                       const SizedBox(
                         height: 30,
@@ -282,19 +302,40 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
                           return modelUserCheckHistory!.modelCheckList.modelSite.master ==
                                   MyApp.providerUser.modelUser?.id
                               ? Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        setCheckResult(false);
-                                      },
-                                      child: const Text('거절'),
+                                    Container(
+                                      padding: EdgeInsets.symmetric(horizontal: 40,vertical: 20),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(width: 1, color: Colors.orange),
+                                        color: Colors.white
+                                      ),
+                                      child: InkWell(
+                                        onTap: (){
+                                          setCheckResult(false);
+                                        },
+                                      child: Text('거절하기',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.orange),),
+                                      ),
                                     ),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        setCheckResult(true);
-                                      },
-                                      child: const Text('승인'),
+                                    SizedBox(width: 30,),
+                                    Container(
+                                      padding: EdgeInsets.symmetric(horizontal: 40,vertical: 20),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                          border: Border.all(width: 1, color: Colors.orange),
+                                          color: Colors.orange
+                                      ),
+                                      child: InkWell(
+                                        onTap: (){
+                                          setCheckResult(true);
+                                        },
+                                        child: Text('승인처리',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),),
+                                      ),
                                     ),
+
+
+
                                     ValueListenableBuilder(
                                       valueListenable: valueNotifierIsCheckGrant,
                                       builder: (context, value, child) {
@@ -318,6 +359,8 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
                               : Container();
                         },
                       ),
+
+                      SizedBox(height: 20,)
                     ],
                   ),
                 );
@@ -375,8 +418,7 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
         throw Exception("문서 없음");
       }
 
-      ModelUser modelUser =
-          ModelUser.fromJson(querySnapshot.docs.first.data() as Map, querySnapshot.docs.first.id);
+      ModelUser modelUser = ModelUser.fromJson(querySnapshot.docs.first.data() as Map, querySnapshot.docs.first.id);
 
       ///fcm 전송
       /*data = {

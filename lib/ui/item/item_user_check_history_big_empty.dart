@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:today_safety/const/model/model_check_list.dart';
@@ -14,6 +15,7 @@ import 'package:today_safety/ui/route/route_check_image_detail.dart';
 import 'package:today_safety/ui/route/route_map_detail.dart';
 import 'package:today_safety/ui/route/route_user_check_history_detail.dart';
 
+import '../../const/value/color.dart';
 import '../../const/value/layout_main.dart';
 
 const double sizeCheckImage = 60;
@@ -32,6 +34,10 @@ class ItemUserCheckHistoryBigEmpty extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TextStyle _textStyle = const TextStyle(
+      fontSize: 15,
+      fontWeight: FontWeight.w700,
+    );
     return Padding(
       padding: EdgeInsets.all(padding),
       child: Center(
@@ -45,14 +51,29 @@ class ItemUserCheckHistoryBigEmpty extends StatelessWidget {
                 aspectRatio: aspectRatioMainItemUserCheckHistoryBig1,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.grey,
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
                     ),
-                    child: Center(
-                      child: Text(itemUserCheckHistoryBigEmptyType == ItemUserCheckHistoryBigEmptyType.notLogin
-                          ? '로그인하고 내가 받은 인증서를 확인해 보세요.'
-                          : '아직 받은 인증서가 없어요.'),
+                    elevation: 2,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const FaIcon(
+                          FontAwesomeIcons.exclamationTriangle,
+                          size: 100,
+                          color: Colors.orangeAccent,
+                        ),
+                        const SizedBox(
+                          height: 50,
+                        ),
+                        Text(
+                          itemUserCheckHistoryBigEmptyType == ItemUserCheckHistoryBigEmptyType.notLogin
+                              ? '로그인하고 내가 받은 인증서를 확인해 보세요.'
+                              : '아직 받은 인증서가 없어요.',
+                          style: _textStyle,
+                        ),
+                      ],
                     ),
                   ),
                 ),
