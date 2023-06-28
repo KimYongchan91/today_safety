@@ -370,9 +370,7 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                         ),
                       ),
 
-                      const SizedBox(
-                        height: 10,
-                      ),
+
 
                       ///최근 인증한 유저
                       ///3개 정도?
@@ -424,7 +422,7 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                       ///공지사항 영역
                       Container(
                         width: Get.width,
-                        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                         color: Colors.white,
                         child: Column(
                           children: [
@@ -433,7 +431,7 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                               children: [
                                 ///공지 사항
                                 const Text(
-                                  '공지 사항',
+                                  '공지사항',
                                   style: CustomTextStyle.bigBlackBold(),
                                 ),
 
@@ -478,7 +476,7 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Text(
-                              '인증 항목',
+                              '인증항목',
                               style: CustomTextStyle.bigBlackBold(),
                             ),
                             const SizedBox(

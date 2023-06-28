@@ -207,7 +207,7 @@ class _RouteSiteDetailState extends State<RouteSiteDetail> with SingleTickerProv
 
                 ///팀영역
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                   decoration: const BoxDecoration(
                     color: Colors.white,
                     border: Border(
@@ -219,38 +219,26 @@ class _RouteSiteDetailState extends State<RouteSiteDetail> with SingleTickerProv
                   child: Row(
                     children: [
                       const Text(
-                        '팀',
-                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orange, fontSize: 17),
+                        '근무팀',
+                        style: CustomTextStyle.bigBlackBold(),
                       ),
                       const Spacer(),
-                      InkWell(
-                        onTap: () {
+
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.orange, // Background color
+                        ),
+                        onPressed: () {
                           addCheckList();
                         },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(width: 1, color: Colors.orange),
-                              color: Colors.white),
-                          child: const Row(
-                            children: [
-                              FaIcon(
-                                FontAwesomeIcons.plus,
-                                color: Colors.orange,
-                                size: 13,
-                              ),
-                              SizedBox(
-                                width: 3,
-                              ),
-                              Text(
-                                '만들기',
-                                style: TextStyle(color: Colors.orange),
-                              ),
-                            ],
-                          ),
+                        child: Text(
+                          '만들기',
+                          style: TextStyle(color: Colors.white),
                         ),
                       ),
+
+
+
                     ],
                   ),
                 ),
@@ -271,16 +259,16 @@ class _RouteSiteDetailState extends State<RouteSiteDetail> with SingleTickerProv
                 ///공지사항 영역
                 Container(
                   width: Get.width,
-                  padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                   color: Colors.white,
                   child: Column(
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          ///공지 사항
+                          ///공지사항
                           const Text(
-                            '공지 사항',
+                            '공지사항',
                             style: CustomTextStyle.bigBlackBold(),
                           ),
 
