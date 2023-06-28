@@ -39,6 +39,7 @@ class _RouteQrCodeDetailState extends State<RouteQrCodeDetail> {
       body: SafeArea(
         child: Column(
           children: [
+            ///앱바 영역
             Container(
               width: Get.width,
               height: 70,
@@ -71,90 +72,101 @@ class _RouteQrCodeDetailState extends State<RouteQrCodeDetail> {
                 ],
               ),
             ),
+
+            ///구분선
             Container(
               width: Get.width,
               height: 0.5,
               color: Colors.black45,
             ),
 
-
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                WidgetsToImage(
-                  controller: widgetsToImageController,
-                  child: Card(
-                    elevation: 2,
-                    child: Container(
-
-                      width: Get.width * 0.9,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                      ),
-                      child: AspectRatio(
-                        aspectRatio: _aspectRatioA4,
-                        child: Center(
-                          child: Column(
-                           // mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
-                                child: Row(children: [
-                                  Image.asset(
-                                    'assets/images/logo/appIcon.png',
-                                    width: 25,
-                                    height: 25,
+            Expanded(
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Card(
+                      elevation: 2,
+                      child: WidgetsToImage(
+                        controller: widgetsToImageController,
+                        child: Container(
+                          width: Get.width * 0.9,
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                          ),
+                          child: AspectRatio(
+                            aspectRatio: _aspectRatioA4,
+                            child: Center(
+                              child: Column(
+                                // mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                                    child: Row(
+                                      children: [
+                                        Image.asset(
+                                          'assets/images/logo/appIcon.png',
+                                          width: 25,
+                                          height: 25,
+                                        ),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        const Text(
+                                          '오늘안전',
+                                          style: TextStyle(
+                                              color: Colors.black, fontFamily: "SANGJU", fontSize: 15),
+                                        ),
+                                      ],
+                                    ),
                                   ),
 
+                                  ///QR 코드 영역
+                                  SizedBox(
+                                    width: Get.width * 0.7,
+                                    height: Get.width * 0.7,
+                                    child: SfBarcodeGenerator(
+                                      value:
+                                          '$urlBaseAppLink$keyRouteCheckListDetail/${widget.modelCheckList.docId}/$keyRouteCheckListCheckWithOutSlash',
+                                      symbology: QRCode(),
+                                      showValue: false,
+                                    ),
+                                  ),
                                   const SizedBox(
-                                    width: 10,
-                                  ),
-                                  const Text(
-                                    '오늘안전',
-                                    style: TextStyle(color: Colors.black, fontFamily: "SANGJU", fontSize: 15),
+                                    height: 30,
                                   ),
 
-                                ],),
-                              ),
+                                  ///근무지 이름
+                                  Text(
+                                    widget.modelCheckList.modelSite.name,
+                                    style: const CustomTextStyle.bigBlackBold(),
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
 
-
-                              ///QR 코드 영역
-                              SizedBox(
-                                width: Get.width * 0.7,
-                                height: Get.width * 0.7,
-                                child: SfBarcodeGenerator(
-                                  value:
-                                      '$urlBaseAppLink$keyRouteCheckListDetail/${widget.modelCheckList.docId}/$keyRouteCheckListCheckWithOutSlash',
-                                  symbology: QRCode(),
-                                  showValue: false,
-                                ),
+                                  ///팀 이름
+                                  Text(
+                                    widget.modelCheckList.name,
+                                    style: const CustomTextStyle.extraLargeBlackBold(),
+                                  ),
+                                ],
                               ),
-                              const SizedBox(
-                                height: 30,
-                              ),
-
-                              ///근무지 이름
-                              Text(
-                                widget.modelCheckList.modelSite.name,
-                                style: const CustomTextStyle.bigBlackBold(),
-                              ),
-                              const SizedBox(
-                                height: 20,
-                              ),
-
-                              ///팀 이름
-                              Text(
-                                widget.modelCheckList.name,
-                                style: const CustomTextStyle.extraLargeBlackBold(),
-                              ),
-                            ],
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      'A4 용지를 기준으로 만들었어요.',
+                      style: CustomTextStyle.normalGreyBold(),
+                    )
+                  ],
                 ),
-              ],
+              ),
             ),
           ],
         ),
@@ -175,7 +187,8 @@ class _RouteQrCodeDetailState extends State<RouteQrCodeDetail> {
         throw Exception('bytes ==null');
       }
       final tempDir = await getTemporaryDirectory();
-      File file = await File('${tempDir.path}/image_qr_check_list_${widget.modelCheckList.docId}.png').create();
+      File file =
+          await File('${tempDir.path}/image_qr_check_list_${widget.modelCheckList.docId}.png').create();
       file.writeAsBytesSync(bytes);
 
       MyApp.logger.d("생성된 파일 주소 : ${file.path}");
