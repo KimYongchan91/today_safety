@@ -61,34 +61,39 @@ class ItemUserCheckHistorySmall extends StatelessWidget {
 
                   Builder(
                     builder: (context) {
-                      String text;
+                      IconData icon;
+                      //String text;
                       Color color;
 
                       switch (modelUserCheckHistory.state) {
                         case keyOn:
-                          text = '확인 완료';
+                          icon = FontAwesomeIcons.checkCircle;
+                          //text = '확인 완료';
                           color = colorCheckStateOn;
                           break;
 
                         case keyPend:
-                          text = '확인 대기 중';
+                          icon = FontAwesomeIcons.dotCircle;
+                          //text = '확인 대기 중';
                           color = colorCheckStatePend;
                           break;
 
                         case keyReject:
-                          text = '거절';
+                          icon = FontAwesomeIcons.xmarkCircle;
+                          //text = '거절';
                           color = colorCheckStateReject;
                           break;
 
                         default:
-                          text = '확인 대기 중';
+                          icon = FontAwesomeIcons.checkCircle;
+                          //text = '확인 대기 중';
                           color = colorCheckStatePend;
                           break;
                       }
 
-                      return Text(
-                        text,
-                        style: TextStyle(color: color, fontWeight: FontWeight.bold,fontSize: 18),
+                      return FaIcon(
+                        icon,
+                        color: color,
                       );
                     },
                   ),
@@ -107,7 +112,7 @@ class ItemUserCheckHistorySmall extends StatelessWidget {
                   const Spacer(),
                   Text(
                     millisecondGapFormatted,
-                    style: const CustomTextStyle.normalRedBold(),
+                    style: const CustomTextStyle.normalRedBold().copyWith(color: Colors.black45),
                   ),
                   const SizedBox(
                     width: 10,
