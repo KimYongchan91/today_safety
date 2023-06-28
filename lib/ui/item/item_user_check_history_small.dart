@@ -42,12 +42,13 @@ class ItemUserCheckHistorySmall extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-        color: Colors.white,
         decoration: BoxDecoration(
           border: Border.all(
             width: 0.2,
             color: Colors.grey,
           ),
+          color: Colors.white,
+
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
