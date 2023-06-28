@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:today_safety/const/model/model_check_list.dart';
 import 'package:today_safety/const/model/model_user_check_history.dart';
+import 'package:today_safety/const/value/color.dart';
 import 'package:today_safety/const/value/key.dart';
 import 'package:today_safety/const/value/router.dart';
 import 'package:today_safety/const/value/value.dart';
@@ -132,10 +133,10 @@ class ItemUserCheckHistoryBig extends StatelessWidget {
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
                                       color: modelUserCheckHistory.state == keyOn
-                                          ? Colors.greenAccent
+                                          ? colorCheckStateOn
                                           : modelUserCheckHistory.state == keyPend
-                                              ? Colors.orangeAccent
-                                              : Colors.redAccent,
+                                              ? colorCheckStatePend
+                                              : colorCheckStateReject,
                                     ),
                                   ),
                                 ),
