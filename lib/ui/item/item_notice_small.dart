@@ -31,34 +31,35 @@ class ItemNoticeSmall extends StatelessWidget {
         Get.toNamed('$keyRouteNoticeDetail/${modelNotice.docId}', arguments: {keyModelNotice: modelNotice});
       },
       child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
         decoration: BoxDecoration(
+          color: Colors.white,
             border: Border.all(
+              width: 0.2,
           color: Colors.grey,
         )),
-        child: Column(
+        child:         Row(
           children: [
-            ///날짜
-            Text(
-              millisecondGapFormatted,
-              style: CustomTextStyle.normalBlack(),
-            ),
-
             ///대상 팀
             Text(
               modelNotice.listModelCheckList.map((e) => e.name).toList().toString().replaceAll('[', '').replaceAll(']', ''),
-              style: CustomTextStyle.normalBlack(),
+              style: const CustomTextStyle.normalBlack().copyWith(color: Colors.orange,fontWeight: FontWeight.bold),
             ),
 
+            const SizedBox(width: 10),
             ///제목
-            Text(
-              modelNotice.title,
-              style: CustomTextStyle.normalBlackBold(),
+            Expanded(
+              child: Text(
+                modelNotice.title,
+                style: CustomTextStyle.normalBlackBold(),
+              ),
             ),
 
-            ///본문
+            const SizedBox(width: 20),
+            ///날짜
             Text(
-              modelNotice.body,
-              style: CustomTextStyle.normalBlack(),
+              millisecondGapFormatted,
+              style: const CustomTextStyle.normalBlack().copyWith(fontSize: 13,fontWeight: FontWeight.bold),
             ),
           ],
         ),

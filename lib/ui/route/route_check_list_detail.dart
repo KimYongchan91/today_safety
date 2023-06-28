@@ -422,7 +422,7 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                               children: [
                                 ///공지 사항
                                 const Text(
-                                  '공지 사항',
+                                  '공지사항',
                                   style: CustomTextStyle.bigBlackBold(),
                                 ),
 

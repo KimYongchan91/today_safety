@@ -170,7 +170,7 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
                                 ),
 
                                 const SizedBox(
-                                  height: 20,
+                                  height: 40,
                                 ),
 
                                 ///승인 상태
@@ -181,22 +181,22 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
                                     Color color;
 
                                     if (value == true) {
-                                      text = '승인됨';
+                                      text = '승인완료';
                                       color =colorCheckStateOn;
                                     } else if (value == false) {
-                                      text = '거절됨';
+                                      text = '거절';
                                       color =colorCheckStateReject;
                                     } else {
                                       text = '승인 대기 중';
                                       color =colorCheckStatePend;
                                     }
 
-                                    return Text(text,style: TextStyle(color: color, fontSize: 24,fontWeight: FontWeight.bold),);
+                                    return Text(text,style: TextStyle(color: color, fontSize: 30,fontWeight: FontWeight.bold),);
                                   },
                                 ),
 
                                 const SizedBox(
-                                  height: 20,
+                                  height: 40,
                                 ),
 
                                 ///인증 날짜
