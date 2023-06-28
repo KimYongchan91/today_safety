@@ -33,18 +33,22 @@ class _RouteUserCheckHistoryDetailImageState extends State<RouteUserCheckHistory
                 width: Get.width,
                 height: 60,
                 color: Colors.white,
-                padding: EdgeInsets.symmetric(horizontal: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Row(
                   children: [
-
                     ///회사로고
                     Container(
                       width: 50,
-                        height: 50,
+                      height: 50,
                       color: Colors.orange,
                     ),
-SizedBox(width: 10,),
-                    Text( '${widget.modelUserCheckHistory!.modelCheckList.name} (${widget.modelUserCheckHistory!.modelUser.name})',style: CustomTextStyle.bigBlackBold(),),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      '${widget.modelUserCheckHistory!.modelCheckList.name} (${widget.modelUserCheckHistory!.modelUser.name})',
+                      style: const CustomTextStyle.bigBlackBold(),
+                    ),
                   ],
                 ),
               ),
@@ -90,21 +94,21 @@ class _ItemCheckImage extends StatelessWidget {
     ModelCheck modelCheck = getModelCheck(modelCheckImage.fac ?? '');
 
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 5),
+      padding: const EdgeInsets.symmetric(vertical: 5),
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         elevation: 2,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
 
             ///인증 항목 정보
             Row(
               children: [
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Container(
@@ -121,7 +125,7 @@ class _ItemCheckImage extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Text(
@@ -131,7 +135,7 @@ class _ItemCheckImage extends StatelessWidget {
               ],
             ),
 
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
 
@@ -143,7 +147,7 @@ class _ItemCheckImage extends StatelessWidget {
                 fit: BoxFit.cover,
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
 
@@ -158,7 +162,7 @@ class _ItemCheckImage extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
 
