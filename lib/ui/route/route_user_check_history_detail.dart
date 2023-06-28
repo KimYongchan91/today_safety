@@ -20,6 +20,7 @@ import 'package:today_safety/const/value/key.dart';
 import 'package:today_safety/const/value/value.dart';
 import 'package:today_safety/custom/custom_text_style.dart';
 import 'package:today_safety/ui/route/route_check_image_detail.dart';
+import 'package:today_safety/ui/route/route_user_check_history_detail_image.dart';
 import 'package:today_safety/ui/widget/icon_error.dart';
 
 import '../../const/model/model_check_list.dart';
@@ -169,7 +170,33 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
                                 ),
 
                                 const SizedBox(
-                                  height: 50,
+                                  height: 20,
+                                ),
+
+                                ///승인 상태
+                                ValueListenableBuilder(
+                                  valueListenable: valueNotifierIsCheckGrant,
+                                  builder: (context, value, child) {
+                                    String text;
+                                    Color color;
+
+                                    if (value == true) {
+                                      text = '승인됨';
+                                      color =colorCheckStateOn;
+                                    } else if (value == false) {
+                                      text = '거절됨';
+                                      color =colorCheckStateReject;
+                                    } else {
+                                      text = '승인 대기 중';
+                                      color =colorCheckStatePend;
+                                    }
+
+                                    return Text(text,style: TextStyle(color: color, fontSize: 24,fontWeight: FontWeight.bold),);
+                                  },
+                                ),
+
+                                const SizedBox(
+                                  height: 20,
                                 ),
 
                                 ///인증 날짜
@@ -219,74 +246,39 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
                         ),
                       ),
 
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                        child: Card(
-                          elevation: 2,
-                          color: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Container(
-                            padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
-                            width: Get.width,
-                            child: InkWell(
-                              onTap: () {},
-                              child: const Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    '인증내역보기',
-                                    style: TextStyle(fontWeight: FontWeight.w800),
-                                  ),
-                                  FaIcon(
-                                    FontAwesomeIcons.angleRight,
-                                  ),
-                                ],
+                      ///인증내역보기 버튼
+                      InkWell(
+                        onTap: () {
+                          Get.to(() => RouteUserCheckHistoryDetailImage(modelUserCheckHistory!));
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          child: Card(
+                            elevation: 2,
+                            color: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Container(
+                              padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+                              width: Get.width,
+                              child: InkWell(
+                                onTap: () {},
+                                child: const Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      '인증내역보기',
+                                      style: TextStyle(fontWeight: FontWeight.w800),
+                                    ),
+                                    FaIcon(
+                                      FontAwesomeIcons.angleRight,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ),
-
-                      const SizedBox(
-                        height: 30,
-                      ),
-
-                      ///인증 사진
-                      ExpandablePanel(
-                        header: Container(
-                          height: 40,
-                          //decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
-                          child: const Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              '인증 사진',
-                              style: CustomTextStyle.smallBlackBold(),
-                            ),
-                          ),
-                        ),
-                        theme: const ExpandableThemeData(
-                          tapBodyToExpand: true,
-                        ),
-                        collapsed: Container(),
-                        expanded: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            ListView.separated(
-                              itemCount: modelUserCheckHistory!.listModelCheckImage.length,
-                              itemBuilder: (context, index) => InkWell(
-                                  onTap: () {
-                                    onTapCheckImage(index);
-                                  },
-                                  child: _ItemCheckImage(modelUserCheckHistory!.listModelCheckImage[index])),
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              separatorBuilder: (context, index) => const SizedBox(
-                                height: 20,
-                              ),
-                            ),
-                          ],
                         ),
                       ),
 
@@ -340,24 +332,6 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
                                         ),
                                       ),
                                     ),
-                                    ValueListenableBuilder(
-                                      valueListenable: valueNotifierIsCheckGrant,
-                                      builder: (context, value, child) {
-                                        if (value == true) {
-                                          return const Text(
-                                            '승인했어요.',
-                                            style: CustomTextStyle.normalBlack(),
-                                          );
-                                        } else if (value == false) {
-                                          return const Text(
-                                            '거절했어요.',
-                                            style: CustomTextStyle.normalBlack(),
-                                          );
-                                        } else {
-                                          return Container();
-                                        }
-                                      },
-                                    ),
                                   ],
                                 )
                               : Container();
@@ -378,17 +352,6 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
             }
           },
         ),
-      ),
-    );
-  }
-
-  onTapCheckImage(int index) {
-    Get.to(
-      () => RouteCheckImageDetail(
-        modelUserCheckHistory!.listModelCheckImage,
-        index: index,
-        modelUser: modelUserCheckHistory!.modelUser,
-        modelDevice: modelUserCheckHistory!.modelDevice,
       ),
     );
   }
@@ -463,64 +426,5 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
     } catch (e) {
       MyApp.logger.wtf("sendFcm 실패 : ${e.toString()}");
     }
-  }
-}
-
-class _ItemCheckImage extends StatelessWidget {
-  final ModelCheckImage modelCheckImage;
-
-  const _ItemCheckImage(this.modelCheckImage, {Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    ModelCheck modelCheck = getModelCheck(modelCheckImage.fac ?? '');
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        ///인증 항목 정보
-        Row(
-          children: [
-            Container(
-              width: 50,
-              height: 50,
-              padding: const EdgeInsets.all(10),
-              decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xffbbd6fd)),
-              child: AspectRatio(
-                aspectRatio: 1,
-                child: Image.asset(
-                  getPathCheckImage(modelCheck),
-                  width: 50,
-                  height: 50,
-                ),
-              ),
-            ),
-            SizedBox(
-              width: 20,
-            ),
-            Text(
-              modelCheck.name,
-              style: const TextStyle(color: Colors.black54, fontSize: 17, fontWeight: FontWeight.w700),
-            ),
-          ],
-        ),
-
-        ///인증 날짜
-        Text('${DateFormat('yyyy-MM-dd hh:mm:ss').format(modelCheckImage.date.toDate())} 촬영'),
-
-        ///인증 사진
-        AspectRatio(
-          aspectRatio: 1.618 / 1,
-          child: CachedNetworkImage(
-            imageUrl: modelCheckImage.urlImage,
-            fit: BoxFit.cover,
-          ),
-        ),
-
-        ///카메라 방향
-        ///필요 없을 듯
-        //Text('${modelCheckImage.cameraDirection}'),
-      ],
-    );
   }
 }
