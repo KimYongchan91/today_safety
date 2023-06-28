@@ -80,11 +80,11 @@ class ProviderUserCheckHistoryOnCheckList extends ChangeNotifier {
 
         switch (element.type) {
           case DocumentChangeType.added:
-            MyApp.logger.d("추가 수신");
+            //MyApp.logger.d("추가 수신");
             listModelUserCheckHistory.add(modelUserCheckHistory);
             break;
           case DocumentChangeType.modified:
-            MyApp.logger.d("수정 수신");
+            //MyApp.logger.d("수정 수신");
             int index = listModelUserCheckHistory.indexOf(modelUserCheckHistory);
             if (index != -1) {
               listModelUserCheckHistory.removeAt(index);

@@ -6,6 +6,9 @@ import '../../my_app.dart';
 import 'dart:math' as math;
 
 BarChartData getLineChartData(List<ModelDailyCheckHistory> listModelDailyCheckHistory) {
+
+  MyApp.logger.d("getLineChartData listModelDailyCheckHistory 갯수 : ${listModelDailyCheckHistory.length}");
+
   List<BarChartGroupData> listBarChartGroupData = [];
 
   for (int i = 0; i < listModelDailyCheckHistory.length; i++) {

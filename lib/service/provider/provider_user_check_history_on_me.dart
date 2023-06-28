@@ -29,25 +29,27 @@ class ProviderUserCheckHistoryOnMe extends ChangeNotifier {
 
   DateFormat dateFormatYyyyMMDd = DateFormat('yyyy-MM-dd');
 
-  set(ModelUser modelUser){
+  set(ModelUser modelUser) {
     this.modelUser = modelUser;
     notifyListeners();
     init();
   }
 
   init() {
-    if(modelUser ==null){
+    if (modelUser == null) {
       MyApp.logger.wtf("modelUser ==null");
       return;
     }
 
     Timestamp timestampBeforeOneDay =
-        Timestamp.fromMillisecondsSinceEpoch(Timestamp.now().millisecondsSinceEpoch - millisecondDay * 1);
+        Timestamp.fromMillisecondsSinceEpoch(Timestamp.now().millisecondsSinceEpoch - millisecondDay * 30); //30일 전부터
 
     Query query = FirebaseFirestore.instance
         .collection(keyUserCheckHistories)
         .where('$keyUser.$keyId', isEqualTo: modelUser!.id)
-        .where(keyDate, isGreaterThanOrEqualTo: timestampBeforeOneDay);
+        .where(keyDate, isGreaterThanOrEqualTo: timestampBeforeOneDay)
+        .orderBy(keyDate, descending: true)
+        .limit(10);
 
     streamSubscription = query.snapshots().listen((event) {
       for (var element in event.docChanges) {
@@ -69,7 +71,7 @@ class ProviderUserCheckHistoryOnMe extends ChangeNotifier {
             break;
         }
         listModelUserCheckHistory.sort(
-              (a, b) => b.date.millisecondsSinceEpoch.compareTo(a.date.millisecondsSinceEpoch),
+          (a, b) => b.date.millisecondsSinceEpoch.compareTo(a.date.millisecondsSinceEpoch),
         );
         notifyListeners();
       }

@@ -555,7 +555,7 @@ class ProviderUser extends ChangeNotifier {
             .listen((event) {
           for (var element in event.docChanges) {
             ModelNotice modelNoticeNew = ModelNotice.fromJson(element.doc.data() as Map, element.doc.id);
-            MyApp.logger.d("modelNoticeNew ${modelNoticeNew.toJson().toString()}");
+            //MyApp.logger.d("modelNoticeNew ${modelNoticeNew.toJson().toString()}");
 
             switch (element.type) {
               case DocumentChangeType.added:

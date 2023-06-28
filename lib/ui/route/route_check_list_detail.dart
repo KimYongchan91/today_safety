@@ -29,6 +29,11 @@ import '../../service/util/util_check_list.dart';
 import '../item/item_calendar.dart';
 import '../item/item_notice_big.dart';
 
+enum ViewAnalyticsType {
+  calendar,
+  chart,
+}
+
 class RouteCheckListDetail extends StatefulWidget {
   const RouteCheckListDetail({Key? key}) : super(key: key);
 
@@ -40,8 +45,9 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
   late Completer<bool> completerModelCheckList;
   ModelCheckList? modelCheckList;
   late ProviderUserCheckHistoryOnCheckList providerUserCheckHistory;
-  bool isViewCalendar = true;
-  bool isViewChart = false;
+
+  ValueNotifier<ViewAnalyticsType> valueNotifierViewAnalyticsType = ValueNotifier(ViewAnalyticsType.calendar);
+  final ScrollController scrollControllerChart = ScrollController();
 
   //공지사항 관련
   late ProviderNotice providerNotice;
@@ -186,173 +192,180 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                                 style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
                               ),
                             ),
-
                             const SizedBox(
                               height: 20,
                             ),
 
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                InkWell(
+                            ///달력, 그래프 선택하는 영역
+                            ValueListenableBuilder(
+                              valueListenable: valueNotifierViewAnalyticsType,
+                              builder: (context, value, child) => Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  InkWell(
+                                      onTap: () {
+                                        valueNotifierViewAnalyticsType.value = ViewAnalyticsType.calendar;
+                                      },
+                                      child: Text(
+                                        '달력',
+                                        style: btnTxtStyle.copyWith(
+                                            fontSize: value == ViewAnalyticsType.calendar ? 17 : 15,
+                                            color: value == ViewAnalyticsType.calendar ? Colors.black : Colors.black45),
+                                      )),
+                                  const SizedBox(
+                                    width: 20,
+                                  ),
+                                  InkWell(
                                     onTap: () {
-                                      isViewCalendar = true;
-                                      if (isViewCalendar == true) {
-                                        isViewChart = false;
-                                      }
-                                      setState(() {});
+                                      valueNotifierViewAnalyticsType.value = ViewAnalyticsType.chart;
+
+                                      Future.delayed(const Duration(milliseconds: 100)).then((value) {
+                                        scrollControllerChart.animateTo(scrollControllerChart.position.maxScrollExtent,
+                                            duration: const Duration(milliseconds: 200), curve: Curves.linear);
+                                      });
                                     },
                                     child: Text(
-                                      '달력',
+                                      '그래프',
                                       style: btnTxtStyle.copyWith(
-                                          fontSize: isViewCalendar == true ? 17 : 15,
-                                          color: isViewCalendar == true ? Colors.black : Colors.black45),
-                                    )),
-                                const SizedBox(
-                                  width: 20,
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    isViewChart = true;
-                                    if (isViewChart == true) {
-                                      isViewCalendar = false;
-                                    }
-                                    setState(() {});
-                                  },
-                                  child: Text(
-                                    '그래프',
-                                    style: btnTxtStyle.copyWith(
-                                        fontSize: isViewChart == true ? 17 : 15,
-                                        color: isViewChart == true ? Colors.black : Colors.black45),
+                                          fontSize: value == ViewAnalyticsType.chart ? 17 : 15,
+                                          color: value == ViewAnalyticsType.chart ? Colors.black : Colors.black45),
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-
                             const SizedBox(
                               height: 20,
                             ),
 
-                            ///달력
-                            isViewCalendar == true
-                                ? Consumer<ProviderUserCheckHistoryOnCheckList>(
-                                    builder: (context, value, child) => TableCalendar(
-                                      firstDay: DateTime.fromMillisecondsSinceEpoch(
-                                          DateTime.now().millisecondsSinceEpoch -
-                                              millisecondDay * dayGetDailyUserCheckHistory),
-                                      lastDay: DateTime.now(),
-                                      focusedDay: DateTime.now(),
-                                      locale: keyKoreanKorea,
-                                      //달력 형식 바꾸는 버튼
-                                      availableCalendarFormats: const {
-                                        CalendarFormat.month: 'Month',
-                                        // CalendarFormat.twoWeeks: '2 weeks',
-                                        // CalendarFormat.week: 'Week'
-                                      },
+                            ///달력, 그래프 표시 영역
+                            ValueListenableBuilder(
+                              valueListenable: valueNotifierViewAnalyticsType,
+                              builder: (context, value, child) => Builder(
+                                builder: (context) => value == ViewAnalyticsType.calendar
+                                    ? Consumer<ProviderUserCheckHistoryOnCheckList>(
+                                        builder: (context, value, child) => TableCalendar(
+                                          firstDay: DateTime.fromMillisecondsSinceEpoch(
+                                              DateTime.now().millisecondsSinceEpoch -
+                                                  millisecondDay * dayGetDailyUserCheckHistory),
+                                          lastDay: DateTime.now(),
+                                          focusedDay: DateTime.now(),
+                                          locale: keyKoreanKorea,
+                                          //달력 형식 바꾸는 버튼
+                                          availableCalendarFormats: const {
+                                            CalendarFormat.month: 'Month',
+                                            // CalendarFormat.twoWeeks: '2 weeks',
+                                            // CalendarFormat.week: 'Week'
+                                          },
 
-                                      //제스처 인식 방향
-                                      availableGestures: AvailableGestures.horizontalSwipe,
-                                      //월 보여주는 부분
-                                      headerVisible: true,
-                                      //요일 보여주는 부분
-                                      daysOfWeekVisible: true,
-                                      //페이지 점프를 사용할지
-                                      pageJumpingEnabled: false,
-                                      //페이지 점프 에니메이션을 사용할지
-                                      pageAnimationEnabled: true,
-                                      //이번 주가 올해의 몇 주차인지 보여주는 부분
-                                      weekNumbersVisible: false,
-                                      headerStyle: HeaderStyle(
-                                        titleCentered: true,
-                                        formatButtonVisible: false,
-                                        formatButtonShowsNext: false,
-                                        titleTextFormatter: (date, locale) {
-                                          return DateFormat('yyyy년 M월').format(date);
-                                        },
-                                        //rightChevronIcon: const Icon(Icons.chevron_right,color: Colors.transparent,),
-                                        //leftChevronIcon: false,
-                                      ),
+                                          //제스처 인식 방향
+                                          availableGestures: AvailableGestures.horizontalSwipe,
+                                          //월 보여주는 부분
+                                          headerVisible: true,
+                                          //요일 보여주는 부분
+                                          daysOfWeekVisible: true,
+                                          //페이지 점프를 사용할지
+                                          pageJumpingEnabled: false,
+                                          //페이지 점프 에니메이션을 사용할지
+                                          pageAnimationEnabled: true,
+                                          //이번 주가 올해의 몇 주차인지 보여주는 부분
+                                          weekNumbersVisible: false,
+                                          headerStyle: HeaderStyle(
+                                            titleCentered: true,
+                                            formatButtonVisible: false,
+                                            formatButtonShowsNext: false,
+                                            titleTextFormatter: (date, locale) {
+                                              return DateFormat('yyyy년 M월').format(date);
+                                            },
+                                            //rightChevronIcon: const Icon(Icons.chevron_right,color: Colors.transparent,),
+                                            //leftChevronIcon: false,
+                                          ),
 
-                                      onPageChanged: (focusedDay) {
-                                        print("페이지 바뀜");
-                                      },
+                                          onPageChanged: (focusedDay) {
+                                            print("페이지 바뀜");
+                                          },
 
-                                      calendarBuilders: CalendarBuilders(
-                                        //맨위 요일 빌더
-                                        dowBuilder: (context, day) {
-                                          final text = DateFormat('EEE', keyKoreanKorea).format(day);
-                                          Color color = Colors.black;
-                                          if (day.weekday == DateTime.saturday) {
-                                            color = Colors.blue;
-                                          } else if (day.weekday == DateTime.sunday) {
-                                            color = Colors.red;
-                                          }
-                                          return Center(
-                                            child: Text(
-                                              text,
-                                              style: TextStyle(color: color),
-                                            ),
-                                          );
-                                        },
+                                          calendarBuilders: CalendarBuilders(
+                                            //맨위 요일 빌더
+                                            dowBuilder: (context, day) {
+                                              final text = DateFormat('EEE', keyKoreanKorea).format(day);
+                                              Color color = Colors.black;
+                                              if (day.weekday == DateTime.saturday) {
+                                                color = Colors.blue;
+                                              } else if (day.weekday == DateTime.sunday) {
+                                                color = Colors.red;
+                                              }
+                                              return Center(
+                                                child: Text(
+                                                  text,
+                                                  style: TextStyle(color: color),
+                                                ),
+                                              );
+                                            },
 
-                                        //기본 빌더
-                                        defaultBuilder: (context, day, focusedDay) {
-                                          return ItemCalendar(
-                                            checkListId: modelCheckList!.docId,
-                                            dateTime: day,
-                                            modelDailyCheckHistory: value.getModelDailyCheckHistory(day),
-                                            //listModelUserCheckHistory: value.getDailyUserCheckHistoryCount(day),
-                                          );
-                                        },
+                                            //기본 빌더
+                                            defaultBuilder: (context, day, focusedDay) {
+                                              return ItemCalendar(
+                                                checkListId: modelCheckList!.docId,
+                                                dateTime: day,
+                                                modelDailyCheckHistory: value.getModelDailyCheckHistory(day),
+                                                //listModelUserCheckHistory: value.getDailyUserCheckHistoryCount(day),
+                                              );
+                                            },
 
-                                        //마커 빌더
-                                        /*markerBuilder: (context, day, focusedDay) {
+                                            //마커 빌더
+                                            /*markerBuilder: (context, day, focusedDay) {
                               return Text(
                                 '${value.getDailyUserCheckHistoryCount(day).length}건',
                                 style: CustomTextStyle.normalGrey(),
                               );
                             },*/
 
-                                        //오늘 날짜 빌더
-                                        todayBuilder: (context, day, focusedDay) {
-                                          return ItemCalendar(
-                                            checkListId: modelCheckList!.docId,
-                                            dateTime: day,
-                                            isToday: true,
-                                            modelDailyCheckHistory: value.getModelDailyCheckHistory(day),
-                                            //listModelUserCheckHistory: value.getDailyUserCheckHistoryCount(day),
-                                          );
-                                        },
+                                            //오늘 날짜 빌더
+                                            todayBuilder: (context, day, focusedDay) {
+                                              return ItemCalendar(
+                                                checkListId: modelCheckList!.docId,
+                                                dateTime: day,
+                                                isToday: true,
+                                                modelDailyCheckHistory: value.getModelDailyCheckHistory(day),
+                                                //listModelUserCheckHistory: value.getDailyUserCheckHistoryCount(day),
+                                              );
+                                            },
 
-                                        //조회 날짜 범위 밖 빌더
-                                        disabledBuilder: (context, day, focusedDay) {
-                                          return Container();
-                                        },
-                                      ),
-                                    ),
-                                  )
-                                : const SizedBox(),
-
-                            isViewChart == true
-                                ?
-
-                                ///차트
-                                Consumer<ProviderUserCheckHistoryOnCheckList>(
-                                    builder: (context, value, child) => AspectRatio(
-                                      aspectRatio: 3 / 2,
-                                      child: BarChart(
-                                        getLineChartData(value.listModelDailyCheckHistory),
-                                      ),
-                                    ),
-                                    /*ListView.builder(
+                                            //조회 날짜 범위 밖 빌더
+                                            disabledBuilder: (context, day, focusedDay) {
+                                              return Container();
+                                            },
+                                          ),
+                                        ),
+                                      )
+                                    : Consumer<ProviderUserCheckHistoryOnCheckList>(
+                                        builder: (context, value, child) => SizedBox(
+                                          height: 240,
+                                          child: SingleChildScrollView(
+                                            controller: scrollControllerChart,
+                                            scrollDirection: Axis.horizontal,
+                                            child: AspectRatio(
+                                              aspectRatio: 10 / 2,
+                                              child: Padding(
+                                                padding: EdgeInsets.symmetric(vertical: 10),
+                                                child: BarChart(
+                                                  getLineChartData(value.listModelDailyCheckHistory),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        /*ListView.builder(
                           itemCount: value.listModelDailyCheckHistory.length,
                           itemBuilder: (context, index) => Text(value.listModelDailyCheckHistory[index].dateDisplay +
                               value.listModelDailyCheckHistory[index].userCheckHistoryCount.toString()),
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                         )*/
-                                  )
-                                : const SizedBox(),
+                                      ),
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -407,8 +420,6 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                           ),
                         ),
                       ),
-
-
 
                       ///공지사항 영역
                       Container(

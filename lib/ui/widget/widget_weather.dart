@@ -43,7 +43,7 @@ class _WidgetWeatherState extends State<WidgetWeather> {
           ));
       videoPlayerController!.initialize().then((_) {
         //
-        MyApp.logger.d("비디오 컨트롤러 초기화 완료");
+        //MyApp.logger.d("비디오 컨트롤러 초기화 완료");
         valueNotifierIsInitVideoController.value = true;
         videoPlayerController!.setVolume(0.0);
         videoPlayerController!.setLooping(true);
@@ -52,7 +52,7 @@ class _WidgetWeatherState extends State<WidgetWeather> {
         MyApp.logger.wtf("비디오 컨트롤러 초기화 실패 : ${e.toString()}");
       });
     } else {
-      MyApp.logger.d("widget.valueNotifierModelWeather.value == null");
+      //MyApp.logger.d("widget.valueNotifierModelWeather.value == null");
     }
 
     super.initState();

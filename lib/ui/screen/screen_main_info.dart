@@ -584,7 +584,7 @@ class _ScreenMainInfoState extends State<ScreenMainInfo> with SingleTickerProvid
         throw Exception("Request to $url failed with status ${response.statusCode}: ${response.body}");
       } else {
         //성공
-        MyApp.logger.d(response.body.toString());
+        //MyApp.logger.d(response.body.toString());
 
         List<ModelEmergencySms> listModelEmergencySmsDisasterNew = [];
         List<ModelEmergencySms> listModelEmergencySmsMissingNew = [];

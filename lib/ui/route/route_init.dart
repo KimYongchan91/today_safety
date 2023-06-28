@@ -96,7 +96,7 @@ class _RouteInitState extends State<RouteInit> {
 
       switch (notificationSettings.authorizationStatus) {
         case AuthorizationStatus.authorized:
-          MyApp.logger.d("FCM 권한 승인됨");
+          //MyApp.logger.d("FCM 권한 승인됨");
           break;
         case AuthorizationStatus.denied:
           MyApp.logger.d("FCM 권한 거부됨");
@@ -114,7 +114,7 @@ class _RouteInitState extends State<RouteInit> {
         throw Exception("token==null");
       }
 
-      MyApp.logger.d("FCM 토큰 : $token");
+      //MyApp.logger.d("FCM 토큰 : $token");
       MyApp.tokenFcm = token;
 
       //앱이 종료되었 때 노티를 클릭하고 들어왔을 때

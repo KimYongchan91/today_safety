@@ -43,7 +43,7 @@ class _RouteQrCodeDetailState extends State<RouteQrCodeDetail> {
             Container(
               width: Get.width,
               height: 70,
-              padding: EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               color: Colors.white,
               child: Row(
                 children: [
@@ -60,11 +60,11 @@ class _RouteQrCodeDetailState extends State<RouteQrCodeDetail> {
                   InkWell(
                     onTap: captureWidgetToImage,
                     child: Padding(
-                      padding: EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(10),
                       child: ValueListenableBuilder(
                         valueListenable: valueNotifierIsProcessingImage,
                         builder: (context, value, child) => value == false
-                            ? Icon(Icons.share)
+                            ? const Icon(Icons.share)
                             : LoadingAnimationWidget.inkDrop(color: Colors.black, size: 24),
                       ),
                     ),
@@ -114,8 +114,7 @@ class _RouteQrCodeDetailState extends State<RouteQrCodeDetail> {
                                         ),
                                         const Text(
                                           '오늘안전',
-                                          style: TextStyle(
-                                              color: Colors.black, fontFamily: "SANGJU", fontSize: 15),
+                                          style: TextStyle(color: Colors.black, fontFamily: "SANGJU", fontSize: 15),
                                         ),
                                       ],
                                     ),
@@ -157,11 +156,11 @@ class _RouteQrCodeDetailState extends State<RouteQrCodeDetail> {
                         ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
-                    Text(
-                      'A4 용지를 기준으로 만들었어요.',
+                    const Text(
+                      '인쇄 미리보기',
                       style: CustomTextStyle.normalGreyBold(),
                     )
                   ],
@@ -187,8 +186,7 @@ class _RouteQrCodeDetailState extends State<RouteQrCodeDetail> {
         throw Exception('bytes ==null');
       }
       final tempDir = await getTemporaryDirectory();
-      File file =
-          await File('${tempDir.path}/image_qr_check_list_${widget.modelCheckList.docId}.png').create();
+      File file = await File('${tempDir.path}/image_qr_check_list_${widget.modelCheckList.docId}.png').create();
       file.writeAsBytesSync(bytes);
 
       MyApp.logger.d("생성된 파일 주소 : ${file.path}");

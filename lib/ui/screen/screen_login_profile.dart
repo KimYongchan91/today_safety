@@ -75,6 +75,38 @@ class _ScreenLoginProfileState extends State<ScreenLoginProfile> {
             ),
           ),
 
+
+
+
+         /*
+         SizedBox(
+            height: 10,
+          ),
+
+         ///내 인증 내역
+
+          Container(
+            width: Get.width,
+            decoration: BoxDecoration(color: Colors.white),
+            child: Padding(
+              padding: EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    '내 안전 점검 인증',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          SizedBox(
+            height: 10,
+          ),*/
+
+
           ///관리하는 근무지 정보 영역
           widget.providerUser.modelSiteMy == null
 
@@ -250,6 +282,8 @@ class _ScreenLoginProfileState extends State<ScreenLoginProfile> {
                     ),
                   ),
                 ),
+
+
 
           const ItemMainBanner(),
 
