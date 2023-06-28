@@ -5,6 +5,7 @@ import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:today_safety/const/value/router.dart';
 import 'package:today_safety/ui/route/route_check_list_daily.dart';
 import 'package:today_safety/ui/route/route_check_list_detail.dart';
+import 'package:today_safety/ui/route/route_check_list_recent.dart';
 import 'package:today_safety/ui/route/route_init.dart';
 import 'package:today_safety/ui/route/route_login.dart';
 import 'package:today_safety/ui/route/route_check_list_new.dart';
@@ -85,6 +86,12 @@ class RouteRouter extends StatelessWidget {
           name:
               '$keyRouteCheckListDetail/:$keyCheckListId/$keyRouteCheckListDailyWithOutSlash/:$keyDailyDateFormatted',
           page: () => const RouteCheckListDaily(),
+        ),
+
+        GetPage(
+          name:
+          '$keyRouteCheckListDetail/:$keyCheckListId/$keyRouteCheckListRecentWithOutSlash',
+          page: () => const RouteCheckListRecent(),
         ),
         GetPage(
           name: '$keyRouteNoticeDetail/:$keyNoticeId',

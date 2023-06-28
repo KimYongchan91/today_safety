@@ -15,16 +15,14 @@ import '../../my_app.dart';
 import '../../service/provider/provider_user_check_history_on_check_list.dart';
 import '../item/item_user_check_history_small.dart';
 
-class RouteCheckListDaily extends StatefulWidget {
-  const RouteCheckListDaily({Key? key}) : super(key: key);
+class RouteCheckListRecent extends StatefulWidget {
+  const RouteCheckListRecent({Key? key}) : super(key: key);
 
   @override
-  State<RouteCheckListDaily> createState() => _RouteCheckListDailyState();
+  State<RouteCheckListRecent> createState() => _RouteCheckListRecentState();
 }
 
-class _RouteCheckListDailyState extends State<RouteCheckListDaily> {
-  late String dateFormatted;
-
+class _RouteCheckListRecentState extends State<RouteCheckListRecent> {
   late Completer<bool> completerGetModelCheckList;
   late ModelCheckList modelCheckList;
 
@@ -34,14 +32,11 @@ class _RouteCheckListDailyState extends State<RouteCheckListDaily> {
   void initState() {
     super.initState();
 
-    MyApp.logger.d(
-        "keyCheckListId : ${Get.parameters[keyCheckListId]}, keyDailyDateFormatted : ${Get.parameters[keyDailyDateFormatted]}");
-
-    dateFormatted = Get.parameters[keyDailyDateFormatted] ?? '날짜 없음';
+    MyApp.logger.d("keyCheckListId : ${Get.parameters[keyCheckListId]}");
 
     completerGetModelCheckList = Completer();
 
-    if (Get.parameters[keyCheckListId] == null || Get.parameters[keyDailyDateFormatted] == null) {
+    if (Get.parameters[keyCheckListId] == null) {
       completerGetModelCheckList.complete(false);
     } else {
       getModelCheckListFromServerByDocId(Get.parameters[keyCheckListId]!).then((value) {
@@ -57,7 +52,6 @@ class _RouteCheckListDailyState extends State<RouteCheckListDaily> {
     providerUserCheckHistoryOnCheckList = ProviderUserCheckHistoryOnCheckList(
       checkListId: Get.parameters[keyCheckListId]!,
       limit: 100,
-      dateDisplay: dateFormatted,
       isIncludeDailyReport: false,
     );
   }
@@ -73,10 +67,6 @@ class _RouteCheckListDailyState extends State<RouteCheckListDaily> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                Text(
-                  dateFormatted,
-                  style: CustomTextStyle.bigBlackBold(),
-                ),
                 FutureBuilder(
                   future: completerGetModelCheckList.future,
                   builder: (context, snapshot) {

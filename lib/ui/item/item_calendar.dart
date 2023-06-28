@@ -1,18 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:today_safety/const/model/model_daily_check_history.dart';
 
 import '../../const/model/model_user_check_history.dart';
 import '../../const/value/router.dart';
 import '../../custom/custom_text_style.dart';
 
 class ItemCalendar extends StatelessWidget {
+  final String checkListId;
   final DateTime dateTime;
   final bool isToday;
-  final List<ModelUserCheckHistory> listModelUserCheckHistory;
+  final ModelDailyCheckHistory modelDailyCheckHistory;
 
-  const ItemCalendar(
-      {required this.dateTime, this.isToday = false, required this.listModelUserCheckHistory, Key? key})
+  //final List<ModelUserCheckHistory> listModelUserCheckHistory;
+
+  const ItemCalendar({
+    required this.checkListId,
+    required this.dateTime,
+    this.isToday = false,
+    required this.modelDailyCheckHistory,
+    Key? key})
       : super(key: key);
 
   @override
@@ -38,7 +46,7 @@ class ItemCalendar extends StatelessWidget {
                   style: const CustomTextStyle.normalBlack(),
                 ),
                 Text(
-                  '${listModelUserCheckHistory.length}건',
+                  '${modelDailyCheckHistory.userCheckHistoryCount}건',
                   style: const CustomTextStyle.normalGrey(),
                 )
               ],
@@ -50,8 +58,10 @@ class ItemCalendar extends StatelessWidget {
   }
 
   onTapCalendar() {
-    Get.toNamed(
-        '$keyRouteCheckListDetail/Y7eoaYJLn5v1YvolI0xW/$keyRouteCheckListDailyWithOutSlash/${DateFormat('yyyy-MM-dd').format(dateTime)}',
-        arguments: {keyListModelUserCheckHistory: listModelUserCheckHistory});
+    Get.toNamed('$keyRouteCheckListDetail'
+        '/$checkListId'
+    '/$keyRouteCheckListDailyWithOutSlash'
+    '/${DateFormat('yyyy-MM-dd').format(dateTime)}'
+    );
   }
 }

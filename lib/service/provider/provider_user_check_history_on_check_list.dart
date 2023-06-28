@@ -18,11 +18,12 @@ class ProviderUserCheckHistoryOnCheckList extends ChangeNotifier {
   final String? userId;
   final String? dateDisplay;
   final bool isOrderByDateDescending;
+  final bool isIncludeDailyReport;
 
-  //최근 인증한 근무자
+  //최근 인증
   List<ModelUserCheckHistory> listModelUserCheckHistory = [];
 
-  //최근 인증한 근무자 스트림
+  //최근 인증 스트림
   StreamSubscription? streamSubscription;
 
   //일별 인증 통계
@@ -36,11 +37,14 @@ class ProviderUserCheckHistoryOnCheckList extends ChangeNotifier {
     this.userId,
     this.dateDisplay,
     this.isOrderByDateDescending = true,
+    this.isIncludeDailyReport = true,
   }) {
     init();
   }
 
   init() {
+    MyApp.logger.d("dateDisplay : ${dateDisplay}");
+
     Query query = FirebaseFirestore.instance
         .collection(keyUserCheckHistories)
         .where('$keyCheckList.$keyDocId', isEqualTo: checkListId);
@@ -76,14 +80,15 @@ class ProviderUserCheckHistoryOnCheckList extends ChangeNotifier {
 
         switch (element.type) {
           case DocumentChangeType.added:
+            MyApp.logger.d("추가 수신");
             listModelUserCheckHistory.add(modelUserCheckHistory);
             break;
           case DocumentChangeType.modified:
             MyApp.logger.d("수정 수신");
             int index = listModelUserCheckHistory.indexOf(modelUserCheckHistory);
-            if(index != -1){
+            if (index != -1) {
               listModelUserCheckHistory.removeAt(index);
-              listModelUserCheckHistory.insert(index,modelUserCheckHistory);
+              listModelUserCheckHistory.insert(index, modelUserCheckHistory);
             }
 
             break;
@@ -94,77 +99,90 @@ class ProviderUserCheckHistoryOnCheckList extends ChangeNotifier {
 
         //정렬
 
-
         notifyListeners();
         //sort
       }
     });
 
     ///일별 인증 통계
-    List<String> listDateDisplay = [];
-    DateTime datetimeNow = DateTime.now();
-    for (int i = 0; i < dayGetDailyUserCheckHistory; i++) {
-      DateTime dateTimeNew =
-          DateTime.fromMillisecondsSinceEpoch(datetimeNow.millisecondsSinceEpoch - i * millisecondDay);
-      final String displayDateToday = DateFormat('yyyy-MM-dd').format(dateTimeNew);
-      listDateDisplay.insert(0, displayDateToday);
-    }
-
-    //MyApp.logger.d("keyCheckListId : $checkListId");
-    //MyApp.logger.d("listDateDisplay : ${listDateDisplay.toString()}");
-
-    FirebaseFirestore.instance
-        .collection(keyCheckListS)
-        .doc(checkListId)
-        .collection(keyDailyCheckHistories)
-        .where(keyDateDisplay, isGreaterThanOrEqualTo: listDateDisplay.first)
-        .where(keyDateDisplay, isLessThanOrEqualTo: listDateDisplay.last)
-        .orderBy(keyDateDisplay)
-        .get()
-        .then((value) {
-      //MyApp.logger.d("일별 인증 통계 조회 결과 문서 개수 : ${value.docs.length.toString()}");
-
-      for (var element in value.docs) {
-        ModelDailyCheckHistory modelDailyCheckHistory =
-            ModelDailyCheckHistory.fromJson(element.data(), element.id);
-        listModelDailyCheckHistory.add(modelDailyCheckHistory);
+    if (isIncludeDailyReport) {
+      List<String> listDateDisplay = [];
+      DateTime datetimeNow = DateTime.now();
+      for (int i = 0; i < dayGetDailyUserCheckHistory; i++) {
+        DateTime dateTimeNew =
+            DateTime.fromMillisecondsSinceEpoch(datetimeNow.millisecondsSinceEpoch - i * millisecondDay);
+        final String displayDateToday = DateFormat('yyyy-MM-dd').format(dateTimeNew);
+        listDateDisplay.insert(0, displayDateToday);
       }
 
-      //비어있는 문서 추가
-      for (int i = 0; i < listDateDisplay.length; i++) {
-        if (listModelDailyCheckHistory
-            .where((element) => element.dateDisplay == listDateDisplay[i])
-            .isEmpty) {
-          //존재하지 않는다면
-          try {
-            DateTime dateTimeEmpty = DateTime.parse(listDateDisplay[i]);
-            ModelDailyCheckHistory modelDailyCheckHistoryEmpty = ModelDailyCheckHistory.fromJson({
-              keyDate: dateTimeEmpty,
-              keyDateDisplay: listDateDisplay[i],
-              keyDateWeek: dateTimeEmpty.weekday,
-              keyUserCheckHistoryCount: 0,
-            }, '');
+      //MyApp.logger.d("keyCheckListId : $checkListId");
+      //MyApp.logger.d("listDateDisplay : ${listDateDisplay.toString()}");
 
-            listModelDailyCheckHistory.add(modelDailyCheckHistoryEmpty);
-          } catch (e) {
-            MyApp.logger.wtf("오류 발생 : ${e.toString()}");
+      FirebaseFirestore.instance
+          .collection(keyCheckListS)
+          .doc(checkListId)
+          .collection(keyDailyCheckHistories)
+          .where(keyDateDisplay, isGreaterThanOrEqualTo: listDateDisplay.first)
+          .where(keyDateDisplay, isLessThanOrEqualTo: listDateDisplay.last)
+          .orderBy(keyDateDisplay)
+          .get()
+          .then((value) {
+        //MyApp.logger.d("일별 인증 통계 조회 결과 문서 개수 : ${value.docs.length.toString()}");
+
+        for (var element in value.docs) {
+          ModelDailyCheckHistory modelDailyCheckHistory =
+              ModelDailyCheckHistory.fromJson(element.data(), element.id);
+          listModelDailyCheckHistory.add(modelDailyCheckHistory);
+        }
+
+        //비어있는 문서 추가
+        for (int i = 0; i < listDateDisplay.length; i++) {
+          if (listModelDailyCheckHistory
+              .where((element) => element.dateDisplay == listDateDisplay[i])
+              .isEmpty) {
+            //존재하지 않는다면
+            try {
+              DateTime dateTimeEmpty = DateTime.parse(listDateDisplay[i]);
+              ModelDailyCheckHistory modelDailyCheckHistoryEmpty = ModelDailyCheckHistory.fromJson({
+                keyDate: dateTimeEmpty,
+                keyDateDisplay: listDateDisplay[i],
+                keyDateWeek: dateTimeEmpty.weekday,
+                keyUserCheckHistoryCount: 0,
+              }, '');
+
+              listModelDailyCheckHistory.add(modelDailyCheckHistoryEmpty);
+            } catch (e) {
+              MyApp.logger.wtf("오류 발생 : ${e.toString()}");
+            }
           }
         }
-      }
 
-      //정렬
-      listModelDailyCheckHistory.sort(
-        (a, b) => a.dateDisplay.compareTo(b.dateDisplay),
-      );
+        //정렬
+        listModelDailyCheckHistory.sort(
+          (a, b) => a.dateDisplay.compareTo(b.dateDisplay),
+        );
 
-      MyApp.logger.d(
-          'listDateDisplay 개수 : ${listDateDisplay.length}, 서버에서 받아온 일별 인증 통계 조회 결과 문서 개수 : ${value.docs.length}, 로컬 개수 : ${listModelDailyCheckHistory.length}');
+        MyApp.logger.d(
+            'listDateDisplay 개수 : ${listDateDisplay.length}, 서버에서 받아온 일별 인증 통계 조회 결과 문서 개수 : ${value.docs.length}, 로컬 개수 : ${listModelDailyCheckHistory.length}');
 
-      notifyListeners();
-    });
+        notifyListeners();
+      });
+    }
   }
 
-  List<ModelUserCheckHistory> getDailyUserCheckHistoryCount(DateTime dateTime) {
+  ModelDailyCheckHistory getModelDailyCheckHistory(DateTime dateTime) {
+    String dateTimeFormatted = dateFormatYyyyMMDd.format(dateTime);
+
+    Iterable<ModelDailyCheckHistory> iterable =
+        listModelDailyCheckHistory.where((element) => element.dateDisplay == dateTimeFormatted);
+    if (iterable.isEmpty) {
+      return ModelDailyCheckHistory.fromJson({}, '');
+    } else {
+      return iterable.first;
+    }
+  }
+
+/*  List<ModelUserCheckHistory> getDailyUserCheckHistoryCount(DateTime dateTime) {
     String dateTimeFormatted = dateFormatYyyyMMDd.format(dateTime);
 
     Iterable<ModelDailyCheckHistory> iterable =
@@ -175,7 +193,7 @@ class ProviderUserCheckHistoryOnCheckList extends ChangeNotifier {
     } else {
       return iterable.first.listModelUserCheckHistory;
     }
-  }
+  }*/
 
   void clearProvider({bool isNotify = true}) {
     listModelUserCheckHistory.clear();

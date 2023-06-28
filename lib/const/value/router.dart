@@ -13,6 +13,7 @@ const String keyRouteCheckListNew = "/check_list/new";
 const String keyRouteCheckListDetail = "/check_list";
 const String keyRouteCheckListCheckWithOutSlash = "check";
 const String keyRouteCheckListDailyWithOutSlash = "daily";
+const String keyRouteCheckListRecentWithOutSlash = "recent";
 
 
 const String keyModelSite = 'model_site';
