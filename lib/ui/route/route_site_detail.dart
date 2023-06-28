@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:today_safety/const/model/model_site.dart';
 import 'package:today_safety/const/value/color.dart';
 import 'package:today_safety/service/provider/provider_check_list.dart';
+import 'package:today_safety/ui/route/route_notice_new.dart';
 import 'package:today_safety/ui/route/route_webview.dart';
 import 'package:today_safety/ui/widget/widget_weather.dart';
 
@@ -15,8 +16,10 @@ import '../../const/value/label.dart';
 import '../../const/value/router.dart';
 import '../../custom/custom_text_style.dart';
 import '../../my_app.dart';
+import '../../service/provider/provider_notice.dart';
 import '../../service/util/util_weather.dart';
 import '../item/item_check_list.dart';
+import '../item/item_notice_small.dart';
 
 const double _sizeLogoImage = 120;
 
@@ -32,9 +35,11 @@ class _RouteSiteDetailState extends State<RouteSiteDetail> with SingleTickerProv
   late ProviderCheckList providerCheckList;
 
   //날씨
-  //날씨
   ValueNotifier<ModelWeather?> valueNotifierWeather = ValueNotifier(null);
   late AnimationController controllerRefreshWeather;
+
+  //공지사항 관련
+  late ProviderNotice providerNotice;
 
   BoxDecoration btnDecoration = const BoxDecoration(
     shape: BoxShape.circle,
@@ -57,6 +62,9 @@ class _RouteSiteDetailState extends State<RouteSiteDetail> with SingleTickerProv
       _refreshWeather();
     });
 
+    ///공지사항 받아오기
+    providerNotice = ProviderNotice(modelSite);
+
     super.initState();
   }
 
@@ -74,6 +82,7 @@ class _RouteSiteDetailState extends State<RouteSiteDetail> with SingleTickerProv
         child: MultiProvider(
           providers: [
             ChangeNotifierProvider.value(value: providerCheckList),
+            ChangeNotifierProvider.value(value: providerNotice),
           ],
           builder: (context, child) => SingleChildScrollView(
             child: Column(
@@ -170,7 +179,7 @@ class _RouteSiteDetailState extends State<RouteSiteDetail> with SingleTickerProv
                       )),
 
                       ///인원 수
-                      Column(
+                     /* Column(
                         children: [
                           const FaIcon(
                             FontAwesomeIcons.userGroup,
@@ -184,11 +193,127 @@ class _RouteSiteDetailState extends State<RouteSiteDetail> with SingleTickerProv
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ],
-                      ),
+                      ),*/
                       const SizedBox(
                         width: 10,
                       ),
                     ],
+                  ),
+                ),
+
+                const SizedBox(
+                  height: 10,
+                ),
+
+                ///팀영역
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    border: Border(
+                        bottom: BorderSide(
+                      width: 1.5,
+                      color: colorBackground,
+                    )),
+                  ),
+                  child: Row(
+                    children: [
+                      const Text(
+                        '팀',
+                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orange, fontSize: 17),
+                      ),
+                      const Spacer(),
+                      InkWell(
+                        onTap: () {
+                          addCheckList();
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(width: 1, color: Colors.orange),
+                              color: Colors.white),
+                          child: const Row(
+                            children: [
+                              FaIcon(
+                                FontAwesomeIcons.plus,
+                                color: Colors.orange,
+                                size: 13,
+                              ),
+                              SizedBox(
+                                width: 3,
+                              ),
+                              Text(
+                                '만들기',
+                                style: TextStyle(color: Colors.orange),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                ///팀 리스트뷰
+                Consumer<ProviderCheckList>(
+                  builder: (context, value, child) => ListView.builder(
+                    itemCount: value.listModelCheckList.length,
+                    itemBuilder: (context, index) => ItemCheckList(value.listModelCheckList[index]),
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+
+                ///공지사항 영역
+                Container(
+                  width: Get.width,
+                  padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                  color: Colors.white,
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          ///공지 사항
+                          const Text(
+                            '공지 사항',
+                            style: CustomTextStyle.bigBlackBold(),
+                          ),
+
+                          Visibility(
+                            visible: MyApp.providerUser.modelUser?.id == modelSite.master,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.orange, // Background color
+                              ),
+                              onPressed: () {
+                                Get.to(() => RouteNoticeNew(
+                                      modelSite: modelSite,
+                                    ));
+                              },
+                              child: const Text(
+                                '작성하기',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+
+                ///공지사항 리스트
+                Consumer<ProviderNotice>(
+                  builder: (context, value, child) => ListView.builder(
+                    itemCount: value.listModelNotice.length,
+                    itemBuilder: (context, index) => ItemNoticeSmall(value.listModelNotice[index]),
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
                   ),
                 ),
 
@@ -310,67 +435,6 @@ class _RouteSiteDetailState extends State<RouteSiteDetail> with SingleTickerProv
                     ),
                   ),
                 ),*/
-
-                const SizedBox(
-                  height: 10,
-                ),
-
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    border: Border(
-                        bottom: BorderSide(
-                      width: 1.5,
-                      color: colorBackground,
-                    )),
-                  ),
-                  child: Row(
-                    children: [
-                      const Text(
-                        '팀',
-                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orange, fontSize: 17),
-                      ),
-                      const Spacer(),
-                      InkWell(
-                        onTap: () {
-                          addCheckList();
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(width: 1, color: Colors.orange),
-                              color: Colors.white),
-                          child: const Row(
-                            children: [
-                              FaIcon(
-                                FontAwesomeIcons.plus,
-                                color: Colors.orange,
-                                size: 13,
-                              ),
-                              SizedBox(
-                                width: 3,
-                              ),
-                              Text(
-                                '만들기',
-                                style: TextStyle(color: Colors.orange),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Consumer<ProviderCheckList>(
-                  builder: (context, value, child) => ListView.builder(
-                    itemCount: value.listModelCheckList.length,
-                    itemBuilder: (context, index) => ItemCheckList(value.listModelCheckList[index]),
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                  ),
-                )
               ],
             ),
           ),

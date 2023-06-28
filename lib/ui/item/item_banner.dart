@@ -33,7 +33,7 @@ class ItemMainBanner extends StatelessWidget {
                 SizedBox(
                   height: 10,
                 ),
-                Text('오늘 안전과 함께 오늘도 안전한 하루 되세요!'),
+                Text('오늘안전과 함께 오늘도 안전한 하루 되세요!'),
               ],
             ),
           )

@@ -114,7 +114,7 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
                             pause: const Duration(milliseconds: 1000),
                             repeatForever: true,
                             animatedTexts: [
-                              ColorizeAnimatedText('오늘 안전',
+                              ColorizeAnimatedText('오늘안전',
                                   textStyle: const CustomTextStyle.bigBlackBold(),
                                   colors: [
                                     Colors.yellow,

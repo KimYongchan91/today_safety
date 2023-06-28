@@ -33,7 +33,7 @@ class RouteNoticeNew extends StatefulWidget {
   final ModelSite modelSite;
   final ModelCheckList? modelCheckList;
 
-  const RouteNoticeNew({required this.modelSite, required this.modelCheckList, Key? key}) : super(key: key);
+  const RouteNoticeNew({required this.modelSite, this.modelCheckList, Key? key}) : super(key: key);
 
   @override
   State<RouteNoticeNew> createState() => _RouteNoticeNewState();
@@ -58,8 +58,6 @@ class _RouteNoticeNewState extends State<RouteNoticeNew> {
 
   //전송 관련
   ValueNotifier<bool> valueNotifierIsUploading = ValueNotifier(false);
-
-
 
   @override
   void initState() {
@@ -131,11 +129,13 @@ class _RouteNoticeNewState extends State<RouteNoticeNew> {
                       child: Row(
                         children: [
                           InkWell(
-                              onTap: (){
+                              onTap: () {
                                 Get.back();
                               },
                               child: const FaIcon(FontAwesomeIcons.angleLeft)),
-                          const SizedBox(width: 20,),
+                          const SizedBox(
+                            width: 20,
+                          ),
                           const Text(
                             '공지사항 작성하기',
                             style: CustomTextStyle.bigBlackBold(),
@@ -143,34 +143,30 @@ class _RouteNoticeNewState extends State<RouteNoticeNew> {
                         ],
                       ),
                     ),
-
                     Container(
                       width: Get.width,
-                      height: 0.5 ,
-                        color: Colors.black45,
+                      height: 0.5,
+                      color: Colors.black45,
                     ),
-
-
-
-
-
-
-SizedBox(height: 10,),
+                    SizedBox(
+                      height: 10,
+                    ),
                     Container(
                       width: Get.width,
-                      padding: EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                       color: Colors.white,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-
                           ///제목
                           const Text(
                             '제목',
                             style: CustomTextStyle.normalBlackBold(),
                           ),
 
-                          const SizedBox(height: 20,),
+                          const SizedBox(
+                            height: 20,
+                          ),
 
                           TextField(
                             maxLines: 1,
@@ -186,16 +182,15 @@ SizedBox(height: 10,),
                                 contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                                 hintText: '제목'),
                           ),
-
-
                         ],
                       ),
                     ),
-
-const SizedBox(height: 10,),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     Container(
                       width: Get.width,
-                      padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                       color: Colors.white,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -224,17 +219,15 @@ const SizedBox(height: 10,),
                                 contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                                 hintText: '내용을 입력하세요'),
                           ),
-
-
                         ],
                       ),
                     ),
-                    const SizedBox(height: 10,),
-
+                    const SizedBox(
+                      height: 10,
+                    ),
                     Container(
-
                       width: Get.width,
-                      padding: EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                       color: Colors.white,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -243,7 +236,9 @@ const SizedBox(height: 10,),
                             '대상 팀',
                             style: CustomTextStyle.normalBlackBold(),
                           ),
-                          const SizedBox(height: 40,),
+                          const SizedBox(
+                            height: 40,
+                          ),
 
                           ///대상 팀 리스트뷰
                           FutureBuilder(
@@ -259,11 +254,11 @@ const SizedBox(height: 10,),
                                   return ValueListenableBuilder(
                                       valueListenable: valueNotifierSelectedListModelCheckList,
                                       builder: (context, value, child) => Wrap(
-                                        children: [
-                                          ...listModelCheckListAll
-                                              .map((e) => _ItemSelectedModelCheckList(e, value.contains(e), onTap))
-                                        ],
-                                      ));
+                                            children: [
+                                              ...listModelCheckListAll
+                                                  .map((e) => _ItemSelectedModelCheckList(e, value.contains(e), onTap))
+                                            ],
+                                          ));
                                 } else {
                                   return const IconError();
                                 }
@@ -292,18 +287,10 @@ const SizedBox(height: 10,),
                         ],
                       ),
                     ),
-
-
-
                   ],
                 ),
               ),
             ),
-
-
-
-
-
 
             ///완료 버튼
             InkWell(
@@ -410,7 +397,7 @@ const SizedBox(height: 10,),
       DocumentReference documentReference =
           await FirebaseFirestore.instance.collection(keyNoticeS).add(modelNotice.toJson());
 
-      Get.toNamed('$keyRouteNoticeDetail/${documentReference.id}', arguments: {keyModelNotice: modelNotice});
+      Get.offNamed('$keyRouteNoticeDetail/${documentReference.id}', arguments: {keyModelNotice: modelNotice});
 
       showSnackBarOnRoute('공지사항을 게시했어요.');
 
@@ -521,7 +508,7 @@ class _ItemSelectedModelCheckList extends StatelessWidget {
         onTap(modelCheckList);
       },
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 5,vertical: 10),
+        margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
         decoration: BoxDecoration(
           color: isSelected ? Colors.orange : Colors.white,
           border: Border.all(
@@ -532,7 +519,10 @@ class _ItemSelectedModelCheckList extends StatelessWidget {
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-          child: Text(modelCheckList.name,style: TextStyle(color: isSelected ? Colors.white : Colors.black),),
+          child: Text(
+            modelCheckList.name,
+            style: TextStyle(color: isSelected ? Colors.white : Colors.black),
+          ),
         ),
       ),
     );

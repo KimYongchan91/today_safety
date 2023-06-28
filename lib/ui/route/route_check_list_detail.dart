@@ -13,8 +13,10 @@ import 'package:today_safety/const/model/model_check_list.dart';
 import 'package:today_safety/const/value/color.dart';
 import 'package:today_safety/const/value/value.dart';
 import 'package:today_safety/custom/custom_text_style.dart';
+import 'package:today_safety/service/provider/provider_notice.dart';
 import 'package:today_safety/service/provider/provider_user_check_history_on_check_list.dart';
 import 'package:today_safety/ui/item/item_check.dart';
+import 'package:today_safety/ui/item/item_notice_small.dart';
 import 'package:today_safety/ui/item/item_user_check_history_small.dart';
 import 'package:today_safety/ui/route/route_notice_new.dart';
 import 'package:today_safety/ui/route/route_qr_code_detail.dart';
@@ -40,6 +42,9 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
   late ProviderUserCheckHistoryOnCheckList providerUserCheckHistory;
   bool isViewCalendar = true;
   bool isViewChart = false;
+
+  //공지사항 관련
+  late ProviderNotice providerNotice;
 
   @override
   void initState() {
@@ -78,6 +83,7 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
 
   initByCheckList() {
     providerUserCheckHistory = ProviderUserCheckHistoryOnCheckList(checkListId: modelCheckList!.docId);
+    providerNotice = ProviderNotice(modelCheckList!.modelSite, modelCheckListTarget: modelCheckList!);
   }
 
   @override
@@ -107,6 +113,7 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
               return MultiProvider(
                 providers: [
                   ChangeNotifierProvider.value(value: providerUserCheckHistory),
+                  ChangeNotifierProvider.value(value: providerNotice),
                 ],
                 builder: (context, child) => SingleChildScrollView(
                   child: Column(
@@ -176,8 +183,7 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                               alignment: Alignment.topLeft,
                               child: Text(
                                 '인증 현황',
-                                style:
-                                    TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
+                                style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
                               ),
                             ),
 
@@ -402,6 +408,9 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                         ),
                       ),
 
+
+
+                      ///공지사항 영역
                       Container(
                         width: Get.width,
                         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
@@ -418,16 +427,14 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                                 ),
 
                                 Visibility(
-                                  visible:
-                                      MyApp.providerUser.modelUser?.id == modelCheckList!.modelSite.master,
+                                  visible: MyApp.providerUser.modelUser?.id == modelCheckList!.modelSite.master,
                                   child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
                                       primary: Colors.orange, // Background color
                                     ),
                                     onPressed: () {
                                       Get.to(() => RouteNoticeNew(
-                                          modelSite: modelCheckList!.modelSite,
-                                          modelCheckList: modelCheckList));
+                                          modelSite: modelCheckList!.modelSite, modelCheckList: modelCheckList));
                                     },
                                     child: const Text(
                                       '작성하기',
@@ -437,13 +444,21 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                                 ),
                               ],
                             ),
-
-                            // ItemNotice(),
                           ],
                         ),
                       ),
 
-                      ///체크 리스트
+                      ///공지사항 리스트
+                      Consumer<ProviderNotice>(
+                        builder: (context, value, child) => ListView.builder(
+                          itemCount: value.listModelNotice.length,
+                          itemBuilder: (context, index) => ItemNoticeSmall(value.listModelNotice[index]),
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                        ),
+                      ),
+
+                      ///인증 세부 항목
                       Container(
                         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                         color: Colors.white,

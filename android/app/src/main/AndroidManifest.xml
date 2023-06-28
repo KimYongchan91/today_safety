@@ -17,7 +17,7 @@
     <application
         android:name="${applicationName}"
         android:icon="@mipmap/app_logo_230626"
-        android:label="오늘 안전"
+        android:label="오늘안전"
         android:usesCleartextTraffic="true">
         <activity
             android:name=".MainActivity"
