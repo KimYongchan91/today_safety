@@ -207,7 +207,7 @@ class _RouteSiteDetailState extends State<RouteSiteDetail> with SingleTickerProv
 
                 ///팀영역
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                   decoration: const BoxDecoration(
                     color: Colors.white,
                     border: Border(
@@ -259,7 +259,7 @@ class _RouteSiteDetailState extends State<RouteSiteDetail> with SingleTickerProv
                 ///공지사항 영역
                 Container(
                   width: Get.width,
-                  padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                   color: Colors.white,
                   child: Column(
                     children: [

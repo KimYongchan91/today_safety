@@ -42,42 +42,23 @@ class ItemUserCheckHistorySmall extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
+        color: Colors.white,
         decoration: BoxDecoration(
           border: Border.all(
+            width: 0.2,
             color: Colors.grey,
           ),
         ),
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    modelUserCheckHistory.modelUser.name,
-                    style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black54, fontSize: 17),
-                  ),
-                  const Spacer(),
-                  Text(
-                    millisecondGapFormatted,
-                    style: const CustomTextStyle.normalRedBold(),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                ],
-              ),
 
-              ///인증 상태, 날짜
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ///인증 상태
+
                   Builder(
                     builder: (context) {
                       String text;
@@ -107,15 +88,34 @@ class ItemUserCheckHistorySmall extends StatelessWidget {
 
                       return Text(
                         text,
-                        style: TextStyle(color: color, fontWeight: FontWeight.bold),
+                        style: TextStyle(color: color, fontWeight: FontWeight.bold,fontSize: 18),
                       );
                     },
                   ),
 
-                  ///날짜
-                  /* Text('${DateFormat('yyyy-MM-dd HH:mm:ss').format(modelUserCheckHistory.date.toDate())}'),*/
+                  const SizedBox(
+                    width: 10,
+                  ),
+
+
+                  Expanded(
+                    child: Text(
+                      modelUserCheckHistory.modelUser.name,
+                      style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black54, fontSize: 14),
+                    ),
+                  ),
+                  const Spacer(),
+                  Text(
+                    millisecondGapFormatted,
+                    style: const CustomTextStyle.normalRedBold(),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
                 ],
               ),
+
+
 
               /*  SizedBox(
                 height: 10,
