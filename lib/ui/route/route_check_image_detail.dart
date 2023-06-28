@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:photo_view/photo_view.dart';
@@ -18,7 +19,8 @@ class RouteCheckImageDetail extends StatefulWidget {
   final ModelUser? modelUser;
   final ModelDevice? modelDevice;
 
-  const RouteCheckImageDetail(this.listModelCheckImage, {this.index = 0, this.modelUser,this.modelDevice, Key? key})
+  const RouteCheckImageDetail(this.listModelCheckImage,
+      {this.index = 0, this.modelUser, this.modelDevice, Key? key})
       : super(key: key);
 
   @override
@@ -65,57 +67,79 @@ class _RouteCheckImageDetailState extends State<RouteCheckImageDetail> {
           ),
 
           ///현재 인증 사진 정보
-          Positioned(
-            left: 40,
-            bottom: 100,
-            child: ValueListenableBuilder(
-              valueListenable: valueNotifierIndexCurrentImage,
-              builder: (context, value, child) => Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ///체크 항목 순서
-                  Text(
-                    '${value+1}/${widget.listModelCheckImage.length}',
-                    style: const CustomTextStyle.normalRedErrorMessage(),
-                  ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 40),
+              child: ValueListenableBuilder(
+                valueListenable: valueNotifierIndexCurrentImage,
+                builder: (context, value, child) => Container(
+                  width: Get.width * 0.8,
+                  decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.3), borderRadius: BorderRadius.circular(12)),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
 
-                  ///체크 항목 이름
-                  Text(
-                    widget.listModelCheckImage[value].name,
-                    style: const CustomTextStyle.normalRedErrorMessage(),
-                  ),
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
 
-                  ///촬영 시간
-                  Text(
-                    '촬영 시간 : ${DateFormat('yyyy-MM-dd HH:mm:ss').format(widget.listModelCheckImage[value].date.toDate())}',
-                    style: const CustomTextStyle.normalRedErrorMessage(),
-                  ),
 
-                  ///회원 정보
-                  ///null이면 제거
-                  widget.modelUser != null
-                      ? Text(
-                    '근무자 : ${widget.modelUser!.name}',
-                    style: const CustomTextStyle.normalRedErrorMessage(),
-                  )
-                      : Container(),
+                            ///체크 항목 이름
+                            Text(
+                              widget.listModelCheckImage[value].name,
+                              style: const CustomTextStyle.normalWhite(),
+                            ),
 
-                  ///기기 모델명 정보
-                  ///null이면 제거
-                  widget.modelDevice != null
-                      ? Text(
-                          '촬영 기기 : ${widget.modelDevice!.model}',
-                          style: const CustomTextStyle.normalRedErrorMessage(),
+                            ///체크 항목 순서
+                            Text(
+                              '${value + 1}/${widget.listModelCheckImage.length}',
+                              style: const CustomTextStyle.normalWhite(),
+                            ),
+                          ],
+                        ),
+
+                        ///회원 정보
+                        ///null이면 제거
+                        widget.modelUser != null
+                            ? Text(
+                          '${widget.modelUser!.name}',
+                          style: const CustomTextStyle.normalWhite(),
                         )
-                      : Container(),
+                            : Container(),
 
-                  ///전면, 후면 카메라인지
-                  Text(
-                    '카메라 방향 : ${widget.listModelCheckImage[value].cameraDirection == keyBack? '후면' : '전면'}',
-                    style: const CustomTextStyle.normalRedErrorMessage(),
-                  )
+                        SizedBox(height: 10,),
 
-                ],
+                        ///촬영 시간
+                        Text(
+                          '촬영 시간 : ${DateFormat('yyyy-MM-dd HH:mm:ss').format(widget.listModelCheckImage[value].date.toDate())}',
+                          style: const CustomTextStyle.normalWhite(),
+                        ),
+
+
+                        ///기기 모델명 정보
+                        ///null이면 제거
+                        widget.modelDevice != null
+                            ? Text(
+                                '촬영 기기 : ${widget.modelDevice!.model}',
+                                style: const CustomTextStyle.normalWhite(),
+                              )
+                            : Container(),
+
+                        ///전면, 후면 카메라인지
+                        Text(
+                          '카메라 방향 : ${widget.listModelCheckImage[value].cameraDirection == keyBack ? '후면' : '전면'}',
+                          style: const CustomTextStyle.normalWhite(),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ),
           )

@@ -7,7 +7,7 @@ import 'package:today_safety/const/value/fuc.dart';
 import 'package:today_safety/const/value/fuc_preset.dart';
 import 'package:today_safety/custom/custom_text_style.dart';
 
-enum ItemCheckType { add, delete,none }
+enum ItemCheckType { add, delete, none }
 
 class ItemCheck extends StatelessWidget {
   final ModelCheck modelCheck;
@@ -15,7 +15,8 @@ class ItemCheck extends StatelessWidget {
 
   final void Function()? onTap;
 
-  const ItemCheck({required this.modelCheck, required this.itemCheckType, this.onTap, Key? key}) : super(key: key);
+  const ItemCheck({required this.modelCheck, required this.itemCheckType, this.onTap, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,12 +33,13 @@ class ItemCheck extends StatelessWidget {
         child: Row(
           children: [
             Container(
-                padding: const EdgeInsets.all(10),
-                decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xffbbd6fd)),
-                child: AspectRatio(
-                  aspectRatio: 1,
-                  child: Image.asset(getPathCheckImage(modelCheck)),
-                )),
+              padding: const EdgeInsets.all(10),
+              decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xffbbd6fd)),
+              child: AspectRatio(
+                aspectRatio: 1,
+                child: Image.asset(getPathCheckImage(modelCheck)),
+              ),
+            ),
             const SizedBox(
               width: 20,
             ),

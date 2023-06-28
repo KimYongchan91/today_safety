@@ -11,7 +11,9 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:syncfusion_flutter_barcodes/barcodes.dart';
+import 'package:today_safety/const/model/model_check.dart';
 import 'package:today_safety/const/model/model_check_image.dart';
+import 'package:today_safety/const/value/fuc.dart';
 import 'package:today_safety/const/value/key.dart';
 import 'package:today_safety/const/value/value.dart';
 import 'package:today_safety/custom/custom_text_style.dart';
@@ -25,6 +27,7 @@ import '../../const/value/router.dart';
 import '../../my_app.dart';
 import '../../service/util/util_app_link.dart';
 import '../../service/util/util_user_check_history.dart';
+import '../item/item_check.dart';
 
 class RouteUserCheckHistoryDetail extends StatefulWidget {
   const RouteUserCheckHistoryDetail({Key? key}) : super(key: key);
@@ -422,16 +425,53 @@ class _ItemCheckImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ModelCheck modelCheck = getModelCheck(modelCheckImage.fac ?? '');
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text('${modelCheckImage.name}'),
-        Text('${modelCheckImage.cameraDirection}'),
-        Text('${modelCheckImage.date}'),
-        CachedNetworkImage(
-          imageUrl: modelCheckImage.urlImage,
-          fit: BoxFit.fitWidth,
-        )
+        ///인증 항목 정보
+        Row(
+          children: [
+            Container(
+              width: 50,
+              height: 50,
+              padding: const EdgeInsets.all(10),
+              decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xffbbd6fd)),
+              child: AspectRatio(
+                aspectRatio: 1,
+                child: Image.asset(
+                  getPathCheckImage(modelCheck),
+                  width: 50,
+                  height: 50,
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 20,
+            ),
+            Text(
+              modelCheck.name,
+              style: const TextStyle(color: Colors.black54, fontSize: 17, fontWeight: FontWeight.w700),
+            ),
+          ],
+        ),
+
+        ///인증 날짜
+        Text('${DateFormat('yyyy-MM-dd hh:mm:ss').format(modelCheckImage.date.toDate())} 촬영'),
+
+        ///인증 사진
+        AspectRatio(
+          aspectRatio: 1.618 / 1,
+          child: CachedNetworkImage(
+            imageUrl: modelCheckImage.urlImage,
+            fit: BoxFit.cover,
+          ),
+        ),
+
+        ///카메라 방향
+        ///필요 없을 듯
+        //Text('${modelCheckImage.cameraDirection}'),
       ],
     );
   }
