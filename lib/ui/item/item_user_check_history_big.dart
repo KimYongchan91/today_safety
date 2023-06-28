@@ -29,8 +29,7 @@ class ItemUserCheckHistoryBig extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int millisecondGap =
-        DateTime.now().millisecondsSinceEpoch - modelUserCheckHistory.date.millisecondsSinceEpoch;
+    int millisecondGap = DateTime.now().millisecondsSinceEpoch - modelUserCheckHistory.date.millisecondsSinceEpoch;
     String millisecondGapFormatted;
     if (millisecondGap < millisecondMinute) {
       millisecondGapFormatted = "방금";
@@ -49,180 +48,115 @@ class ItemUserCheckHistoryBig extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             ///인증서 영역
-            InkWell(
-              onTap: onTap,
-              child: AspectRatio(
-                aspectRatio: aspectRatioMainItemUserCheckHistoryBig1,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                    ),
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: Stack(
-                            children: [
-                              ///회사 현장 이미지
-                              Positioned.fill(
-                                child: CachedNetworkImage(
-                                  imageUrl: modelUserCheckHistory.modelCheckList.modelSite.urlSiteImage,
-                                  fit: BoxFit.cover,
-                                ),
+            Card(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              child: InkWell(
+                onTap: onTap,
+                child: AspectRatio(
+                  aspectRatio: aspectRatioMainItemUserCheckHistoryBig1,
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: Stack(
+                          children: [
+                            ///회사 현장 이미지
+                            Positioned.fill(
+                              child: CachedNetworkImage(
+                                imageUrl: modelUserCheckHistory.modelCheckList.modelSite.urlSiteImage,
+                                fit: BoxFit.cover,
                               ),
+                            ),
 
-                              ///회사 로고 + 회사명 + 안전 점검 인증
-                              Positioned(
-                                bottom: 10,
-                                left: 10,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(12),
-                                      color: Colors.black.withOpacity(0.5)),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius: BorderRadius.circular(12),
-                                          child: CachedNetworkImage(
-                                            imageUrl:
-                                                modelUserCheckHistory.modelCheckList.modelSite.urlLogoImage,
-                                            width: 50,
-                                            height: 50,
-                                            fit: BoxFit.cover,
-                                          ),
+                            ///회사 로고 + 회사명 + 안전 점검 인증
+                            Positioned(
+                              bottom: 0,
+                              child: Container(
+                                width: Get.width,
+                                decoration: BoxDecoration(color: Colors.black.withOpacity(0.5)),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(12),
+                                        child: CachedNetworkImage(
+                                          imageUrl: modelUserCheckHistory.modelCheckList.modelSite.urlLogoImage,
+                                          width: 50,
+                                          height: 50,
+                                          fit: BoxFit.cover,
                                         ),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        Text(
-                                          '${modelUserCheckHistory.modelCheckList.modelSite.name}\n안전 점검 인증',
-                                          style: const CustomTextStyle.normalWhiteBold(),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-
-                              ///확인 완료 or 승인 대기 중
-                              ///확인 완료면 초록색
-                              ///승인 대기 중이면 주황색
-                              Positioned(
-                                top: 0,
-                                right: 0,
-                                child: InkWell(
-                                  onTap: () {
-                                    Get.dialog(const DialogHelpUserCheckHistoryState());
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(10),
-                                    child: Container(
-                                      width: 20,
-                                      height: 20,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: modelUserCheckHistory.state == keyOn
-                                            ? Colors.green
-                                            : modelUserCheckHistory.state == keyPend
-                                                ? Colors.orange
-                                                : Colors.red,
                                       ),
-                                    ),
+                                      const SizedBox(
+                                        width: 20,
+                                      ),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            '${modelUserCheckHistory.modelCheckList.modelSite.name}',
+                                            style: const CustomTextStyle.normalWhiteBold().copyWith(fontSize: 20),
+                                          ),
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                          const Text(
+                                            '안전 점검 인증',
+                                            style: CustomTextStyle.normalWhiteBold(),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                        Container(
-                          height: 60,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Text(
-                                modelUserCheckHistory.modelCheckList.name,
-                                style: const CustomTextStyle.bigBlackBold(),
-                              ),
-                              Text(
-                                DateFormat('yyyy-MM-dd').format(modelUserCheckHistory.date.toDate()),
-                                style: const TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    )
-
-                    /*ExpandablePanel(
-                      header: Row(
-                        children: [
-                          Text(modelUserCheckHistory.modelUser.name),
-                          const Spacer(),
-                          Text(
-                            millisecondGapFormatted,
-                            style: const CustomTextStyle.normalRedBold(),
-                          )
-                        ],
-                      ), //todo kyc, 인증 시간 추가
-                      collapsed: Container(),
-                      expanded: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                              '인증 날짜 : ${DateFormat('yyyy-MM-dd HH:mm:ss').format(modelUserCheckHistory.date.toDate())}'),
-                          InkWell(
-                            onTap: onTapLocation,
-                            child: Row(
-                              children: [
-                                Text(
-                                  "인증 위치 :${modelUserCheckHistory.modelLocation.si} ${modelUserCheckHistory.modelLocation.gu} "
-                                  "${modelUserCheckHistory.modelLocation.dong}",
-                                  style: const CustomTextStyle.normalBlue(),
-                                ),
-                                const Icon(Icons.map)
-                              ],
-                            ),
-                          ),
-                          Text("기기 정보 : ${modelUserCheckHistory.modelDevice.toJson().toString()}"),
-
-                          ///인증 사진 가로 리스트 뷰
-                          SizedBox(
-                            height: sizeCheckImage,
-                            child: ListView.builder(
-                              itemCount: modelUserCheckHistory.listModelCheckImage.length,
-                              itemBuilder: (context, index) => InkWell(
+                      ),
+                      SizedBox(
+                        height: 60,
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              child: InkWell(
                                 onTap: () {
-                                  Get.to(
-                                    () => RouteCheckImageDetail(
-                                      modelUserCheckHistory.listModelCheckImage,
-                                      index: index,
-                                      modelUser: modelUserCheckHistory.modelUser,
-                                      modelDevice: modelUserCheckHistory.modelDevice,
-                                    ),
-                                  );
+                                  Get.dialog(const DialogHelpUserCheckHistoryState());
                                 },
-                                child: Hero(
-                                  tag: modelUserCheckHistory.listModelCheckImage[index].urlImage,
-                                  child: CachedNetworkImage(
-                                    imageUrl: modelUserCheckHistory.listModelCheckImage[index].urlImage,
-                                    width: sizeCheckImage,
-                                    height: sizeCheckImage,
-                                    fit: BoxFit.cover,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Container(
+                                    width: 20,
+                                    height: 20,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: modelUserCheckHistory.state == keyOn
+                                          ? Colors.greenAccent
+                                          : modelUserCheckHistory.state == keyPend
+                                              ? Colors.orangeAccent
+                                              : Colors.redAccent,
+                                    ),
                                   ),
                                 ),
                               ),
-                              scrollDirection: Axis.horizontal,
                             ),
-                          )
-                        ],
-                      ), //todo kyc, 인증 주소 등 추가
-                    )*/
-                    ,
+                            Text(
+                              modelUserCheckHistory.modelCheckList.name,
+                              style: const CustomTextStyle.bigBlackBold(),
+                            ),
+                            const Spacer(),
+                            Text(
+                              DateFormat('yyyy-MM-dd').format(modelUserCheckHistory.date.toDate()),
+                              style: const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(
+                              width: 20,
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
                   ),
                 ),
               ),
