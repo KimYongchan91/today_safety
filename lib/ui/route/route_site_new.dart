@@ -14,6 +14,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kakao_map_plugin/kakao_map_plugin.dart';
 import 'package:kpostal/kpostal.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:path/path.dart' as pt;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:today_safety/const/model/model_location.dart';
@@ -179,8 +180,8 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
                                           },
                                           child: Container(
                                               padding: const EdgeInsets.all(5),
-                                              decoration: const BoxDecoration(
-                                                  shape: BoxShape.circle, color: Color(0x55000000)),
+                                              decoration:
+                                                  const BoxDecoration(shape: BoxShape.circle, color: Color(0x55000000)),
                                               child: const Icon(
                                                 Icons.close,
                                                 color: Colors.white,
@@ -212,8 +213,7 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
                                             ),
                                             Text(
                                               '로고 이미지',
-                                              style:
-                                                  TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
+                                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
                                             )
                                           ],
                                         ),
@@ -271,8 +271,8 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
                                           },
                                           child: Container(
                                               padding: const EdgeInsets.all(5),
-                                              decoration: const BoxDecoration(
-                                                  shape: BoxShape.circle, color: Color(0x55000000)),
+                                              decoration:
+                                                  const BoxDecoration(shape: BoxShape.circle, color: Color(0x55000000)),
                                               child: const Icon(
                                                 Icons.close,
                                                 color: Colors.white,
@@ -304,8 +304,7 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
                                             ),
                                             Text(
                                               '현장 이미지를 추가해 주세요.',
-                                              style:
-                                                  TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
+                                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
                                             )
                                           ],
                                         ),
@@ -360,8 +359,7 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
                               margin: const EdgeInsets.symmetric(horizontal: 20),
                               padding: const EdgeInsets.all(15),
                               width: MediaQuery.of(context).size.width,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5), color: colorBackground),
+                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: colorBackground),
                               child: modelSiteNew.modelLocation.addressLoad != null
                                   ? Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                                       const FaIcon(
@@ -452,7 +450,7 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
                           child: ValueListenableBuilder(
                             valueListenable: valueNotifierUpload,
                             builder: (context, value, child) => value
-                                ? const CircularProgressIndicator()
+                                ? LoadingAnimationWidget.inkDrop(color: Colors.white, size: 24)
                                 : const Padding(
                                     padding: EdgeInsets.only(top: 2),
                                     child: Text(
@@ -598,8 +596,7 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
         'Authorization': 'KakaoAK de2c9d30f737be6f897916c21f92c156'
       };
 
-      String url =
-          'https://dapi.kakao.com/v2/local/search/address.json?analyze_type=similar&page=1&size=20&query=';
+      String url = 'https://dapi.kakao.com/v2/local/search/address.json?analyze_type=similar&page=1&size=20&query=';
       String query = result.address;
 
       var response = await http.get(Uri.parse(Uri.encodeFull(url + query)), headers: requestHeaders);
@@ -728,8 +725,7 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
         Map<String, dynamic> mapUrlImage = {};
 
         FirebaseStorage.instance
-            .ref(
-                "$keyImages/$keySites/${documentReference.id}/${pt.basename(File(modelSiteNew.urlLogoImage).path)}")
+            .ref("$keyImages/$keySites/${documentReference.id}/${pt.basename(File(modelSiteNew.urlLogoImage).path)}")
             .putFile(File(modelSiteNew.urlLogoImage))
             .then((uploadTaskLogo) {
           uploadTaskLogo.ref.getDownloadURL().then((downloadURLLogo) {
@@ -739,8 +735,7 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
         });
 
         FirebaseStorage.instance
-            .ref(
-                "$keyImages/$keySites/${documentReference.id}/${pt.basename(File(modelSiteNew.urlSiteImage).path)}")
+            .ref("$keyImages/$keySites/${documentReference.id}/${pt.basename(File(modelSiteNew.urlSiteImage).path)}")
             .putFile(File(modelSiteNew.urlSiteImage))
             .then((uploadTaskSite) {
           uploadTaskSite.ref.getDownloadURL().then((downloadURLSite) {

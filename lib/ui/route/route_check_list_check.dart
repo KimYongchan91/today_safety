@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:today_safety/const/model/model_check_list.dart';
 import 'package:today_safety/const/value/color.dart';
@@ -62,8 +63,8 @@ class _RouteCheckListCheckState extends State<RouteCheckListCheck> {
           future: completerGetModelCheckList.future,
           builder: (context, snapshot) {
             if (snapshot.hasData == false) {
-              return const Center(
-                child: CircularProgressIndicator(),
+              return  Center(
+                child: LoadingAnimationWidget.inkDrop(color: Colors.green, size: 32),
               );
             } else if (snapshot.data == true) {
               if (modelCheckList == null) {

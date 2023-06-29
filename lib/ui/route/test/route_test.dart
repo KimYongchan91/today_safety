@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:today_safety/const/model/model_user.dart';
-import 'package:today_safety/const/model/model_user_check_history.dart';
 import 'package:today_safety/const/value/key.dart';
 
 import '../../../const/value/value.dart';
@@ -152,6 +151,7 @@ class _RouteTestState extends State<RouteTest> {
   sendTestFcm() async {
     List<String> listUserIdTarget = [
       'yczine@naver.com&lt=kakao',
+      'yczinetest@naver.com&lt=naver',
     ];
 
     Set<String> setToken = {};

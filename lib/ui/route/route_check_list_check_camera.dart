@@ -188,8 +188,8 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
               future: completerInit.future,
               builder: (context, snapshot) {
                 if (snapshot.hasData == false) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
+                  return  Center(
+                    child: LoadingAnimationWidget.inkDrop(color: Colors.green, size: 32),
                   );
                 } else if (snapshot.data == false) {
                   return const Center(

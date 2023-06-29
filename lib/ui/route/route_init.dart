@@ -8,6 +8,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:kakao_map_plugin/kakao_map_plugin.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:today_safety/const/value/router.dart';
 import 'package:today_safety/service/util/util_snackbar.dart';
 import 'package:uni_links/uni_links.dart';
@@ -162,16 +163,16 @@ class _RouteInitState extends State<RouteInit> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return  Scaffold(
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('로딩 중'),
-            SizedBox(
+            const Text('로딩 중'),
+            const SizedBox(
               height: 20,
             ),
-            CircularProgressIndicator(),
+            LoadingAnimationWidget.inkDrop(color: Colors.green, size: 32),
           ],
         ),
       ),

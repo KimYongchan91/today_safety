@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:kakao_map_plugin/kakao_map_plugin.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 import 'package:today_safety/const/model/model_check.dart';
 import 'package:today_safety/const/model/model_check_list.dart';
@@ -321,7 +322,7 @@ class _RouteCheckListNewState extends State<RouteCheckListNew> {
                             child: ValueListenableBuilder(
                               valueListenable: valueNotifierUpload,
                               builder: (context, value, child) => value
-                                  ? const CircularProgressIndicator()
+                                  ?  LoadingAnimationWidget.inkDrop(color: Colors.green, size: 24)
                                   : const Padding(
                                       padding: EdgeInsets.only(top: 2),
                                       child: Text(

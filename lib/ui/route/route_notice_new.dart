@@ -307,7 +307,7 @@ class _RouteNoticeNewState extends State<RouteNoticeNew> {
                   child: ValueListenableBuilder(
                     valueListenable: valueNotifierIsUploading,
                     builder: (context, value, child) => value
-                        ? const CircularProgressIndicator()
+                        ?  LoadingAnimationWidget.inkDrop(color: Colors.green, size: 24)
                         : const Padding(
                             padding: EdgeInsets.only(top: 2),
                             child: Text(
