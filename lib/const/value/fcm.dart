@@ -23,5 +23,5 @@ const AndroidNotificationChannel channelCheckResult = AndroidNotificationChannel
 
 //로컬 노티 세팅값
 const InitializationSettings initializationSettings = InitializationSettings(
-  android: AndroidInitializationSettings("app_logo_128"),
+  android: AndroidInitializationSettings("app_logo_big_128"),
 );

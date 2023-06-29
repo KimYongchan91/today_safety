@@ -54,7 +54,7 @@ class _ScreenLoginLoginState extends State<ScreenLoginLogin> {
             ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: Image.asset(
-                  'assets/images/logo/appIcon.png',
+                  'assets/images/logo/app_logo_big_720.png',
                   width: 150,
                   height: 150,
                 )),
@@ -224,7 +224,7 @@ class _ScreenLoginLoginState extends State<ScreenLoginLogin> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       ValueListenableBuilder(
-                        valueListenable: valueNotifierIsProcessingLoginWithNaver,
+                        valueListenable: valueNotifierIsProcessingLoginWithApple,
                         builder: (context, value, child) => value
 
                             ///로딩 중 아이콘

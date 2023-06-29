@@ -105,7 +105,7 @@ class _RouteQrCodeDetailState extends State<RouteQrCodeDetail> {
                                     child: Row(
                                       children: [
                                         Image.asset(
-                                          'assets/images/logo/appIcon.png',
+                                          'assets/images/logo/app_logo_big_720.png',
                                           width: 25,
                                           height: 25,
                                         ),

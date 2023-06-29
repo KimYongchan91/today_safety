@@ -2,9 +2,11 @@ import 'dart:math';
 
 import 'package:chaleno/chaleno.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:today_safety/const/model/model_user.dart';
 import 'package:today_safety/const/model/model_user_check_history.dart';
 import 'package:today_safety/const/value/key.dart';
 
@@ -41,6 +43,10 @@ class _RouteTestState extends State<RouteTest> {
               onPressed: goToRouteUnknown,
               child: const Text('Unknown 페이지로!'),
             ),
+            ElevatedButton(
+              onPressed: sendTestFcm,
+              child: const Text('test fcm 발송'),
+            ),
           ],
         ),
       ),
@@ -70,8 +76,8 @@ class _RouteTestState extends State<RouteTest> {
 
     for (int i = 1; i < countTargetDay; i++) {
       Map<String, dynamic> json = {...jsonOld};
-      DateTime datetimeNew = DateTime.fromMillisecondsSinceEpoch(
-          jsonOld[keyDate].toDate().millisecondsSinceEpoch - i * millisecondDay);
+      DateTime datetimeNew =
+          DateTime.fromMillisecondsSinceEpoch(jsonOld[keyDate].toDate().millisecondsSinceEpoch - i * millisecondDay);
       final String displayDateToday = DateFormat('yyyy-MM-dd').format(datetimeNew);
 
       json[keyDate] = Timestamp.fromDate(datetimeNew);
@@ -117,8 +123,7 @@ class _RouteTestState extends State<RouteTest> {
       try {
         String? href = element.href;
         String? date = regExpDate.stringMatch(innerHtmlFormatted)?.replaceAll('[', '').replaceAll(',', '');
-        String? region =
-            regExpRegion.stringMatch(innerHtmlFormatted)?.replaceAll(']', '').replaceAll(',', '').trim();
+        String? region = regExpRegion.stringMatch(innerHtmlFormatted)?.replaceAll(']', '').replaceAll(',', '').trim();
         String? title = innerHtmlFormatted.substring(innerHtmlFormatted.indexOf(']') + 1).trim();
 
         if (href == null || date == null || region == null) {
@@ -143,7 +148,35 @@ class _RouteTestState extends State<RouteTest> {
       }
     });
   }
-  goToRouteUnknown(){
+
+  sendTestFcm() async {
+    List<String> listUserIdTarget = [
+      'yczine@naver.com&lt=kakao',
+    ];
+
+    Set<String> setToken = {};
+
+    await FirebaseFirestore.instance.collection(keyUserS).where(keyId, whereIn: listUserIdTarget).get().then((value) {
+      value.docs.forEach((element) {
+        ModelUser modelUser = ModelUser.fromJson(element.data(), element.id);
+        setToken.addAll([...modelUser.listToken]);
+      });
+    });
+
+    //전송 시작
+    HttpsCallableResult<dynamic> result = await FirebaseFunctions.instanceFor(region: "asia-northeast3")
+        .httpsCallable('sendFcmTest')
+        .call(<String, dynamic>{
+      'tokens': setToken.toList(),
+      'test': {
+        keyTitle : '테스트다' ,
+        keyBody : DateFormat('HH:mm:ss 발송함').format(DateTime.now()),
+      },
+    });
+
+  }
+
+  goToRouteUnknown() {
     Get.toNamed('sfdfds');
   }
 }

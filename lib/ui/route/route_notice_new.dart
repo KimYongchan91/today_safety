@@ -470,11 +470,19 @@ class _RouteNoticeNewState extends State<RouteNoticeNew> {
          notice : {...공지사항}
        }*/
 
-      Map<String, dynamic> dataNotice = modelNotice.toJson(isForServerForm: true);
-      dataNotice[keyDocId] = documentReference.id;
+      //Map<String, dynamic> dataNotice = modelNotice.toJson(isForServerForm: true);
+      Map<String, dynamic> dataNotice = {
+        keySite : {
+          keyName : modelNotice.modelSite.name,
+        },
+        keyTitle : modelNotice.title,
+        keyBody : modelNotice.body,
+        keyDocId : documentReference.id,
+      };
+      //dataNotice[keyDocId] = documentReference.id;
       //임시로 check_list 값을 없앰.
       //timestamp data type 문제
-      dataNotice.remove(keyCheckList);
+      //dataNotice.remove(keyCheckList);
       MyApp.logger.d("요청 데이터 : ${dataNotice.toString()}");
 
       //전송 시작

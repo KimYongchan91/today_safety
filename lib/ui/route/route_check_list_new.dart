@@ -487,7 +487,7 @@ class _RouteCheckListNewState extends State<RouteCheckListNew> {
       DocumentReference documentReference =
           await FirebaseFirestore.instance.collection(keyCheckListS).add(modelCheckList.toJson());
       Get.back();
-      showSnackBarOnRoute('체크리스트를 만들었어요.');
+      showSnackBarOnRoute('근무팀을 만들었어요.');
     } catch (e) {
       MyApp.logger.wtf('서버에 전송 실패 : ${e.toString()}');
       showSnackBarOnRoute(messageServerError);

@@ -34,7 +34,7 @@ class WidgetAppBar extends StatelessWidget {
                   color: Colors.yellow.shade700,
                   borderRadius: BorderRadius.circular(5),
                 ),
-                child:Image.asset('assets/images/logo/appIcon.png',width: 40,height: 40,),
+                child:Image.asset('assets/images/logo/app_logo_big_128.png',width: 40,height: 40,),
               ),
             ),
           ),
