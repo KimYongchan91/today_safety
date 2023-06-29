@@ -5,6 +5,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart' as ks;
@@ -81,7 +82,7 @@ class ProviderUser extends ChangeNotifier {
         getUserDataFromEasyLogin = getUserDataFromKakao;
         break;
       case LoginType.naver:
-        getUserDataFromEasyLogin = getUserDataFromKakao;
+        getUserDataFromEasyLogin = getUserDataFromNaver;
         break;
       case LoginType.google:
         getUserDataFromEasyLogin = getUserDataFromGoogle;
@@ -116,10 +117,16 @@ class ProviderUser extends ChangeNotifier {
         //유저가 존재 하지 않음.
         //회원 가입 진행
         //이름을 물어보자.
-        var name = await Get.dialog(
-          DialogInputName(modelUserEasyLogin.email),
-          barrierDismissible: false,
-        );
+        String? name;
+        if (modelUserEasyLogin.name != null) {
+          name = modelUserEasyLogin.name;
+        } else {
+          name = await Get.dialog(
+            DialogInputName(modelUserEasyLogin.email),
+            barrierDismissible: false,
+          );
+        }
+
         if (name == null) {
           showSnackBarOnRoute('이름이 입력되지 않았어요.');
           return;
@@ -322,6 +329,26 @@ class ProviderUser extends ChangeNotifier {
     }
   }
 
+  ///네이버로부터 정보 받아오기
+  Future<ModelUserEasyLogin?> getUserDataFromNaver() async {
+    try {
+      NaverLoginResult naverLoginResult = await FlutterNaverLogin.logIn();
+
+      //NaverAccessToken naverAccessToken = await FlutterNaverLogin.currentAccessToken;
+      MyApp.logger.d("네이버 로그인 결과\n"
+          "이름 : ${naverLoginResult.account.name}");
+
+      return ModelUserEasyLogin(
+        loginType: keyNaver,
+        email: naverLoginResult.account.email,
+        name: naverLoginResult.account.name,
+      );
+    } catch (e) {
+      MyApp.logger.wtf("네이버 로그인 실패 : ${e.toString()}");
+      return null;
+    }
+  }
+
   ///구글로부터 정보 받아오기
   Future<ModelUserEasyLogin?> getUserDataFromGoogle() async {
     GoogleSignIn googleSignIn = GoogleSignIn(
@@ -509,7 +536,6 @@ class ProviderUser extends ChangeNotifier {
 
       //최근에 내가 인증한 site를 조회
       try {
-
         QuerySnapshot querySnapshot = await FirebaseFirestore.instance
             .collection(keyUserCheckHistories)
             .where('$keyUser.$keyId', isEqualTo: modelUser!.id)
@@ -528,8 +554,6 @@ class ProviderUser extends ChangeNotifier {
               .limit(1)
               .get();
 
-
-
           if (querySnapshot.docs.isEmpty) {
             throw Exception("querySnapshot.docs.isEmpty");
           }
@@ -540,7 +564,6 @@ class ProviderUser extends ChangeNotifier {
           ModelSite modelSite = ModelSite.fromJson(json, json[keyDocId] ?? '');
           siteDocIdListenNotice = modelSite.docId;
         }
-
 
         //MyApp.logger.d("modelSite ${modelSite.toJson().toString()}");
         //MyApp.logger.d("siteDocIdListenNotice $siteDocIdListenNotice");
@@ -610,6 +633,14 @@ class ProviderUser extends ChangeNotifier {
       }
     } on Exception catch (e) {
       MyApp.logger.wtf("카카오 로그아웃 실패 : ${e.toString()}");
+    }
+
+    //네이버 로그아웃
+    try {
+      NaverAccountResult naverAccountResult = await FlutterNaverLogin.currentAccount();
+      FlutterNaverLogin.logOut();
+    } on Exception catch (e) {
+      MyApp.logger.wtf("네이버 로그아웃 실패 : ${e.toString()}");
     }
 
     subscriptionSiteMy?.cancel();

@@ -472,7 +472,7 @@ class _ScreenMainInfoState extends State<ScreenMainInfo> with SingleTickerProvid
       }
       return value;
     });
-    //MyApp.logger.d('조회된 날씨 정보 : ${modelWeather.toString()}');
+    MyApp.logger.d('조회된 날씨 정보 : ${modelWeather.toString()}');
 
     //MyApp.logger.d("기상청에서 날씨 정보 받아오는 데 걸린 시간 : ${DateTime.now().millisecondsSinceEpoch-time}ms");
     //time = DateTime.now().millisecondsSinceEpoch;
