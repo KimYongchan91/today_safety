@@ -17,6 +17,9 @@ class _ScreenLoginLoginState extends State<ScreenLoginLogin> {
   ValueNotifier<bool> valueNotifierIsProcessingLoginWithKakao = ValueNotifier(false);
   ValueNotifier<bool> valueNotifierIsProcessingLoginWithNaver = ValueNotifier(false);
   ValueNotifier<bool> valueNotifierIsProcessingLoginWithGoogle = ValueNotifier(false);
+  ValueNotifier<bool> valueNotifierIsProcessingLoginWithApple = ValueNotifier(false);
+
+  late List<ValueNotifier<bool>> listValueNotifierIsProcessingLogin;
 
   BoxDecoration boxDecoration = BoxDecoration(
     borderRadius: BorderRadius.circular(10),
@@ -27,6 +30,18 @@ class _ScreenLoginLoginState extends State<ScreenLoginLogin> {
     color: Colors.white,
     border: Border.all(width: 2, color: Colors.black45),
   );
+
+  @override
+  void initState() {
+    listValueNotifierIsProcessingLogin = [
+      valueNotifierIsProcessingLoginWithKakao,
+      valueNotifierIsProcessingLoginWithNaver,
+      valueNotifierIsProcessingLoginWithGoogle,
+      valueNotifierIsProcessingLoginWithApple,
+    ];
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,9 +82,9 @@ class _ScreenLoginLoginState extends State<ScreenLoginLogin> {
               ///카카오 로그인
               InkWell(
                 onTap: () async {
-                  if (valueNotifierIsProcessingLoginWithKakao.value ||
-                      valueNotifierIsProcessingLoginWithGoogle.value ||
-                      valueNotifierIsProcessingLoginWithNaver.value) {
+                  if (listValueNotifierIsProcessingLogin
+                      .where((element) => element.value == true)
+                      .isNotEmpty) {
                     return;
                   }
 
@@ -102,7 +117,7 @@ class _ScreenLoginLoginState extends State<ScreenLoginLogin> {
                         const Expanded(
                           child: Center(
                             child: Text(
-                              '카카오로 로그인',
+                              '카카오 로그인',
                               style: TextStyle(fontWeight: FontWeight.w800, color: Colors.brown),
                             ),
                           ),
@@ -114,9 +129,9 @@ class _ScreenLoginLoginState extends State<ScreenLoginLogin> {
               ///네이버 로그인
               InkWell(
                 onTap: () async {
-                  if (valueNotifierIsProcessingLoginWithKakao.value ||
-                      valueNotifierIsProcessingLoginWithGoogle.value ||
-                      valueNotifierIsProcessingLoginWithNaver.value) {
+                  if (listValueNotifierIsProcessingLogin
+                      .where((element) => element.value == true)
+                      .isNotEmpty) {
                     return;
                   }
 
@@ -131,23 +146,23 @@ class _ScreenLoginLoginState extends State<ScreenLoginLogin> {
                   margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                   width: double.infinity,
                   height: 50,
-                  child:  Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       ValueListenableBuilder(
                         valueListenable: valueNotifierIsProcessingLoginWithNaver,
                         builder: (context, value, child) => value
 
-                        ///로딩 중 아이콘
+                            ///로딩 중 아이콘
                             ? LoadingAnimationWidget.inkDrop(color: Colors.brown, size: 24)
 
-                        ///로딩 중 아님
+                            ///로딩 중 아님
                             : const FaIcon(FontAwesomeIcons.solidComment, color: Colors.brown),
                       ),
                       const Expanded(
                         child: Center(
                           child: Text(
-                            '네이버로 로그인',
+                            '네이버 로그인',
                             style: TextStyle(fontWeight: FontWeight.w800),
                           ),
                         ),
@@ -176,7 +191,7 @@ class _ScreenLoginLoginState extends State<ScreenLoginLogin> {
                     Expanded(
                       child: Center(
                         child: Text(
-                          '구글로 로그인',
+                          '구글 로그인',
                           style: TextStyle(fontWeight: FontWeight.w800),
                         ),
                       ),
@@ -185,6 +200,51 @@ class _ScreenLoginLoginState extends State<ScreenLoginLogin> {
                 ),
               ),
 
+              ///애플 로그인
+              InkWell(
+                onTap: () async {
+                  if (listValueNotifierIsProcessingLogin
+                      .where((element) => element.value == true)
+                      .isNotEmpty) {
+                    return;
+                  }
+
+                  valueNotifierIsProcessingLoginWithApple.value = true;
+                  await MyApp.providerUser.loginEasy(LoginType.apple);
+                  valueNotifierIsProcessingLoginWithApple.value = false;
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  decoration: boxDecoration.copyWith(color: Colors.white),
+                  alignment: Alignment.center,
+                  margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                  width: double.infinity,
+                  height: 50,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ValueListenableBuilder(
+                        valueListenable: valueNotifierIsProcessingLoginWithNaver,
+                        builder: (context, value, child) => value
+
+                            ///로딩 중 아이콘
+                            ? LoadingAnimationWidget.inkDrop(color: Colors.brown, size: 24)
+
+                            ///로딩 중 아님
+                            : const FaIcon(FontAwesomeIcons.apple, color: Colors.brown),
+                      ),
+                      const Expanded(
+                        child: Center(
+                          child: Text(
+                            '애플 로그인',
+                            style: TextStyle(fontWeight: FontWeight.w800),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
               const SizedBox(
                 height: 30,
               ),
