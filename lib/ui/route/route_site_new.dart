@@ -507,11 +507,8 @@ const SizedBox(height: 10,),
 */
                     //
                     const SizedBox(
-                      height: 120,
+                      height: 10,
                     ),
-
-                    const Text('미리보기'),
-                    ItemSiteSearch(modelSiteNew),
 
                     ///전송 버튼
                     InkWell(
