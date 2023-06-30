@@ -40,12 +40,14 @@ class ItemNoticeSmall extends StatelessWidget {
         )),
         child:         Row(
           children: [
+
+            /*
             ///대상 팀
             Text(
               modelNotice.listModelCheckList.map((e) => e.name).toList().toString().replaceAll('[', '').replaceAll(']', ''),
               style: const CustomTextStyle.normalBlack().copyWith(color: Colors.orange,fontWeight: FontWeight.bold),
             ),
-
+*/
             const SizedBox(width: 10),
             ///제목
             Expanded(
