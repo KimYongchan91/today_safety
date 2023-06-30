@@ -120,74 +120,84 @@ class _ScreenLoginProfileState extends State<ScreenLoginProfile> {
           widget.providerUser.modelSiteMy == null
 
               ///관리하는 근무지가 없을 때
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      children: [
-                        const Expanded(
-                          child: Text(
-                            '나의 근무지를 등록하세요.',
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ? Container(
+            width: Get.width,
+                color: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        children: [
+                          const Expanded(
+                            child: Text(
+                              '나의 근무지를 등록하세요.',
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                            ),
                           ),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            Get.toNamed(
-                              keyRouteSiteSearch,
-                              arguments: {
-                                //'keyword': 'sex',
-                              },
-                            );
-                          },
-                          child: const Padding(
-                            padding: EdgeInsets.all(5),
-                            child: FaIcon(FontAwesomeIcons.search),
+                          InkWell(
+                            onTap: () {
+                              Get.toNamed(
+                                keyRouteSiteSearch,
+                                arguments: {
+                                  //'keyword': 'sex',
+                                },
+                              );
+                            },
+                            child: const Padding(
+                              padding: EdgeInsets.all(5),
+                              child: FaIcon(FontAwesomeIcons.search),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
 
-                    const SizedBox(
-                      height: 40,
-                    ),
+                      const SizedBox(
+                        height: 40,
+                      ),
 
-                    ///근무지 만들기 버튼
-                    InkWell(
-                      onTap: () {
-                        Get.toNamed(
-                          keyRouteSiteNew,
-                          arguments: {
-                            //'keyword': 'sex',
-                          },
-                        );
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.all(10),
-                        height: MediaQuery.of(context).size.height / 4,
-                        decoration: mainButton,
-                        child: const Center(
-                          child: FaIcon(
-                            FontAwesomeIcons.add,
-                            size: 35,
-                            color: Colors.black45,
+                      ///근무지 만들기 버튼
+                      InkWell(
+                        onTap: () {
+                          Get.toNamed(
+                            keyRouteSiteNew,
+                            arguments: {
+                              //'keyword': 'sex',
+                            },
+                          );
+                        },
+                        child: Container(
+                          width: Get.width,
+                          padding: const EdgeInsets.all(10),
+                          height: MediaQuery.of(context).size.height / 4,
+                          decoration: mainButton,
+                          child:  const Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              FaIcon(
+                                FontAwesomeIcons.add,
+                                size: 35,
+                                color: Colors.black45,
+
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                '근무지 만들기',
+                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black45, fontSize: 16),
+                              )
+                            ],
                           ),
                         ),
                       ),
-                    ),
 
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    const Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          '근무지 만들기',
-                          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black45, fontSize: 16),
-                        ))
-                  ],
-                )
+
+
+                    ],
+                  ),
+              )
 
               ///내가 관리하는 근무지가 있을 때
               : InkWell(

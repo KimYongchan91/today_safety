@@ -141,7 +141,7 @@ class _ScreenLoginLoginState extends State<ScreenLoginLogin> {
                 },
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 30),
-                  decoration: boxDecoration.copyWith(color: Colors.white),
+                  decoration: boxDecoration.copyWith(color:const Color(0xff00C73C)),
                   alignment: Alignment.center,
                   margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                   width: double.infinity,
@@ -157,13 +157,15 @@ class _ScreenLoginLoginState extends State<ScreenLoginLogin> {
                             ? LoadingAnimationWidget.inkDrop(color: Colors.brown, size: 24)
 
                             ///로딩 중 아님
-                            : const FaIcon(FontAwesomeIcons.solidComment, color: Colors.brown),
+                            :  SizedBox(
+                            width: 20,
+                            child: Image.asset('assets/images/logo/naver.png')),
                       ),
                       const Expanded(
                         child: Center(
                           child: Text(
                             '네이버 로그인',
-                            style: TextStyle(fontWeight: FontWeight.w800),
+                            style: TextStyle(color: Colors.white,fontWeight: FontWeight.w800),
                           ),
                         ),
                       )
@@ -215,7 +217,7 @@ class _ScreenLoginLoginState extends State<ScreenLoginLogin> {
                 },
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 30),
-                  decoration: boxDecoration.copyWith(color: Colors.white),
+                  decoration: boxDecoration.copyWith(color: Colors.black),
                   alignment: Alignment.center,
                   margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                   width: double.infinity,
@@ -231,13 +233,13 @@ class _ScreenLoginLoginState extends State<ScreenLoginLogin> {
                             ? LoadingAnimationWidget.inkDrop(color: Colors.brown, size: 24)
 
                             ///로딩 중 아님
-                            : const FaIcon(FontAwesomeIcons.apple, color: Colors.brown),
+                            : const FaIcon(FontAwesomeIcons.apple, color: Colors.white),
                       ),
                       const Expanded(
                         child: Center(
                           child: Text(
                             '애플 로그인',
-                            style: TextStyle(fontWeight: FontWeight.w800),
+                            style: TextStyle(fontWeight: FontWeight.w800,color: Colors.white),
                           ),
                         ),
                       )

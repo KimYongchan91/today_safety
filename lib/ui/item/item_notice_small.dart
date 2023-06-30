@@ -31,22 +31,24 @@ class ItemNoticeSmall extends StatelessWidget {
         Get.toNamed('$keyRouteNoticeDetail/${modelNotice.docId}', arguments: {keyModelNotice: modelNotice});
       },
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         decoration: BoxDecoration(
-          color: Colors.white,
+            color: Colors.white,
             border: Border.all(
               width: 0.2,
-          color: Colors.grey,
-        )),
-        child:         Row(
+              color: Colors.grey,
+            )),
+        child: Row(
           children: [
+            /*
             ///대상 팀
             Text(
               modelNotice.listModelCheckList.map((e) => e.name).toList().toString().replaceAll('[', '').replaceAll(']', ''),
               style: const CustomTextStyle.normalBlack().copyWith(color: Colors.orange,fontWeight: FontWeight.bold),
             ),
-
+*/
             const SizedBox(width: 10),
+
             ///제목
             Expanded(
               child: Text(
@@ -56,10 +58,11 @@ class ItemNoticeSmall extends StatelessWidget {
             ),
 
             const SizedBox(width: 20),
+
             ///날짜
             Text(
               millisecondGapFormatted,
-              style: const CustomTextStyle.normalBlack().copyWith(fontSize: 13,fontWeight: FontWeight.bold),
+              style: const CustomTextStyle.normalBlack().copyWith(fontSize: 13, fontWeight: FontWeight.bold),
             ),
           ],
         ),

@@ -207,7 +207,7 @@ class _RouteSiteDetailState extends State<RouteSiteDetail> with SingleTickerProv
 
                 ///팀영역
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   decoration: const BoxDecoration(
                     color: Colors.white,
                     border: Border(
