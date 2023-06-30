@@ -62,9 +62,15 @@ class ItemUserCheckHistoryBig extends StatelessWidget {
                           children: [
                             ///회사 현장 이미지
                             Positioned.fill(
-                              child: CachedNetworkImage(
-                                imageUrl: modelUserCheckHistory.modelCheckList.modelSite.urlSiteImage,
-                                fit: BoxFit.cover,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(20),
+                                  topRight: Radius.circular(20),
+                                ),
+                                child: CachedNetworkImage(
+                                  imageUrl: modelUserCheckHistory.modelCheckList.modelSite.urlSiteImage,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
 

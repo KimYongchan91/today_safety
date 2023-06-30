@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:today_safety/const/value/value.dart';
 import 'package:today_safety/service/provider/provider_user.dart';
 import 'package:today_safety/ui/item/item_user_check_history_big.dart';
 import 'package:today_safety/ui/item/item_user_check_history_big_empty.dart';
 import 'package:today_safety/ui/widget/widget_app_bar.dart';
 
+import '../../const/model/model_user_check_history.dart';
 import '../../const/value/layout_main.dart';
 import '../../service/provider/provider_user_check_history_on_me.dart';
 
@@ -24,13 +26,24 @@ class _ScreenMainCheckState extends State<ScreenMainCheck> {
 
   @override
   Widget build(BuildContext context) {
+
+
+
     return Consumer2<ProviderUser, ProviderUserCheckHistoryOnMe>(
-      builder: (context, providerUser, providerUserCheckHistoryOnMe, child) => Stack(
+      builder: (context, providerUser, providerUserCheckHistoryOnMe, child) {
+
+
+        List<ModelUserCheckHistory> listModelUserCheckHistoryRecent = [
+          ...providerUserCheckHistoryOnMe.listModelUserCheckHistory
+              .where((element) =>
+          (DateTime.now().millisecondsSinceEpoch - element.date.millisecondsSinceEpoch) < millisecondDay)
+              .toList()
+        ];
+
+        return Stack(
         children: [
           ///앱 로고
-           const WidgetAppBar(
-
-           ),
+          const WidgetAppBar(),
 
           ///인증서 목록
           //3가지 상황이 있음.
@@ -41,6 +54,7 @@ class _ScreenMainCheckState extends State<ScreenMainCheck> {
             child: Builder(builder: (context) {
               int itemCount;
               Widget? Function(BuildContext, int) itemBuilder;
+
               if (providerUser.modelUser == null) {
                 itemCount = 1;
                 itemBuilder = (context, index) => ItemUserCheckHistoryBigEmpty(
@@ -49,12 +63,12 @@ class _ScreenMainCheckState extends State<ScreenMainCheck> {
                       padding: paddingMainItemUserCheckHistoryBig, //20
                     );
               } else {
-                itemCount = max(providerUserCheckHistoryOnMe.listModelUserCheckHistory.length, 1);
-                if (providerUserCheckHistoryOnMe.listModelUserCheckHistory.isNotEmpty) {
+                itemCount = max(listModelUserCheckHistoryRecent.length, 1);
+                if (listModelUserCheckHistoryRecent.isNotEmpty) {
                   itemBuilder = (context, index) => ItemUserCheckHistoryBig(
-                        providerUserCheckHistoryOnMe.listModelUserCheckHistory[index],
+                    listModelUserCheckHistoryRecent[index],
                         padding: paddingMainItemUserCheckHistoryBig, //20
-                        key: ValueKey(providerUserCheckHistoryOnMe.listModelUserCheckHistory[index]),
+                        key: ValueKey(listModelUserCheckHistoryRecent[index]),
                       );
                 } else {
                   itemBuilder = (context, index) => ItemUserCheckHistoryBigEmpty(
@@ -81,10 +95,10 @@ class _ScreenMainCheckState extends State<ScreenMainCheck> {
             alignment: Alignment.bottomCenter,
             child: Padding(
               padding: const EdgeInsets.only(bottom: 50),
-              child: providerUserCheckHistoryOnMe.listModelUserCheckHistory.isNotEmpty
+              child: listModelUserCheckHistoryRecent.isNotEmpty
                   ? SmoothPageIndicator(
                       controller: pageController,
-                      count: providerUserCheckHistoryOnMe.listModelUserCheckHistory.length,
+                      count: listModelUserCheckHistoryRecent.length,
                       effect: const ExpandingDotsEffect(
                         dotWidth: 8,
                         dotHeight: 8,
@@ -96,7 +110,8 @@ class _ScreenMainCheckState extends State<ScreenMainCheck> {
             ),
           )
         ],
-      ),
+      );
+      },
     );
   }
 }

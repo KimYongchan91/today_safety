@@ -1,21 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:expandable/expandable.dart';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
-import 'package:intl/intl.dart';
-import 'package:today_safety/const/model/model_check_list.dart';
-import 'package:today_safety/const/model/model_user_check_history.dart';
-import 'package:today_safety/const/value/key.dart';
-import 'package:today_safety/const/value/router.dart';
-import 'package:today_safety/const/value/value.dart';
-import 'package:today_safety/custom/custom_text_style.dart';
-import 'package:today_safety/ui/dialog/dialog_help_user_check_hostory_state.dart';
-import 'package:today_safety/ui/route/route_check_image_detail.dart';
-import 'package:today_safety/ui/route/route_map_detail.dart';
-import 'package:today_safety/ui/route/route_user_check_history_detail.dart';
-
-import '../../const/value/color.dart';
 import '../../const/value/layout_main.dart';
 
 const double sizeCheckImage = 60;
@@ -70,7 +55,7 @@ class ItemUserCheckHistoryBigEmpty extends StatelessWidget {
                         Text(
                           itemUserCheckHistoryBigEmptyType == ItemUserCheckHistoryBigEmptyType.notLogin
                               ? '로그인하고 내가 받은 인증서를 확인해 보세요.'
-                              : '아직 받은 인증서가 없어요.',
+                              : '유효한 인증서가 없어요.',
                           style: _textStyle,
                         ),
                       ],

@@ -110,7 +110,7 @@
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/app_logo_big_128" />
+            android:resource="@drawable/app_logo_transparent_big_128" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorPrimary"

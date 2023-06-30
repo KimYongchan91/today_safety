@@ -41,15 +41,15 @@ class ProviderUserCheckHistoryOnMe extends ChangeNotifier {
       return;
     }
 
-    Timestamp timestampBeforeOneDay =
-        Timestamp.fromMillisecondsSinceEpoch(Timestamp.now().millisecondsSinceEpoch - millisecondDay * 30); //30일 전부터
+   //Timestamp timestampBeforeOneDay =
+   //    Timestamp.fromMillisecondsSinceEpoch(Timestamp.now().millisecondsSinceEpoch - millisecondDay * 1); //30일 전부터
 
     Query query = FirebaseFirestore.instance
         .collection(keyUserCheckHistories)
         .where('$keyUser.$keyId', isEqualTo: modelUser!.id)
-        .where(keyDate, isGreaterThanOrEqualTo: timestampBeforeOneDay)
+        //.where(keyDate, isGreaterThanOrEqualTo: timestampBeforeOneDay)
         .orderBy(keyDate, descending: true)
-        .limit(10);
+        .limit(100);
 
     streamSubscription = query.snapshots().listen((event) {
       for (var element in event.docChanges) {

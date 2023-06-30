@@ -103,7 +103,8 @@ class _RouteMainState extends State<RouteMain> {
               color: isActive ? Colors.orange : Colors.grey,
               size: isActive ? 28 : 24,
             ),
-            height: heightMainNavigationBar, //기본값 56
+            height: heightMainNavigationBar,
+            //기본값 56
             activeIndex: value,
             gapLocation: GapLocation.end,
             notchSmoothness: NotchSmoothness.defaultEdge,

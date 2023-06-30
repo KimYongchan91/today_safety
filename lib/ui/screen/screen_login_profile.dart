@@ -2,8 +2,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 import 'package:today_safety/service/provider/provider_user.dart';
+import 'package:today_safety/service/provider/provider_user_check_history_on_me.dart';
 import 'package:today_safety/ui/item/item_banner.dart';
+import 'package:today_safety/ui/route/route_user_check_history_list.dart';
 
 import '../../const/value/router.dart';
 import '../../my_app.dart';
@@ -75,37 +78,43 @@ class _ScreenLoginProfileState extends State<ScreenLoginProfile> {
             ),
           ),
 
-
-
-
-         /*
-         SizedBox(
+          SizedBox(
             height: 10,
           ),
 
-         ///내 인증 내역
-
-          Container(
-            width: Get.width,
-            decoration: BoxDecoration(color: Colors.white),
-            child: Padding(
-              padding: EdgeInsets.all(20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text(
-                    '내 안전 점검 인증',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+          ///내 인증 내역
+          Consumer<ProviderUserCheckHistoryOnMe>(
+            builder: (context, value, child) => InkWell(
+              onTap: () {
+                Get.to(()=>RouteUserCheckHistoryList(value.listModelUserCheckHistory));
+              },
+              child: Container(
+                width: Get.width,
+                decoration: BoxDecoration(color: Colors.white),
+                child: Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      const Text(
+                        '받은 인증서',
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      ),
+                      Spacer(),
+                      Text(
+                        '${value.listModelUserCheckHistory.length}개 > ',
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ),
 
           SizedBox(
             height: 10,
-          ),*/
-
+          ),
 
           ///관리하는 근무지 정보 영역
           widget.providerUser.modelSiteMy == null
@@ -191,7 +200,7 @@ class _ScreenLoginProfileState extends State<ScreenLoginProfile> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         const Text(
-                          '내가 관리하는 근무지',
+                          '관리하는 근무지',
                           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                         ),
 
@@ -282,8 +291,6 @@ class _ScreenLoginProfileState extends State<ScreenLoginProfile> {
                     ),
                   ),
                 ),
-
-
 
           const ItemMainBanner(),
 
