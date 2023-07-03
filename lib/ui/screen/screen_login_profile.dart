@@ -68,7 +68,7 @@ class _ScreenLoginProfileState extends State<ScreenLoginProfile> {
                         height: 10,
                       ),
                       Text(
-                        widget.providerUser.modelUser!.id,
+                        widget.providerUser.modelUser!.idExceptLT,
                         style: const TextStyle(color: Colors.black54, fontWeight: FontWeight.w700),
                       ),
                     ],

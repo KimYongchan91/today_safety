@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
@@ -6,26 +8,7 @@ import '../../my_app.dart';
 import 'dart:math' as math;
 
 BarChartData getLineChartData(List<ModelDailyCheckHistory> listModelDailyCheckHistory) {
-
   MyApp.logger.d("getLineChartData listModelDailyCheckHistory 갯수 : ${listModelDailyCheckHistory.length}");
-
-  List<BarChartGroupData> listBarChartGroupData = [];
-
-  for (int i = 0; i < listModelDailyCheckHistory.length; i++) {
-    listBarChartGroupData.add(BarChartGroupData(
-      x: i,
-      barRods: [
-        BarChartRodData(
-          toY: listModelDailyCheckHistory[i].userCheckHistoryCount.toDouble(),
-          color: Colors.green,
-          borderRadius: BorderRadius.zero,
-          width: 12,
-          //gradient: _barsGradient,
-        )
-      ],
-      //showingTooltipIndicators: [0],
-    ));
-  }
 
   int maxY = 0;
   for (var element in listModelDailyCheckHistory) {
@@ -34,6 +17,28 @@ BarChartData getLineChartData(List<ModelDailyCheckHistory> listModelDailyCheckHi
     }
   }
 
+  List<BarChartGroupData> listBarChartGroupData = [];
+
+  for (int i = 0; i < listModelDailyCheckHistory.length; i++) {
+    listBarChartGroupData.add(
+      BarChartGroupData(
+        x: i,
+        barRods: [
+          BarChartRodData(
+            toY: listModelDailyCheckHistory[i].userCheckHistoryCount.toDouble(),
+            color: Colors.green,
+            borderRadius: BorderRadius.only(topLeft: Radius.circular(4),topRight: Radius.circular(4)),
+            width: 20,
+            //gradient: _barsGradient,
+          )
+        ],
+      ),
+    );
+  }
+
+  int maxYForLabel = (maxY * 1.2).toInt();
+  int intervalForLabel = max(maxYForLabel ~/ 5, 2);
+
   /* MyApp.logger.d("listModelDailyCheckHistory[i].userCheckHistoryCount .toDouble() : ${[
     ...listModelDailyCheckHistory.map((e) => e.userCheckHistoryCount.toDouble()).toList()
   ]}");*/
@@ -41,26 +46,33 @@ BarChartData getLineChartData(List<ModelDailyCheckHistory> listModelDailyCheckHi
   return BarChartData(
     gridData: FlGridData(
       show: true,
-      drawVerticalLine: true,
-      horizontalInterval: 1,
-      verticalInterval: 1,
+      drawVerticalLine: false,
+      horizontalInterval: intervalForLabel.toDouble(),
+      //verticalInterval: intervalForLabel.toDouble(),
       getDrawingHorizontalLine: (value) {
+        return FlLine(
+          color: Colors.black.withOpacity(0.8),
+          strokeWidth: 0.8,
+        );
+      },
+/*      getDrawingVerticalLine: (value) {
         return const FlLine(
           color: Colors.black,
           strokeWidth: 1,
         );
-      },
-      getDrawingVerticalLine: (value) {
-        return const FlLine(
-          color: Colors.black,
-          strokeWidth: 1,
-        );
-      },
+      },*/
     ),
     titlesData: FlTitlesData(
       show: true,
-      rightTitles: const AxisTitles(
-        sideTitles: SideTitles(showTitles: false),
+      rightTitles: AxisTitles(
+        sideTitles: SideTitles(
+          showTitles: true,
+          interval: intervalForLabel.toDouble(),
+          getTitlesWidget: (value, meta) => Padding(
+              padding: const EdgeInsets.only(left: 3),
+              child: Text('${value.toInt()}${value.toInt() == 0 ? '' : ''}')),
+          reservedSize: 10,
+        ),
       ),
       topTitles: const AxisTitles(
         sideTitles: SideTitles(showTitles: false),
@@ -89,13 +101,9 @@ BarChartData getLineChartData(List<ModelDailyCheckHistory> listModelDailyCheckHi
               color = Colors.redAccent;
             }
 
-            return Transform.rotate(
-              angle : 0,
-              //angle: -math.pi / 2,
-              child: Text(
-                '$dayOnly',
-                style: TextStyle(color: color,fontSize: 9),
-              ),
+            return Text(
+              dayOnly,
+              style: TextStyle(color: color, fontSize: 11),
             );
           },
         ),
@@ -103,9 +111,14 @@ BarChartData getLineChartData(List<ModelDailyCheckHistory> listModelDailyCheckHi
       leftTitles: AxisTitles(
         sideTitles: SideTitles(
           showTitles: true,
-          interval: 1,
-          getTitlesWidget: (value, meta) => Text(value.toInt().toString()),
-          reservedSize: 20,
+          interval: intervalForLabel.toDouble(),
+          getTitlesWidget: (value, meta) => Align(
+            alignment: Alignment.centerRight,
+            child: Padding(
+                padding: const EdgeInsets.only(right: 3),
+                child: Text('${value.toInt()}${value.toInt() == 0 ? '' : ''}')),
+          ),
+          reservedSize: 10,
         ),
       ),
     ),
@@ -114,7 +127,39 @@ BarChartData getLineChartData(List<ModelDailyCheckHistory> listModelDailyCheckHi
       border: Border.all(color: const Color(0xff37434d)),
     ),
     minY: 0,
-    maxY: maxY.toDouble(),
+    maxY: maxYForLabel.toDouble(),
     barGroups: listBarChartGroupData,
+    barTouchData: BarTouchData(
+      enabled: true,
+      touchTooltipData: BarTouchTooltipData(
+        tooltipBgColor: Colors.greenAccent.withOpacity(0.8),
+        tooltipPadding: const EdgeInsets.only(top: 10, bottom: 5, left: 5, right: 5),
+        tooltipMargin: 4,
+        getTooltipItem: (
+          BarChartGroupData group,
+          int groupIndex,
+          BarChartRodData rod,
+          int rodIndex,
+        ) {
+          int index = group.x.toInt();
+          String text;
+          //예외 처리용
+          if (index < 0 || index >= listModelDailyCheckHistory.length) {
+            text = '';
+          } else {
+            String dayOnly = listModelDailyCheckHistory[index].dateDisplay;
+            text = '$dayOnly\n${rod.toY.toInt().toString()}건';
+          }
+
+          return BarTooltipItem(
+            text,
+            const TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+            ),
+          );
+        },
+      ),
+    ),
   );
 }
