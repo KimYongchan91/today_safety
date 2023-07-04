@@ -27,7 +27,7 @@ class ItemNoticeBig extends StatelessWidget {
         },
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Colors.orangeAccent,
             borderRadius: BorderRadius.circular(20),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 15),
@@ -36,24 +36,25 @@ class ItemNoticeBig extends StatelessWidget {
             children: [
               Container(
                   padding: const EdgeInsets.all(10),
-                  decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.redAccent),
+                  decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
                   child: const FaIcon(
-                    FontAwesomeIcons.bullhorn,size: 20,
-                    color: Colors.white,
+                    FontAwesomeIcons.solidBell,size: 20,
+                    color: Colors.orangeAccent,
                   )),
               const SizedBox(
-                width: 20,
+                width: 10,
               ),
 
               Expanded(
                   child: Text(
                     modelNotice == null ? '공지사항' : modelNotice!.title,
-                    style: TextStyle(color: Colors.redAccent, fontSize: 15, fontWeight: FontWeight.bold),
+                    style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.bold),
                   )),
               const FaIcon(
                 FontAwesomeIcons.angleRight,
                 color: Colors.white,
               ),
+             const  SizedBox(width: 10,),
 
             ],
 

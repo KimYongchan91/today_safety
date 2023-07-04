@@ -107,55 +107,7 @@ class _RouteNoticeDetailState extends State<RouteNoticeDetail> {
                       height: 10,
                     ),
 
-                    ///회사 정보 영역
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Card(
-                        elevation: 2,
-                        child: Row(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
 
-                                ///회사 로고
-                                child: CachedNetworkImage(
-                                  imageUrl: modelNotice!.modelSite.urlLogoImage,
-                                  width: 70,
-                                  height: 70,
-                                ),
-                              ),
-                            ),
-SizedBox(width: 10,),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  ///회사 이름
-                                  Text(
-                                    modelNotice!.modelSite.name,
-                                    style: const CustomTextStyle.normalBlackBold(),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-
-                                  ///팀 이름
-                                  Text(
-                                    [...modelNotice!.listModelCheckList.map((e) => e.name)]
-                                        .toString()
-                                        .replaceAll('[', '')
-                                        .replaceAll(']', ''),
-                                    style: TextStyle(fontSize: 16),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
                     const SizedBox(
                       height: 20,
                     ),
@@ -194,6 +146,56 @@ SizedBox(width: 10,),
                         style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 17),
                       ),
                     ),
+Spacer(),
+                    ///회사 정보 영역
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 30),
+                      child: Card(
+                        elevation: 2,
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+
+                                ///회사 로고
+                                child: CachedNetworkImage(
+                                  imageUrl: modelNotice!.modelSite.urlLogoImage,
+                                  width: 70,
+                                  height: 70,
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 10,),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ///회사 이름
+                                  Text(
+                                    modelNotice!.modelSite.name,
+                                    style: const CustomTextStyle.normalBlackBold().copyWith(fontSize: 20),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+
+                                  ///팀 이름
+                                  Text(
+                                    [...modelNotice!.listModelCheckList.map((e) => e.name)]
+                                        .toString()
+                                        .replaceAll('[', '')
+                                        .replaceAll(']', ''),
+                                    style: TextStyle(fontSize: 16,fontWeight: FontWeight.w700),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ],
                 );
               } else {
@@ -201,6 +203,8 @@ SizedBox(width: 10,),
                   child: IconError(),
                 );
               }
+
+
             }
           },
         ),

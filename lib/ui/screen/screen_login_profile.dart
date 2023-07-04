@@ -78,9 +78,7 @@ class _ScreenLoginProfileState extends State<ScreenLoginProfile> {
             ),
           ),
 
-          SizedBox(
-            height: 10,
-          ),
+
 
           ///내 인증 내역
           Consumer<ProviderUserCheckHistoryOnMe>(

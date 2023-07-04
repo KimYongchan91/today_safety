@@ -382,7 +382,7 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
@@ -390,17 +390,22 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                                       '최근 인증 근무자',
                                       style: CustomTextStyle.bigBlackBold(),
                                     ),
-                                    InkWell(
-                                      onTap: () {
+
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        primary: Colors.orange, // Background color
+                                      ),
+                                      onPressed: () {
                                         Get.toNamed('$keyRouteCheckListDetail'
                                             '/${modelCheckList!.docId}'
                                             '/$keyRouteCheckListRecentWithOutSlash');
                                       },
                                       child: const Text(
                                         '더보기',
-                                        style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold),
+                                        style: TextStyle(fontWeight: FontWeight.bold),
                                       ),
-                                    )
+                                    ),
+
                                   ],
                                 ),
                               ),
