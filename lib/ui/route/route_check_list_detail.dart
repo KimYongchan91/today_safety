@@ -382,7 +382,7 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
