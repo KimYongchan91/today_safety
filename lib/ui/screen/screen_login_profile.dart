@@ -110,7 +110,7 @@ class _ScreenLoginProfileState extends State<ScreenLoginProfile> {
             ),
           ),
 
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
 
@@ -152,7 +152,7 @@ class _ScreenLoginProfileState extends State<ScreenLoginProfile> {
                       ),
 
                       const SizedBox(
-                        height: 40,
+                        height: 20,
                       ),
 
                       ///근무지 만들기 버튼
@@ -165,28 +165,33 @@ class _ScreenLoginProfileState extends State<ScreenLoginProfile> {
                             },
                           );
                         },
-                        child: Container(
-                          width: Get.width,
-                          padding: const EdgeInsets.all(10),
-                          height: MediaQuery.of(context).size.height / 4,
-                          decoration: mainButton,
-                          child:  const Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              FaIcon(
-                                FontAwesomeIcons.add,
-                                size: 35,
-                                color: Colors.black45,
+                        child: Card(
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                          elevation: 5,
+                          color: Colors.orange,
+                          child: Container(
+                            width: Get.width,
+                            padding: const EdgeInsets.all(10),
+                            height: MediaQuery.of(context).size.height / 4,
 
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                '근무지 만들기',
-                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black45, fontSize: 16),
-                              )
-                            ],
+                            child:  const Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                FaIcon(
+                                  FontAwesomeIcons.add,
+                                  size: 35,
+                                  color: Colors.white,
+
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Text(
+                                  '근무지 만들기',
+                                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 16),
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       ),
