@@ -219,13 +219,14 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
                       Align(
                         alignment: Alignment.topCenter,
                         child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
                           width: Get.width,
                           height: Get.height / 6,
                           decoration: const BoxDecoration(
-                              color: Colors.white,
+                              color: const Color(0x55000000),
                               borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(12),
-                                bottomRight: Radius.circular(12),
+                                bottomLeft: Radius.circular(30),
+                                bottomRight: Radius.circular(30),
                               )),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -247,22 +248,40 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
                                           changeIndexCheck(index);
                                         },
                                         child: Container(
+
+                                          padding: EdgeInsets.all(7),
                                           width: _sizeImageCheckSequence,
                                           height: _sizeImageCheckSequence,
                                           decoration: BoxDecoration(
+                                           // color: const Color(0x33000000),
+                                            color: a[widget.modelCheckList.listModelCheck[index]] != null
+
+                                            ///이미 완료
+                                                ? Colors.orangeAccent
+                                                : b == index
+
+                                            ///현재 진행 중
+                                                ? Color(0x33000000)
+
+                                            ///현재 진행 중
+                                                : Color(0x33000000),
+
+
+                                            shape: BoxShape.circle,
                                             border: Border.all(
+
                                               color: a[widget.modelCheckList.listModelCheck[index]] != null
 
                                                   ///이미 완료
-                                                  ? Colors.green
+                                                  ? Colors.orangeAccent
                                                   : b == index
 
                                                       ///현재 진행 중
-                                                      ? Colors.blueAccent
+                                                      ? Colors.orangeAccent
 
                                                       ///현재 진행 중
-                                                      : Colors.red,
-                                              width: 3,
+                                                      : Colors.grey,
+                                              width: 1,
                                             ),
                                           ),
                                           child: badges.Badge(
@@ -271,11 +290,11 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
                                               badgeColor: a[widget.modelCheckList.listModelCheck[index]] != null
 
                                                   ///이미 완료
-                                                  ? Colors.green
+                                                  ? Colors.orange
                                                   : b == index
 
                                                       ///현재 진행 중
-                                                      ? Colors.blue
+                                                      ? Color(0x00000000)
 
                                                       ///현재 진행 중
                                                       : Colors.transparent,
@@ -290,10 +309,7 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
                                                 : b == index
 
                                                     ///현재 진행 중
-                                                    ? const Icon(
-                                                        Icons.access_time,
-                                                        color: Colors.white,
-                                                      )
+                                                    ? null
 
                                                     ///아직 진행 전
                                                     : null,
@@ -314,6 +330,8 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
                                 ),
                               ),
 
+
+                              const SizedBox(height: 10,),
                               ///현재 단계 설명 영역
                               CustomValueListenableBuilder2(
                                 a: valueNotifierMapCheckImageLocal,
@@ -323,7 +341,7 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
                                     ///현재 단계의 제목
                                     Text(
                                   widget.modelCheckList.listModelCheck[b].name,
-                                  style: const CustomTextStyle.bigBlackBold(),
+                                  style: const CustomTextStyle.bigBlackBold().copyWith(color: Colors.white),
                                 ),
                               ),
                             ],

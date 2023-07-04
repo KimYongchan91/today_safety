@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:today_safety/ui/route/route_check_list_check_camera.dart';
 
 import '../../const/value/admin.dart';
 import '../../my_app.dart';
@@ -54,6 +55,8 @@ class WidgetAppBar extends StatelessWidget {
             '오늘안전',
             style: TextStyle(fontFamily: "SANGJU", fontSize: 23),
           ),
+
+
         ],
       ),
     );
