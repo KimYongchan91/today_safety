@@ -24,7 +24,7 @@ class CustomTextStyle extends TextStyle {
     required double fontSize,
     required FontWeight fontWeight,
     String fontFamily = 'Pretendard',
-    double? height = 1.1,
+    double? height = 1.2,
   }) : super(
     color: color,
     fontSize: fontSize,

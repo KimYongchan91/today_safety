@@ -34,6 +34,8 @@ const int lengthCheckListNameMax = 20;
 const int _sizeMarkerWidth = 60;
 const int _sizeMarkerHeight = 60;
 
+const int countCheckListItemMax = 5; //인증 항목 최대 갯수
+
 class RouteCheckListNew extends StatefulWidget {
   const RouteCheckListNew({Key? key}) : super(key: key);
 
@@ -450,6 +452,12 @@ class _RouteCheckListNewState extends State<RouteCheckListNew> {
 
   onAddModelFuc(ModelCheck modelCheck) {
     List<ModelCheck> listNew = [...valueNotifierListModelCheck.value];
+    //MyApp.logger.d("listNew 갯수 : ${listNew.length}, countCheckListItemMax: $countCheckListItemMax");
+
+    if(listNew.length >= countCheckListItemMax){
+      showSnackBarOnRoute('현재 $countCheckListItemMax개 까지 선택할 수 있어요.');
+      return;
+    }
     listNew.add(modelCheck);
 
     valueNotifierListModelCheck.value = listNew;
@@ -461,17 +469,17 @@ class _RouteCheckListNewState extends State<RouteCheckListNew> {
     }
 
     if (textEditingControllerName.text.isEmpty) {
-      showSnackBarOnRoute('체크리스트의 이름을 입력해 주세요.');
+      showSnackBarOnRoute('팀의 이름을 입력해 주세요.');
       return;
     }
 
     if (textEditingControllerName.text.length < lengthCheckListNameMin) {
-      showSnackBarOnRoute('체크리스트의 이름은 최소 $lengthCheckListNameMin글자예요.');
+      showSnackBarOnRoute('팀의 이름은 최소 $lengthCheckListNameMin글자예요.');
       return;
     }
 
     if (textEditingControllerName.text.length > lengthCheckListNameMax) {
-      showSnackBarOnRoute('체크리스트의 이름은 최대 $lengthCheckListNameMax글자예요.');
+      showSnackBarOnRoute('팀의 이름은 최대 $lengthCheckListNameMax글자예요.');
       return;
     }
 

@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:today_safety/const/model/model_user.dart';
 import 'package:today_safety/const/value/key.dart';
 
+import '../../../const/value/router.dart';
 import '../../../const/value/value.dart';
 import '../../../my_app.dart';
 
@@ -26,6 +27,10 @@ class _RouteTestState extends State<RouteTest> {
       body: SafeArea(
         child: Column(
           children: [
+            ElevatedButton(
+              onPressed: goToRouteCamera,
+              child: const Text('안전한 공장, 원료 배합팀 인증하러'),
+            ),
             ElevatedButton(
               onPressed: addDummyDataUserCheckHistory,
               child: const Text('user_check_history_count 더미 데이터 추가'),
@@ -52,6 +57,12 @@ class _RouteTestState extends State<RouteTest> {
     );
   }
 
+  goToRouteCamera() async {
+    Get.toNamed(
+      '$keyRouteCheckListDetail/JzLPqlJc0DfWQvkwV1iS/$keyRouteCheckListCheckWithOutSlash',
+    );
+  }
+
   addDummyDataUserCheckHistory() async {
     //기준 체크 리스트 문서 id
     String checkListId = 'Y7eoaYJLn5v1YvolI0xW';
@@ -75,8 +86,8 @@ class _RouteTestState extends State<RouteTest> {
 
     for (int i = 1; i < countTargetDay; i++) {
       Map<String, dynamic> json = {...jsonOld};
-      DateTime datetimeNew =
-          DateTime.fromMillisecondsSinceEpoch(jsonOld[keyDate].toDate().millisecondsSinceEpoch - i * millisecondDay);
+      DateTime datetimeNew = DateTime.fromMillisecondsSinceEpoch(
+          jsonOld[keyDate].toDate().millisecondsSinceEpoch - i * millisecondDay);
       final String displayDateToday = DateFormat('yyyy-MM-dd').format(datetimeNew);
 
       json[keyDate] = Timestamp.fromDate(datetimeNew);
@@ -122,7 +133,8 @@ class _RouteTestState extends State<RouteTest> {
       try {
         String? href = element.href;
         String? date = regExpDate.stringMatch(innerHtmlFormatted)?.replaceAll('[', '').replaceAll(',', '');
-        String? region = regExpRegion.stringMatch(innerHtmlFormatted)?.replaceAll(']', '').replaceAll(',', '').trim();
+        String? region =
+            regExpRegion.stringMatch(innerHtmlFormatted)?.replaceAll(']', '').replaceAll(',', '').trim();
         String? title = innerHtmlFormatted.substring(innerHtmlFormatted.indexOf(']') + 1).trim();
 
         if (href == null || date == null || region == null) {
@@ -156,7 +168,11 @@ class _RouteTestState extends State<RouteTest> {
 
     Set<String> setToken = {};
 
-    await FirebaseFirestore.instance.collection(keyUserS).where(keyId, whereIn: listUserIdTarget).get().then((value) {
+    await FirebaseFirestore.instance
+        .collection(keyUserS)
+        .where(keyId, whereIn: listUserIdTarget)
+        .get()
+        .then((value) {
       value.docs.forEach((element) {
         ModelUser modelUser = ModelUser.fromJson(element.data(), element.id);
         setToken.addAll([...modelUser.listToken]);
@@ -169,11 +185,10 @@ class _RouteTestState extends State<RouteTest> {
         .call(<String, dynamic>{
       'tokens': setToken.toList(),
       'test': {
-        keyTitle : '테스트다' ,
-        keyBody : DateFormat('HH:mm:ss 발송함').format(DateTime.now()),
+        keyTitle: '테스트다',
+        keyBody: DateFormat('HH:mm:ss 발송함').format(DateTime.now()),
       },
     });
-
   }
 
   goToRouteUnknown() {

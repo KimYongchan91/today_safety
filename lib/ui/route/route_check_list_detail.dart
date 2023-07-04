@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -21,11 +22,14 @@ import 'package:today_safety/ui/item/item_user_check_history_small.dart';
 import 'package:today_safety/ui/route/route_notice_new.dart';
 import 'package:today_safety/ui/route/route_qr_code_detail.dart';
 import 'package:today_safety/ui/widget/icon_error.dart';
+import '../../const/value/key.dart';
 import '../../const/value/router.dart';
 import '../../my_app.dart';
 import '../../service/util/util_app_link.dart';
 import '../../service/util/util_chart.dart';
 import '../../service/util/util_check_list.dart';
+import '../../service/util/util_snackbar.dart';
+import '../dialog/dialog_delete_site_or_team.dart';
 import '../item/item_calendar.dart';
 import '../item/item_notice_big.dart';
 
@@ -189,7 +193,8 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                               alignment: Alignment.topLeft,
                               child: Text(
                                 '인증 현황',
-                                style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
+                                style:
+                                    TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
                               ),
                             ),
                             const SizedBox(
@@ -210,7 +215,9 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                                         '달력',
                                         style: btnTxtStyle.copyWith(
                                             fontSize: value == ViewAnalyticsType.calendar ? 17 : 15,
-                                            color: value == ViewAnalyticsType.calendar ? Colors.black : Colors.black45),
+                                            color: value == ViewAnalyticsType.calendar
+                                                ? Colors.black
+                                                : Colors.black45),
                                       )),
                                   const SizedBox(
                                     width: 20,
@@ -220,15 +227,19 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                                       valueNotifierViewAnalyticsType.value = ViewAnalyticsType.chart;
 
                                       Future.delayed(const Duration(milliseconds: 100)).then((value) {
-                                        scrollControllerChart.animateTo(scrollControllerChart.position.maxScrollExtent,
-                                            duration: const Duration(milliseconds: 200), curve: Curves.linear);
+                                        scrollControllerChart.animateTo(
+                                            scrollControllerChart.position.maxScrollExtent,
+                                            duration: const Duration(milliseconds: 200),
+                                            curve: Curves.linear);
                                       });
                                     },
                                     child: Text(
                                       '그래프',
                                       style: btnTxtStyle.copyWith(
                                           fontSize: value == ViewAnalyticsType.chart ? 17 : 15,
-                                          color: value == ViewAnalyticsType.chart ? Colors.black : Colors.black45),
+                                          color: value == ViewAnalyticsType.chart
+                                              ? Colors.black
+                                              : Colors.black45),
                                     ),
                                   ),
                                 ],
@@ -370,8 +381,6 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                         ),
                       ),
 
-
-
                       ///최근 인증한 유저
                       ///3개 정도?
                       Consumer<ProviderUserCheckHistoryOnCheckList>(
@@ -390,7 +399,6 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                                       '최근 인증 근무자',
                                       style: CustomTextStyle.bigBlackBold(),
                                     ),
-
                                     ElevatedButton(
                                       style: ElevatedButton.styleFrom(
                                         primary: Colors.orange, // Background color
@@ -405,7 +413,6 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                                         style: TextStyle(fontWeight: FontWeight.bold),
                                       ),
                                     ),
-
                                   ],
                                 ),
                               ),
@@ -441,14 +448,16 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                                 ),
 
                                 Visibility(
-                                  visible: MyApp.providerUser.modelUser?.id == modelCheckList!.modelSite.master,
+                                  visible:
+                                      MyApp.providerUser.modelUser?.id == modelCheckList!.modelSite.master,
                                   child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
                                       primary: Colors.orange, // Background color
                                     ),
                                     onPressed: () {
                                       Get.to(() => RouteNoticeNew(
-                                          modelSite: modelCheckList!.modelSite, modelCheckList: modelCheckList));
+                                          modelSite: modelCheckList!.modelSite,
+                                          modelCheckList: modelCheckList));
                                     },
                                     child: const Text(
                                       '작성하기',
@@ -499,6 +508,32 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                               physics: const NeverScrollableScrollPhysics(),
                             )
                           ],
+                        ),
+                      ),
+
+                      ///근무지 삭제
+                      InkWell(
+                        onTap: () async {
+                          var result =
+                              await Get.dialog(const DialogDeleteSiteOrTeam(DialogDeleteSiteOrTeamType.team));
+                          if (result == true) {
+                            await FirebaseFirestore.instance
+                                .collection(keyCheckListS)
+                                .doc(modelCheckList!.docId)
+                                .delete();
+                            Get.back();
+                            showSnackBarOnRoute('팀을 삭제했어요.');
+                          }
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                          width: double.infinity,
+                          height: 50,
+                          child: const Text(
+                            '팀 삭제',
+                            style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
+                          ),
                         ),
                       ),
                     ],

@@ -4,11 +4,13 @@ import 'package:get/get.dart';
 import '../../../custom/custom_text_style.dart';
 import '../../../my_app.dart';
 
-class DialogCloseRoute extends StatelessWidget {
-  final String content;
+enum DialogDeleteSiteOrTeamType { site, team }
+
+class DialogDeleteSiteOrTeam extends StatelessWidget {
+  final DialogDeleteSiteOrTeamType dialogDeleteSiteOrTeamType;
   final String labelButton;
 
-  const DialogCloseRoute({super.key, this.content = '종료하시겠습니까?', this.labelButton = '종료'});
+  const DialogDeleteSiteOrTeam(this.dialogDeleteSiteOrTeamType, {super.key, this.labelButton = '삭제'});
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +36,10 @@ class DialogCloseRoute extends StatelessWidget {
             const SizedBox(
               height: 32,
             ),
-            Text(content, textAlign: TextAlign.center, style: const CustomTextStyle.normalBlack()),
+            Text(
+                '${dialogDeleteSiteOrTeamType == DialogDeleteSiteOrTeamType.site ? '근무지를' : '팀을'} 삭제할까요?\n다시 되돌릴 수 없어요.',
+                textAlign: TextAlign.center,
+                style: const CustomTextStyle.normalBlack()),
             const SizedBox(
               height: 32,
             ),

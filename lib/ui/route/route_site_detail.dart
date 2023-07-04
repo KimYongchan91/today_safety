@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -6,7 +7,10 @@ import 'package:kakao_map_plugin/kakao_map_plugin.dart';
 import 'package:provider/provider.dart';
 import 'package:today_safety/const/model/model_site.dart';
 import 'package:today_safety/const/value/color.dart';
+import 'package:today_safety/const/value/key.dart';
 import 'package:today_safety/service/provider/provider_check_list.dart';
+import 'package:today_safety/service/util/util_snackbar.dart';
+import 'package:today_safety/ui/dialog/dialog_delete_site_or_team.dart';
 import 'package:today_safety/ui/route/route_notice_new.dart';
 import 'package:today_safety/ui/route/route_webview.dart';
 import 'package:today_safety/ui/widget/widget_weather.dart';
@@ -179,7 +183,7 @@ class _RouteSiteDetailState extends State<RouteSiteDetail> with SingleTickerProv
                       )),
 
                       ///인원 수
-                     /* Column(
+                      /* Column(
                         children: [
                           const FaIcon(
                             FontAwesomeIcons.userGroup,
@@ -223,7 +227,6 @@ class _RouteSiteDetailState extends State<RouteSiteDetail> with SingleTickerProv
                         style: CustomTextStyle.bigBlackBold(),
                       ),
                       const Spacer(),
-
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           primary: Colors.orange, // Background color
@@ -231,14 +234,11 @@ class _RouteSiteDetailState extends State<RouteSiteDetail> with SingleTickerProv
                         onPressed: () {
                           addCheckList();
                         },
-                        child: Text(
+                        child: const Text(
                           '만들기',
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
-
-
-
                     ],
                   ),
                 ),
@@ -249,7 +249,7 @@ class _RouteSiteDetailState extends State<RouteSiteDetail> with SingleTickerProv
                     itemCount: value.listModelCheckList.length,
                     itemBuilder: (context, index) => ItemCheckList(value.listModelCheckList[index]),
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                   ),
                 ),
                 const SizedBox(
@@ -317,6 +317,29 @@ class _RouteSiteDetailState extends State<RouteSiteDetail> with SingleTickerProv
                     onRefreshWeather: _refreshWeather,
                     controllerRefreshWeather: controllerRefreshWeather,
                     key: UniqueKey(),
+                  ),
+                ),
+
+                ///근무지 삭제
+                InkWell(
+                  onTap: () async {
+                    var result =
+                        await Get.dialog(const DialogDeleteSiteOrTeam(DialogDeleteSiteOrTeamType.site));
+                    if (result == true) {
+                      await FirebaseFirestore.instance.collection(keySites).doc(modelSite.docId).delete();
+                      Get.back();
+                      showSnackBarOnRoute('근무지를 삭제했어요.');
+                    }
+                  },
+                  child: Container(
+                    alignment: Alignment.center,
+                    margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                    width: double.infinity,
+                    height: 50,
+                    child: const Text(
+                      '근무지 삭제',
+                      style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
 

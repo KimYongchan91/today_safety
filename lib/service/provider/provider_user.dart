@@ -339,6 +339,10 @@ class ProviderUser extends ChangeNotifier {
       MyApp.logger.d("네이버 로그인 결과\n"
           "이름 : ${naverLoginResult.account.name}");
 
+      if(naverLoginResult.account.name.isEmpty || naverLoginResult.account.email.isEmpty){
+        throw Exception("naverLoginResult.account.name.isEmpty || naverLoginResult.account.email.isEmpty");
+      }
+
       return ModelUserEasyLogin(
         loginType: keyNaver,
         email: naverLoginResult.account.email,

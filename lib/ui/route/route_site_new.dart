@@ -84,7 +84,6 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
     return WillPopScope(
       onWillPop: onWillPop,
       child: Scaffold(
-
         body: InkWell(
           onTap: hideKeyboard,
           child: SafeArea(
@@ -107,8 +106,7 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
                               Get.back();
                             },
                             child: const Padding(
-                                padding: EdgeInsets.all(5),
-                                child: FaIcon(FontAwesomeIcons.angleLeft)),
+                                padding: EdgeInsets.all(5), child: FaIcon(FontAwesomeIcons.angleLeft)),
                           ),
                           const SizedBox(
                             width: 20,
@@ -129,19 +127,16 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
                       color: Colors.black45,
                     ),
 
-
-
                     Container(
-
-
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const SizedBox(height: 5,),
-
+                          const SizedBox(
+                            height: 5,
+                          ),
                           Card(
                             child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 30),
+                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
                               width: Get.width,
                               color: Colors.white,
                               child: Column(
@@ -164,20 +159,19 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
                                       });
                                     },
                                   ),
-
                                 ],
                               ),
                             ),
                           ),
-                          const SizedBox(height: 5,),
-
+                          const SizedBox(
+                            height: 5,
+                          ),
                           Card(
                             child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 30),
+                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
                               width: Get.width,
                               color: Colors.white,
                               child: Column(
-
                                 children: [
                                   ///근무지 텍스트
                                   Align(
@@ -188,97 +182,101 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
                                     ),
                                   ),
 
-                                  const SizedBox(height: 30,),
-
-                                  ///근무지 로고 이미지
-                                  Container(
-                                    width: _sizeLogoImage,
-                                    height: _sizeLogoImage,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                        width: 2,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                    child: modelSiteNew.urlLogoImage.isNotEmpty
-
-                                    ///로고 이미지를 넣었다면
-                                        ? Stack(
-                                      children: [
-                                        //로고 이미지
-                                        Positioned.fill(
-                                          child: (modelSiteNew.urlLogoImage.startsWith('/data')
-                                              ? ClipRRect(
-                                            borderRadius: BorderRadius.circular(20),
-                                            child: Image.file(
-                                              File(modelSiteNew.urlLogoImage),
-                                              width: _sizeLogoImage,
-                                              height: _sizeLogoImage,
-                                              fit: BoxFit.cover,
-                                            ),
-                                          )
-                                              : ClipRRect(
-                                            borderRadius: BorderRadius.circular(20),
-                                            child: CachedNetworkImage(
-                                              width: _sizeLogoImage,
-                                              height: _sizeLogoImage,
-                                              imageUrl: modelSiteNew.urlLogoImage,
-                                              fit: BoxFit.cover,
-                                            ),
-                                          )),
-                                        ),
-
-                                        //로고 이미지 제거 버튼
-                                        Positioned(
-                                          top: 10,
-                                          right: 10,
-                                          child: InkWell(
-                                            onTap: () {
-                                              deleteImage(_ImageType.logo);
-                                            },
-                                            child: Container(
-                                                padding: const EdgeInsets.all(5),
-                                                decoration:
-                                                const BoxDecoration(shape: BoxShape.circle, color: Color(0x55000000)),
-                                                child: const Icon(
-                                                  Icons.close,
-                                                  color: Colors.white,
-                                                  size: 20,
-                                                )),
-                                          ),
-                                        )
-                                      ],
-                                    )
-
-                                    ///로고 이미지를 넣기 전
-                                        : Center(
-                                      child: InkWell(
-                                        onTap: () {
-                                          pickImage(_ImageType.logo);
-                                        },
-                                        child: const Padding(
-                                          padding: EdgeInsets.all(20),
-                                          child: FaIcon(
-                                            FontAwesomeIcons.plus,
-                                            color: Colors.grey,
-                                            size: 30,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
+                                  const SizedBox(
+                                    height: 30,
                                   ),
 
+                                  ///근무지 로고 이미지
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(_sizeLogoImage / 2),
+                                    child: Container(
+                                      width: _sizeLogoImage,
+                                      height: _sizeLogoImage,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                          width: 2,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                      child: modelSiteNew.urlLogoImage.isNotEmpty
 
+                                          ///로고 이미지를 넣었다면
+                                          ? ClipRRect(
+                                              borderRadius: BorderRadius.circular(_sizeLogoImage / 2),
+                                              child: Stack(
+                                                children: [
+                                                  //로고 이미지
+                                                  Positioned.fill(
+                                                    child: (modelSiteNew.urlLogoImage.startsWith('/data')
+                                                        ? Image.file(
+                                                            File(modelSiteNew.urlLogoImage),
+                                                            width: _sizeLogoImage,
+                                                            height: _sizeLogoImage,
+                                                            fit: BoxFit.cover,
+                                                          )
+                                                        : CachedNetworkImage(
+                                                            width: _sizeLogoImage,
+                                                            height: _sizeLogoImage,
+                                                            imageUrl: modelSiteNew.urlLogoImage,
+                                                            fit: BoxFit.cover,
+                                                          )),
+                                                  ),
+
+                                                  //로고 이미지 제거 버튼
+                                                  Positioned(
+                                                    top: 10,
+                                                    right: 10,
+                                                    child: InkWell(
+                                                      onTap: () {
+                                                        deleteImage(_ImageType.logo);
+                                                      },
+                                                      child: Container(
+                                                          padding: const EdgeInsets.all(5),
+                                                          decoration: const BoxDecoration(
+                                                              shape: BoxShape.circle,
+                                                              color: Color(0x55000000)),
+                                                          child: const Icon(
+                                                            Icons.close,
+                                                            color: Colors.white,
+                                                            size: 20,
+                                                          )),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            )
+
+                                          ///로고 이미지를 넣기 전
+                                          : Center(
+                                              child: InkWell(
+                                                onTap: () {
+                                                  pickImage(_ImageType.logo);
+                                                },
+                                                child: const Padding(
+                                                  padding: EdgeInsets.all(20),
+                                                  child: FaIcon(
+                                                    FontAwesomeIcons.plus,
+                                                    color: Colors.grey,
+                                                    size: 30,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
                           ),
+                          const SizedBox(
+                            height: 5,
+                          ),
 
-                          const SizedBox(height: 5,),
+                          ///현장 이미지
                           Card(
                             child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 30),
+                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
                               width: Get.width,
                               color: Colors.white,
                               child: Column(
@@ -290,8 +288,9 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
                                     style: titleStyle,
                                   ),
 
-                                  const SizedBox(height: 30,),
-
+                                  const SizedBox(
+                                    height: 30,
+                                  ),
 
                                   ///근무지 현장 이미지
                                   Container(
@@ -306,93 +305,91 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
                                     ),
                                     child: modelSiteNew.urlSiteImage.isNotEmpty
 
-                                    ///현장 이미지를 넣었다면
-                                        ? Stack(
-                                      children: [
-                                        //로고 이미지
-                                        Positioned.fill(
-                                          child: (modelSiteNew.urlSiteImage.startsWith('/data')
-                                              ? ClipRRect(
-                                            borderRadius: BorderRadius.circular(20),
-                                            child: Image.file(
-                                              File(modelSiteNew.urlSiteImage),
-                                              width: Get.width,
-                                              height: Get.height / 4,
-                                              fit: BoxFit.cover,
-                                            ),
-                                          )
-                                              : ClipRRect(
-                                            borderRadius: BorderRadius.circular(20),
-                                            child: CachedNetworkImage(
-                                              width: Get.width,
-                                              height: Get.height / 4,
-                                              imageUrl: modelSiteNew.urlSiteImage,
-                                              fit: BoxFit.cover,
-                                            ),
-                                          )),
-                                        ),
+                                        ///현장 이미지를 넣었다면
+                                        ? ClipRRect(
+                                      borderRadius: BorderRadius.circular(18),
+                                          child: Stack(
+                                              children: [
+                                                //로고 이미지
+                                                Positioned.fill(
+                                                  child: (modelSiteNew.urlSiteImage.startsWith('/data')
+                                                      ? Image.file(
+                                                        File(modelSiteNew.urlSiteImage),
+                                                        width: Get.width,
+                                                        height: Get.height / 4,
+                                                        fit: BoxFit.cover,
+                                                      )
+                                                      : CachedNetworkImage(
+                                                        width: Get.width,
+                                                        height: Get.height / 4,
+                                                        imageUrl: modelSiteNew.urlSiteImage,
+                                                        fit: BoxFit.cover,
+                                                      )),
+                                                ),
 
-                                        //로고 이미지 제거 버튼
-                                        Positioned(
-                                          top: 10,
-                                          right: 10,
-                                          child: InkWell(
-                                            onTap: () {
-                                              deleteImage(_ImageType.site);
-                                            },
-                                            child: Container(
-                                                padding: const EdgeInsets.all(5),
-                                                decoration:
-                                                const BoxDecoration(shape: BoxShape.circle, color: Color(0x55000000)),
-                                                child: const Icon(
-                                                  Icons.close,
-                                                  color: Colors.white,
-                                                  size: 20,
-                                                )),
-                                          ),
+                                                //로고 이미지 제거 버튼
+                                                Positioned(
+                                                  top: 10,
+                                                  right: 10,
+                                                  child: InkWell(
+                                                    onTap: () {
+                                                      deleteImage(_ImageType.site);
+                                                    },
+                                                    child: Container(
+                                                        padding: const EdgeInsets.all(5),
+                                                        decoration: const BoxDecoration(
+                                                            shape: BoxShape.circle, color: Color(0x55000000)),
+                                                        child: const Icon(
+                                                          Icons.close,
+                                                          color: Colors.white,
+                                                          size: 20,
+                                                        )),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
                                         )
-                                      ],
-                                    )
 
-                                    ///현장 이미지를 넣기 전
+                                        ///현장 이미지를 넣기 전
                                         : Center(
-                                      child: InkWell(
-                                        onTap: () {
-                                          pickImage(_ImageType.site);
-                                        },
-                                        child: const Padding(
-                                          padding: EdgeInsets.all(20),
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              FaIcon(
-                                                FontAwesomeIcons.images,
-                                                color: Colors.grey,
-                                                size: 30,
+                                            child: InkWell(
+                                              onTap: () {
+                                                pickImage(_ImageType.site);
+                                              },
+                                              child: const Padding(
+                                                padding: EdgeInsets.all(20),
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    FaIcon(
+                                                      FontAwesomeIcons.images,
+                                                      color: Colors.grey,
+                                                      size: 30,
+                                                    ),
+                                                    SizedBox(
+                                                      height: 10,
+                                                    ),
+                                                    Text(
+                                                      '현장 이미지를 추가해 주세요.',
+                                                      style: TextStyle(
+                                                          fontWeight: FontWeight.bold, color: Colors.grey),
+                                                    )
+                                                  ],
+                                                ),
                                               ),
-                                              SizedBox(
-                                                height: 10,
-                                              ),
-                                              Text(
-                                                '현장 이미지를 추가해 주세요.',
-                                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
-                                              )
-                                            ],
+                                            ),
                                           ),
-                                        ),
-                                      ),
-                                    ),
                                   ),
-
                                 ],
                               ),
                             ),
                           ),
-                          const SizedBox(height: 5,),
-
+                          const SizedBox(
+                            height: 5,
+                          ),
                           Card(
                             child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 30),
+                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
                               width: Get.width,
                               color: Colors.white,
                               child: Column(
@@ -416,78 +413,69 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
                                       margin: const EdgeInsets.symmetric(horizontal: 20),
                                       padding: const EdgeInsets.all(15),
                                       width: MediaQuery.of(context).size.width,
-                                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: colorBackground),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(5), color: colorBackground),
                                       child: modelSiteNew.modelLocation.addressLoad != null
                                           ? Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                                        const FaIcon(
-                                          FontAwesomeIcons.locationDot,
-                                          color: Colors.blue,
-                                          size: 14,
-                                        ),
-                                        const SizedBox(
-                                          width: 5,
-                                        ),
-                                        Text(
-                                          '${modelSiteNew.modelLocation.addressLoad}',
-                                          style: const TextStyle(color: Colors.blue),
-                                        )
-                                      ])
+                                              const FaIcon(
+                                                FontAwesomeIcons.locationDot,
+                                                color: Colors.blue,
+                                                size: 14,
+                                              ),
+                                              const SizedBox(
+                                                width: 5,
+                                              ),
+                                              Text(
+                                                '${modelSiteNew.modelLocation.addressLoad}',
+                                                style: const TextStyle(color: Colors.blue),
+                                              )
+                                            ])
                                           : const Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          FaIcon(
-                                            FontAwesomeIcons.locationDot,
-                                            size: 14,
-                                          ),
-                                          SizedBox(
-                                            width: 5,
-                                          ),
-                                          Text(
-                                            '주소찾기',
-                                          ),
-                                        ],
-                                      ),
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                FaIcon(
+                                                  FontAwesomeIcons.locationDot,
+                                                  size: 14,
+                                                ),
+                                                SizedBox(
+                                                  width: 5,
+                                                ),
+                                                Text(
+                                                  '주소찾기',
+                                                ),
+                                              ],
+                                            ),
                                     ),
                                   ),
 
                                   const SizedBox(
                                     height: 30,
                                   ),
-                                  modelSiteNew.modelLocation.lat != null
-                                      ? SizedBox(
-                                    width: Get.width,
-                                    height: 250,
-                                    child: ValueListenableBuilder(
-                                      valueListenable: valueNotifierMarkers,
-                                      builder: (context, value, child) => KakaoMap(
-                                        onMapCreated: ((controller) {
-                                          completer.complete();
-                                          kakaoMapController = controller;
+                                  IgnorePointer(
+                                    child: SizedBox(
+                                      width: Get.width,
+                                      height: 250,
+                                      child: ValueListenableBuilder(
+                                        valueListenable: valueNotifierMarkers,
+                                        builder: (context, value, child) => KakaoMap(
+                                          onMapCreated: ((controller) {
+                                            completer.complete();
+                                            kakaoMapController = controller;
 
-                                          _moveKaKaoMapToCenterAndAddMarker();
-                                        }),
-                                        markers: value.toList(),
+                                            _moveKaKaoMapToCenterAndAddMarker();
+                                          }),
+                                          markers: value.toList(),
+                                        ),
                                       ),
                                     ),
-                                  )
-                                      : Container(),
+                                  ),
                                 ],
                               ),
                             ),
                           ),
-
-
-const SizedBox(height: 10,),
-
-
-
-
-
-
-
-
-
-
+                          const SizedBox(
+                            height: 10,
+                          ),
                         ],
                       ),
                     ),
@@ -496,11 +484,7 @@ const SizedBox(height: 10,),
 
                     //
 
-
-
                     //
-
-
 
                     /*  TextField(),
                //
@@ -673,7 +657,8 @@ const SizedBox(height: 10,),
         'Authorization': 'KakaoAK de2c9d30f737be6f897916c21f92c156'
       };
 
-      String url = 'https://dapi.kakao.com/v2/local/search/address.json?analyze_type=similar&page=1&size=20&query=';
+      String url =
+          'https://dapi.kakao.com/v2/local/search/address.json?analyze_type=similar&page=1&size=20&query=';
       String query = result.address;
 
       var response = await http.get(Uri.parse(Uri.encodeFull(url + query)), headers: requestHeaders);
@@ -802,7 +787,8 @@ const SizedBox(height: 10,),
         Map<String, dynamic> mapUrlImage = {};
 
         FirebaseStorage.instance
-            .ref("$keyImages/$keySites/${documentReference.id}/${pt.basename(File(modelSiteNew.urlLogoImage).path)}")
+            .ref(
+                "$keyImages/$keySites/${documentReference.id}/${pt.basename(File(modelSiteNew.urlLogoImage).path)}")
             .putFile(File(modelSiteNew.urlLogoImage))
             .then((uploadTaskLogo) {
           uploadTaskLogo.ref.getDownloadURL().then((downloadURLLogo) {
@@ -812,7 +798,8 @@ const SizedBox(height: 10,),
         });
 
         FirebaseStorage.instance
-            .ref("$keyImages/$keySites/${documentReference.id}/${pt.basename(File(modelSiteNew.urlSiteImage).path)}")
+            .ref(
+                "$keyImages/$keySites/${documentReference.id}/${pt.basename(File(modelSiteNew.urlSiteImage).path)}")
             .putFile(File(modelSiteNew.urlSiteImage))
             .then((uploadTaskSite) {
           uploadTaskSite.ref.getDownloadURL().then((downloadURLSite) {

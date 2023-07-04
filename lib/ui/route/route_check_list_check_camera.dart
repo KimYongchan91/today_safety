@@ -146,6 +146,10 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
 
     try {
       listCameraDescription = await availableCameras();
+      for (var element in listCameraDescription) {
+        MyApp.logger.d(
+            "카메라 정보 : name : ${element.name}, lensDirection : ${element.lensDirection}, sensorOrientation : ${element.sensorOrientation} ");
+      }
     } on Exception catch (e) {
       MyApp.logger.wtf('카메라 정보 불러오는 데 실패 : ${e.toString()}');
       completerInit.complete(false);
@@ -165,10 +169,12 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
       return;
     }
 
-    cameraController = CameraController(cameraDescriptionFront, ResolutionPreset.medium);
+    cameraController = CameraController(cameraDescriptionFront, ResolutionPreset.high, enableAudio: false);
 
     try {
       await cameraController.initialize();
+      //MyApp.logger.d(
+      //    "cameraController.value.aspectRatio : ${cameraController.value.aspectRatio}, cameraDescriptionFront.sensorOrientation :${cameraDescriptionFront.sensorOrientation}    ");
       completerInit.complete(true);
     } on Exception catch (e) {
       MyApp.logger.wtf('카메라 컨트롤러 초기화 실패 : ${e.toString()}');
@@ -181,6 +187,7 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
     return WillPopScope(
       onWillPop: onWillPop,
       child: Scaffold(
+        backgroundColor: const Color(0x55000000),
         body: SafeArea(
           child: SizedBox(
             width: Get.width,
@@ -200,19 +207,17 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
                   return Stack(
                     children: [
                       ///카메라 뷰 (전체화면)
-                      Positioned.fill(
-                        child: ValueListenableBuilder(
-                          valueListenable: valueNotifierIndexCheckShowResult,
-                          builder: (context, value, child) => value != null
+                      ValueListenableBuilder(
+                        valueListenable: valueNotifierIndexCheckShowResult,
+                        builder: (context, value, child) => value != null
 
-                              ///사진 촬영 결과를 보여주는 부분
-                              ? ItemCheckImageLocal(valueNotifierMapCheckImageLocal
-                                  .value[widget.modelCheckList.listModelCheck[valueNotifierIndexCheck.value]])
-                              :
+                            ///사진 촬영 결과를 보여주는 부분
+                            ? ItemCheckImageLocal(valueNotifierMapCheckImageLocal
+                                .value[widget.modelCheckList.listModelCheck[valueNotifierIndexCheck.value]])
+                            :
 
-                              ///촬영 전 카메라 뷰
-                              CameraPreview(cameraController),
-                        ),
+                            ///촬영 전 카메라 뷰
+                            Positioned.fill(child: CameraPreview(cameraController)),
                       ),
 
                       ///인증 진행도 부분
@@ -284,32 +289,35 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
                                           child: badges.Badge(
                                             badgeStyle: badges.BadgeStyle(
                                               shape: badges.BadgeShape.circle,
-                                              badgeColor: a[widget.modelCheckList.listModelCheck[index]] != null
+                                              badgeColor:
+                                                  a[widget.modelCheckList.listModelCheck[index]] != null
 
-                                                  ///이미 완료
-                                                  ? Colors.orange
-                                                  : b == index
+                                                      ///이미 완료
+                                                      ? Colors.orange
+                                                      : b == index
 
-                                                      ///현재 진행 중
-                                                      ? Color(0x00000000)
+                                                          ///현재 진행 중
+                                                          ? Color(0x00000000)
 
-                                                      ///현재 진행 중
-                                                      : Colors.transparent,
+                                                          ///현재 진행 중
+                                                          : Colors.transparent,
                                             ),
-                                            badgeContent: a[widget.modelCheckList.listModelCheck[index]] != null
+                                            badgeContent:
+                                                a[widget.modelCheckList.listModelCheck[index]] != null
 
-                                                ///이미 완료
-                                                ? const Icon(
-                                                    Icons.check,
-                                                    color: Colors.white,
-                                                  )
-                                                : b == index
+                                                    ///이미 완료
+                                                    ? const Icon(
+                                                        Icons.check,
+                                                        color: Colors.white,
+                                                        size: 16,
+                                                      )
+                                                    : b == index
 
-                                                    ///현재 진행 중
-                                                    ? null
+                                                        ///현재 진행 중
+                                                        ? null
 
-                                                    ///아직 진행 전
-                                                    : null,
+                                                        ///아직 진행 전
+                                                        : null,
                                             child: Image.asset(
                                               getPathCheckImage(widget.modelCheckList.listModelCheck[index]),
                                               width: _sizeImageCheckSequence,
@@ -453,7 +461,8 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
                                                           alignment: Alignment.center,
                                                           decoration: BoxDecoration(
                                                             color: b.values.length ==
-                                                                    widget.modelCheckList.listModelCheck.length
+                                                                    widget
+                                                                        .modelCheckList.listModelCheck.length
 
                                                                 ///모든 인증이 완료되었을 때
                                                                 ? Colors.orange
@@ -504,7 +513,7 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
                                       );
                               })),
 
-                      ///촬영버튼
+                      ///촬영 버튼 및 카메라 전환 버튼
                       Align(
                           alignment: Alignment.bottomCenter,
                           child: ValueListenableBuilder(
@@ -552,8 +561,8 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
                                                               decoration: BoxDecoration(
                                                                   shape: BoxShape.circle,
                                                                   color: Colors.white,
-                                                                  border:
-                                                                      Border.all(width: 0.5, color: Colors.black45)),
+                                                                  border: Border.all(
+                                                                      width: 0.5, color: Colors.black45)),
                                                             ),
                                                           ),
                                                         ),
@@ -624,6 +633,12 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
         break;
       case CameraLensDirection.external:
         break;
+    }
+  }
+
+  rotateCamera() {
+    if (isInitSuccess == false) {
+      return;
     }
   }
 
@@ -763,8 +778,9 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
     );
 
     ///user_check_history 문서 생성
-    DocumentReference documentReference =
-        await FirebaseFirestore.instance.collection(keyUserCheckHistories).add(modelUserCheckHistory.toJson());
+    DocumentReference documentReference = await FirebaseFirestore.instance
+        .collection(keyUserCheckHistories)
+        .add(modelUserCheckHistory.toJson());
     modelUserCheckHistory.docId = documentReference.id;
 
     ///이미지 전송
@@ -810,7 +826,9 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
     await Future.wait([...listCompleterUploadImageToServer.map((e) => e.future).toList()]);
 
     ///전송된 이미지들 정렬
-    List<String> listName = [...valueNotifierMapCheckImageLocal.value.values.map((e) => e.modelCheck.name).toList()];
+    List<String> listName = [
+      ...valueNotifierMapCheckImageLocal.value.values.map((e) => e.modelCheck.name).toList()
+    ];
     listModelCheckImage.sort(
       (a, b) {
         return listName.indexOf(a.name).compareTo(listName.indexOf(b.name));
@@ -874,8 +892,8 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
     //user check history detail 페이지로 이동
 
     //Get.offNamed('$keyRouteUserCheckHistoryDetail/${documentReference.id}');
-    Get.offNamedUntil(
-        '$keyRouteUserCheckHistoryDetail/${documentReference.id}', (route) => route.settings.name == keyRouteMain);
+    Get.offNamedUntil('$keyRouteUserCheckHistoryDetail/${documentReference.id}',
+        (route) => route.settings.name == keyRouteMain);
 
     showSnackBarOnRoute('인증을 완료했어요.');
     //await FirebaseFirestore.instance.collection(keyUserChecks).add({});
@@ -894,7 +912,8 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
         throw Exception("문서 없음");
       }
 
-      ModelUser modelUser = ModelUser.fromJson(querySnapshot.docs.first.data() as Map, querySnapshot.docs.first.id);
+      ModelUser modelUser =
+          ModelUser.fromJson(querySnapshot.docs.first.data() as Map, querySnapshot.docs.first.id);
 
       ///fcm 전송
       /*data = {

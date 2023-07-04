@@ -33,12 +33,17 @@ class ItemCheckImageLocal extends StatelessWidget {
         ),
 
         ///촬영 정보 보여주는 부분
-        Positioned(
-          bottom: 100,
-          right: 100,
-          child: Text(
-            '촬영 시간 : ${DateFormat('yyyy-MM-dd HH:mm:ss').format(modelCheckHistoryLocal!.date.toDate())}\n',
-            style: const TextStyle(color: Colors.white,fontWeight: FontWeight.bold),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Padding(
+            padding: EdgeInsets.only(
+              bottom: Get.height / 6 - 30,
+            ),
+            child: Text(
+              '${modelCheckHistoryLocal!.modelCheck.name}  '
+              '${DateFormat('yyyy-MM-dd HH:mm:ss').format(modelCheckHistoryLocal!.date.toDate())}',
+              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            ),
           ),
         ),
       ],
