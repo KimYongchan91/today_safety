@@ -37,16 +37,28 @@ class _RouteUserCheckHistoryDetailImageState extends State<RouteUserCheckHistory
                 child: Row(
                   children: [
                     ///회사로고
-                    Container(
-                      width: 50,
-                      height: 50,
-                      color: Colors.orange,
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: Container(
+                        alignment: Alignment.center,
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: Colors.yellow.shade700,
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: Image.asset(
+                          'assets/images/logo/app_logo_big_128.png',
+                          width: 40,
+                          height: 40,
+                        ),
+                      ),
                     ),
                     const SizedBox(
                       width: 10,
                     ),
                     Text(
-                      '${widget.modelUserCheckHistory!.modelCheckList.name} (${widget.modelUserCheckHistory!.modelUser.name})',
+                      '${widget.modelUserCheckHistory.modelCheckList.name} (${widget.modelUserCheckHistory.modelUser.name})',
                       style: const CustomTextStyle.bigBlackBold(),
                     ),
                   ],

@@ -26,6 +26,7 @@ import 'package:today_safety/custom/custom_value_listenable_builder2.dart';
 import 'package:today_safety/service/util/util_location.dart';
 import 'package:path/path.dart' as pt;
 import 'package:today_safety/service/util/util_snackbar.dart';
+import 'package:badges/badges.dart' as badges;
 
 import '../../const/model/model_check_image.dart';
 import '../../const/model/model_check_image_local.dart';
@@ -188,7 +189,7 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
               future: completerInit.future,
               builder: (context, snapshot) {
                 if (snapshot.hasData == false) {
-                  return  Center(
+                  return Center(
                     child: LoadingAnimationWidget.inkDrop(color: Colors.green, size: 32),
                   );
                 } else if (snapshot.data == false) {
@@ -218,59 +219,131 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
                       Align(
                         alignment: Alignment.topCenter,
                         child: Container(
-                          color: const Color(0x55000000),
+                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                           width: Get.width,
                           height: Get.height / 6,
-                          child: Container(
-                            height: _sizeImageCheckSequence + 10,
-                            child: CustomValueListenableBuilder2(
-                              a: valueNotifierMapCheckImageLocal,
-                              b: valueNotifierIndexCheck,
-                              builder: (context, a, b, child) => ListView.builder(
-                                itemCount: widget.modelCheckList.listModelCheck.length,
+                          decoration: const BoxDecoration(
+                              color: const Color(0x55000000),
+                              borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(30),
+                                bottomRight: Radius.circular(30),
+                              )),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ///진행 단계 리스트뷰 영역
+                              Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: SizedBox(
+                                  height: _sizeImageCheckSequence,
+                                  child: CustomValueListenableBuilder2(
+                                    a: valueNotifierMapCheckImageLocal,
+                                    b: valueNotifierIndexCheck,
+                                    builder: (context, a, b, child) => ListView.separated(
+                                      itemCount: widget.modelCheckList.listModelCheck.length,
 
-                                ///진행도 아이템
-                                itemBuilder: (context, index) => InkWell(
-                                  onTap: () {
-                                    changeIndexCheck(index);
-                                  },
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      ///이미지
-                                      Container(
-                                        width: _sizeImageCheckSequence,
-                                        height: _sizeImageCheckSequence,
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                            color: a[widget.modelCheckList.listModelCheck[index]] != null
-                                                ? Colors.green
-                                                : b == index
-                                                    ? Colors.blueAccent
-                                                    : Colors.red,
-                                            width: 3,
-                                          ),
-                                        ),
-                                        child: Image.asset(
-                                          getPathCheckImage(widget.modelCheckList.listModelCheck[index]),
+                                      ///진행도 아이템
+                                      itemBuilder: (context, index) => InkWell(
+                                        onTap: () {
+                                          changeIndexCheck(index);
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.all(7),
                                           width: _sizeImageCheckSequence,
                                           height: _sizeImageCheckSequence,
+                                          decoration: BoxDecoration(
+                                            // color: const Color(0x33000000),
+                                            color: a[widget.modelCheckList.listModelCheck[index]] != null
+
+                                                ///이미 완료
+                                                ? Colors.orangeAccent
+                                                : b == index
+
+                                                    ///현재 진행 중
+                                                    ? Color(0x33000000)
+
+                                                    ///현재 진행 중
+                                                    : Color(0x33000000),
+
+                                            shape: BoxShape.circle,
+                                            border: Border.all(
+                                              color: a[widget.modelCheckList.listModelCheck[index]] != null
+
+                                                  ///이미 완료
+                                                  ? Colors.orangeAccent
+                                                  : b == index
+
+                                                      ///현재 진행 중
+                                                      ? Colors.orangeAccent
+
+                                                      ///현재 진행 중
+                                                      : Colors.grey,
+                                              width: 1,
+                                            ),
+                                          ),
+                                          child: badges.Badge(
+                                            badgeStyle: badges.BadgeStyle(
+                                              shape: badges.BadgeShape.circle,
+                                              badgeColor: a[widget.modelCheckList.listModelCheck[index]] != null
+
+                                                  ///이미 완료
+                                                  ? Colors.orange
+                                                  : b == index
+
+                                                      ///현재 진행 중
+                                                      ? Color(0x00000000)
+
+                                                      ///현재 진행 중
+                                                      : Colors.transparent,
+                                            ),
+                                            badgeContent: a[widget.modelCheckList.listModelCheck[index]] != null
+
+                                                ///이미 완료
+                                                ? const Icon(
+                                                    Icons.check,
+                                                    color: Colors.white,
+                                                  )
+                                                : b == index
+
+                                                    ///현재 진행 중
+                                                    ? null
+
+                                                    ///아직 진행 전
+                                                    : null,
+                                            child: Image.asset(
+                                              getPathCheckImage(widget.modelCheckList.listModelCheck[index]),
+                                              width: _sizeImageCheckSequence,
+                                              height: _sizeImageCheckSequence,
+                                            ),
+                                          ),
                                         ),
                                       ),
-
-                                      ///현재 진행 중이라면 현재 체크 항목의 제목까지
-                                      b == index
-                                          ? Text(
-                                              widget.modelCheckList.listModelCheck[index].name,
-                                              style: CustomTextStyle.bigBlackBold(),
-                                            )
-                                          : Container()
-                                    ],
+                                      separatorBuilder: (context, index) => const SizedBox(
+                                        width: 10,
+                                      ),
+                                      scrollDirection: Axis.horizontal,
+                                    ),
                                   ),
                                 ),
-                                scrollDirection: Axis.horizontal,
                               ),
-                            ),
+
+                              const SizedBox(
+                                height: 10,
+                              ),
+
+                              ///현재 단계 설명 영역
+                              CustomValueListenableBuilder2(
+                                a: valueNotifierMapCheckImageLocal,
+                                b: valueNotifierIndexCheck,
+                                builder: (context, a, b, child) =>
+
+                                    ///현재 단계의 제목
+                                    Text(
+                                  widget.modelCheckList.listModelCheck[b].name,
+                                  style: const CustomTextStyle.bigBlackBold().copyWith(color: Colors.white),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -380,11 +453,10 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
                                                           alignment: Alignment.center,
                                                           decoration: BoxDecoration(
                                                             color: b.values.length ==
-                                                                    widget
-                                                                        .modelCheckList.listModelCheck.length
+                                                                    widget.modelCheckList.listModelCheck.length
 
                                                                 ///모든 인증이 완료되었을 때
-                                                                ? Colors.greenAccent
+                                                                ? Colors.orange
                                                                 : const Color(0x33ffffff),
                                                             borderRadius: BorderRadius.circular(20),
                                                           ),
@@ -402,7 +474,7 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
                                           ],
                                         ),
                                       )
-                                    : SizedBox();
+                                    : const SizedBox();
                               })),
 
                       ///로딩 애니메
@@ -428,7 +500,7 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
                                               )
 
                                             ///촬영 하기 전
-                                            : SizedBox(),
+                                            : const SizedBox(),
                                       );
                               })),
 
@@ -449,7 +521,7 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
                                         builder: (context, value, child) => value
 
                                             ///촬영 처리 중 아이콘
-                                            ? SizedBox()
+                                            ? const SizedBox()
 
                                             ///촬영 하기 전
                                             : Container(
@@ -480,8 +552,8 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
                                                               decoration: BoxDecoration(
                                                                   shape: BoxShape.circle,
                                                                   color: Colors.white,
-                                                                  border: Border.all(
-                                                                      width: 0.5, color: Colors.black45)),
+                                                                  border:
+                                                                      Border.all(width: 0.5, color: Colors.black45)),
                                                             ),
                                                           ),
                                                         ),
@@ -691,9 +763,8 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
     );
 
     ///user_check_history 문서 생성
-    DocumentReference documentReference = await FirebaseFirestore.instance
-        .collection(keyUserCheckHistories)
-        .add(modelUserCheckHistory.toJson());
+    DocumentReference documentReference =
+        await FirebaseFirestore.instance.collection(keyUserCheckHistories).add(modelUserCheckHistory.toJson());
     modelUserCheckHistory.docId = documentReference.id;
 
     ///이미지 전송
@@ -739,9 +810,7 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
     await Future.wait([...listCompleterUploadImageToServer.map((e) => e.future).toList()]);
 
     ///전송된 이미지들 정렬
-    List<String> listName = [
-      ...valueNotifierMapCheckImageLocal.value.values.map((e) => e.modelCheck.name).toList()
-    ];
+    List<String> listName = [...valueNotifierMapCheckImageLocal.value.values.map((e) => e.modelCheck.name).toList()];
     listModelCheckImage.sort(
       (a, b) {
         return listName.indexOf(a.name).compareTo(listName.indexOf(b.name));
@@ -805,8 +874,8 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
     //user check history detail 페이지로 이동
 
     //Get.offNamed('$keyRouteUserCheckHistoryDetail/${documentReference.id}');
-    Get.offNamedUntil('$keyRouteUserCheckHistoryDetail/${documentReference.id}',
-        (route) => route.settings.name == keyRouteMain);
+    Get.offNamedUntil(
+        '$keyRouteUserCheckHistoryDetail/${documentReference.id}', (route) => route.settings.name == keyRouteMain);
 
     showSnackBarOnRoute('인증을 완료했어요.');
     //await FirebaseFirestore.instance.collection(keyUserChecks).add({});
@@ -825,8 +894,7 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
         throw Exception("문서 없음");
       }
 
-      ModelUser modelUser =
-          ModelUser.fromJson(querySnapshot.docs.first.data() as Map, querySnapshot.docs.first.id);
+      ModelUser modelUser = ModelUser.fromJson(querySnapshot.docs.first.data() as Map, querySnapshot.docs.first.id);
 
       ///fcm 전송
       /*data = {
