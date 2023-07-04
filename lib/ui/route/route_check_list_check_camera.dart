@@ -457,7 +457,7 @@ class _RouteCheckListCheckCameraState extends State<RouteCheckListCheckCamera> {
                                                                     widget.modelCheckList.listModelCheck.length
 
                                                                 ///모든 인증이 완료되었을 때
-                                                                ? Colors.greenAccent
+                                                                ? Colors.orange
                                                                 : const Color(0x33ffffff),
                                                             borderRadius: BorderRadius.circular(20),
                                                           ),
