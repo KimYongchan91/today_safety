@@ -15,8 +15,12 @@ class _ItemMainLinkState extends State<ItemMainLink> {
   final List<String> name = ['고용노동부', '산업안전보건공단', '근로복지공단', '한국산업인력공단'];
 
   final List<String> logoName = ['korea.png', 'kosha.gif', 'comwel.jpg', 'hrdk.jpeg'];
-  final List<String> url = ['https://www.moel.go.kr/index.do','https://www.kosha.or.kr/kosha/index.do',
-  'https://www.comwel.or.kr/comwel/main.jsp','https://www.hrdkorea.or.kr/'];
+  final List<String> url = [
+    'https://www.moel.go.kr/index.do',
+    'https://www.kosha.or.kr/kosha/index.do',
+    'https://www.comwel.or.kr/comwel/main.jsp',
+    'https://www.hrdkorea.or.kr/'
+  ];
 
   TextStyle listTxtStyle = const TextStyle(fontWeight: FontWeight.bold, fontSize: 13);
 
@@ -31,7 +35,7 @@ class _ItemMainLinkState extends State<ItemMainLink> {
           children: [
             const Align(
               alignment: Alignment.centerLeft,
-              child:  Text(
+              child: Text(
                 '관련링크',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
@@ -49,7 +53,7 @@ class _ItemMainLinkState extends State<ItemMainLink> {
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 5),
                       child: InkWell(
-                        onTap: (){
+                        onTap: () {
                           Get.to(ScreenWebView(url: url[index]));
                         },
                         child: Column(
