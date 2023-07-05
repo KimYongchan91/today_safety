@@ -77,7 +77,7 @@ dependencies:
   widgets_to_image: ^0.0.2
   share_plus: ^7.0.2
   badges: ^3.1.1
-
+  webview_flutter:
 
   kakao_flutter_sdk: ^1.4.3
   kakao_map_plugin: ^0.1.4
