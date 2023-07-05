@@ -100,9 +100,10 @@ class _ScreenLoginProfileState extends State<ScreenLoginProfile> {
                       ),
                       Spacer(),
                       Text(
-                        '${value.listModelUserCheckHistory.length}개 > ',
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                        '${value.listModelUserCheckHistory.length}개 ',
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20,color: Colors.orange),
                       ),
+                      FaIcon(FontAwesomeIcons.angleRight,color: Colors.black45 ,),
                     ],
                   ),
                 ),
