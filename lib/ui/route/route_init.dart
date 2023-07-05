@@ -115,7 +115,7 @@ class _RouteInitState extends State<RouteInit> {
         throw Exception("token==null");
       }
 
-      //MyApp.logger.d("FCM 토큰 : $token");
+      MyApp.logger.d("FCM 토큰 : $token");
       MyApp.tokenFcm = token;
 
       //앱이 종료되었 때 노티를 클릭하고 들어왔을 때

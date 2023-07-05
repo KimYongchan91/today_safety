@@ -8,7 +8,10 @@ import 'package:today_safety/service/util/util_snackbar.dart';
 ///요청에 실패하거나, 완전히 거부될 경우 false를 반환함
 Future<bool> requestPermission(Permission permission) async {
   PermissionStatus permissionStatusOld = await permission.status;
+  MyApp.logger.d("현재 권한 상태 : ${permissionStatusOld.toString()}");
+
   if (permissionStatusOld == PermissionStatus.permanentlyDenied) {
+    MyApp.logger.wtf("권한 완전히 거부된 상태임");
     showSnackBarOnRoute(
       messagePermissionImageDeniedPermanently,
       labelSnackBarButton: '이동',
@@ -22,7 +25,10 @@ Future<bool> requestPermission(Permission permission) async {
 
   try {
     PermissionStatus permissionStatusNew = await permission.request();
-    if (permissionStatusNew == PermissionStatus.granted || permissionStatusNew == PermissionStatus.limited) {
+    MyApp.logger.d("권한 요청 시작");
+    if (permissionStatusNew == PermissionStatus.granted ||
+        permissionStatusNew == PermissionStatus.limited ||
+        permissionStatusNew == PermissionStatus.restricted) {
       //권한 허용
       return true;
     } else {

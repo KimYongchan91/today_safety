@@ -105,8 +105,7 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
                             onTap: () {
                               Get.back();
                             },
-                            child: const Padding(
-                                padding: EdgeInsets.all(5), child: FaIcon(FontAwesomeIcons.angleLeft)),
+                            child: const Padding(padding: EdgeInsets.all(5), child: FaIcon(FontAwesomeIcons.angleLeft)),
                           ),
                           const SizedBox(
                             width: 20,
@@ -208,19 +207,19 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
                                                 children: [
                                                   //로고 이미지
                                                   Positioned.fill(
-                                                    child: (modelSiteNew.urlLogoImage.startsWith('/data')
-                                                        ? Image.file(
-                                                            File(modelSiteNew.urlLogoImage),
-                                                            width: _sizeLogoImage,
-                                                            height: _sizeLogoImage,
-                                                            fit: BoxFit.cover,
-                                                          )
-                                                        : CachedNetworkImage(
+                                                    child: modelSiteNew.urlLogoImage.startsWith('https')
+                                                        ? CachedNetworkImage(
                                                             width: _sizeLogoImage,
                                                             height: _sizeLogoImage,
                                                             imageUrl: modelSiteNew.urlLogoImage,
                                                             fit: BoxFit.cover,
-                                                          )),
+                                                          )
+                                                        : Image.file(
+                                                            File(modelSiteNew.urlLogoImage),
+                                                            width: _sizeLogoImage,
+                                                            height: _sizeLogoImage,
+                                                            fit: BoxFit.cover,
+                                                          ),
                                                   ),
 
                                                   //로고 이미지 제거 버튼
@@ -234,8 +233,7 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
                                                       child: Container(
                                                           padding: const EdgeInsets.all(5),
                                                           decoration: const BoxDecoration(
-                                                              shape: BoxShape.circle,
-                                                              color: Color(0x55000000)),
+                                                              shape: BoxShape.circle, color: Color(0x55000000)),
                                                           child: const Icon(
                                                             Icons.close,
                                                             color: Colors.white,
@@ -307,24 +305,24 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
 
                                         ///현장 이미지를 넣었다면
                                         ? ClipRRect(
-                                      borderRadius: BorderRadius.circular(18),
-                                          child: Stack(
+                                            borderRadius: BorderRadius.circular(18),
+                                            child: Stack(
                                               children: [
                                                 //로고 이미지
                                                 Positioned.fill(
-                                                  child: (modelSiteNew.urlSiteImage.startsWith('/data')
-                                                      ? Image.file(
-                                                        File(modelSiteNew.urlSiteImage),
-                                                        width: Get.width,
-                                                        height: Get.height / 4,
-                                                        fit: BoxFit.cover,
-                                                      )
-                                                      : CachedNetworkImage(
-                                                        width: Get.width,
-                                                        height: Get.height / 4,
-                                                        imageUrl: modelSiteNew.urlSiteImage,
-                                                        fit: BoxFit.cover,
-                                                      )),
+                                                  child: modelSiteNew.urlSiteImage.startsWith('https')
+                                                      ? CachedNetworkImage(
+                                                          width: Get.width,
+                                                          height: Get.height / 4,
+                                                          imageUrl: modelSiteNew.urlSiteImage,
+                                                          fit: BoxFit.cover,
+                                                        )
+                                                      : Image.file(
+                                                          File(modelSiteNew.urlSiteImage),
+                                                          width: Get.width,
+                                                          height: Get.height / 4,
+                                                          fit: BoxFit.cover,
+                                                        ),
                                                 ),
 
                                                 //로고 이미지 제거 버튼
@@ -348,7 +346,7 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
                                                 )
                                               ],
                                             ),
-                                        )
+                                          )
 
                                         ///현장 이미지를 넣기 전
                                         : Center(
@@ -371,8 +369,7 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
                                                     ),
                                                     Text(
                                                       '현장 이미지를 추가해 주세요.',
-                                                      style: TextStyle(
-                                                          fontWeight: FontWeight.bold, color: Colors.grey),
+                                                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
                                                     )
                                                   ],
                                                 ),
@@ -413,8 +410,8 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
                                       margin: const EdgeInsets.symmetric(horizontal: 20),
                                       padding: const EdgeInsets.all(15),
                                       width: MediaQuery.of(context).size.width,
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(5), color: colorBackground),
+                                      decoration:
+                                          BoxDecoration(borderRadius: BorderRadius.circular(5), color: colorBackground),
                                       child: modelSiteNew.modelLocation.addressLoad != null
                                           ? Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                                               const FaIcon(
@@ -534,15 +531,24 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
   }
 
   pickImage(_ImageType imageType) async {
-    Permission permissionImage;
-    final androidInfo = await DeviceInfoPlugin().androidInfo;
-    if (androidInfo.version.sdkInt <= 32) {
-      permissionImage = Permission.storage;
-    } else {
+    Permission? permissionImage;
+    if (Platform.isAndroid) {
+      final androidInfo = await DeviceInfoPlugin().androidInfo;
+      if (androidInfo.version.sdkInt <= 32) {
+        permissionImage = Permission.storage;
+      } else {
+        permissionImage = Permission.photos;
+      }
+    } else if (Platform.isIOS) {
       permissionImage = Permission.photos;
     }
 
-    bool isPermissionGranted = await requestPermission(permissionImage);
+    if (permissionImage == null) {
+      showSnackBarOnRoute('현재 지원하지 않는 기기예요.');
+      return;
+    }
+
+    bool isPermissionGranted = await requestPermission(permissionImage!);
     if (isPermissionGranted == false) {
       return;
     }
@@ -563,7 +569,7 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
           uiSettings: [
             AndroidUiSettings(
               toolbarTitle: '로고 이미지 자르기',
-              toolbarColor: Colors.deepOrange,
+              toolbarColor: colorAppPrimary,
               toolbarWidgetColor: Colors.white,
               initAspectRatio: CropAspectRatioPreset.square,
               lockAspectRatio: true,
@@ -571,6 +577,14 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
             ),
             IOSUiSettings(
               title: '로고 이미지 자르기',
+              doneButtonTitle: '완료',
+              cancelButtonTitle: '취소',
+              rotateButtonsHidden: true,
+              rotateClockwiseButtonHidden: true,
+              resetButtonHidden: true,
+              aspectRatioPickerButtonHidden: true,
+              aspectRatioLockDimensionSwapEnabled: true,
+              aspectRatioLockEnabled: true,
             ),
           ],
         );
@@ -657,8 +671,7 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
         'Authorization': 'KakaoAK de2c9d30f737be6f897916c21f92c156'
       };
 
-      String url =
-          'https://dapi.kakao.com/v2/local/search/address.json?analyze_type=similar&page=1&size=20&query=';
+      String url = 'https://dapi.kakao.com/v2/local/search/address.json?analyze_type=similar&page=1&size=20&query=';
       String query = result.address;
 
       var response = await http.get(Uri.parse(Uri.encodeFull(url + query)), headers: requestHeaders);
@@ -787,8 +800,7 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
         Map<String, dynamic> mapUrlImage = {};
 
         FirebaseStorage.instance
-            .ref(
-                "$keyImages/$keySites/${documentReference.id}/${pt.basename(File(modelSiteNew.urlLogoImage).path)}")
+            .ref("$keyImages/$keySites/${documentReference.id}/${pt.basename(File(modelSiteNew.urlLogoImage).path)}")
             .putFile(File(modelSiteNew.urlLogoImage))
             .then((uploadTaskLogo) {
           uploadTaskLogo.ref.getDownloadURL().then((downloadURLLogo) {
@@ -798,8 +810,7 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
         });
 
         FirebaseStorage.instance
-            .ref(
-                "$keyImages/$keySites/${documentReference.id}/${pt.basename(File(modelSiteNew.urlSiteImage).path)}")
+            .ref("$keyImages/$keySites/${documentReference.id}/${pt.basename(File(modelSiteNew.urlSiteImage).path)}")
             .putFile(File(modelSiteNew.urlSiteImage))
             .then((uploadTaskSite) {
           uploadTaskSite.ref.getDownloadURL().then((downloadURLSite) {

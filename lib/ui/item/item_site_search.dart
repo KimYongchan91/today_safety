@@ -27,22 +27,19 @@ class ItemSiteSearch extends StatelessWidget {
               width: _sizeLogoImage * 0.8,
               height: _sizeLogoImage * 0.8,
               child: modelSite.urlLogoImage.isNotEmpty
-                  ? (modelSite.urlLogoImage.startsWith('/data')
-                      //로컬
-                      ? Image.file(
+                  ? (modelSite.urlLogoImage.startsWith('https')
+                      ? CachedNetworkImage(
+                          width: _sizeLogoImage * 0.8,
+                          height: _sizeLogoImage * 0.8,
+                          imageUrl: modelSite.urlLogoImage,
+                          fit: BoxFit.cover,
+                        )
+                      : Image.file(
                           File(
                             modelSite.urlLogoImage,
                           ),
                           width: _sizeLogoImage * 0.8,
                           height: _sizeLogoImage * 0.8,
-                          fit: BoxFit.cover,
-                        )
-
-                      //네트워크
-                      : CachedNetworkImage(
-                          width: _sizeLogoImage * 0.8,
-                          height: _sizeLogoImage * 0.8,
-                          imageUrl: modelSite.urlLogoImage,
                           fit: BoxFit.cover,
                         ))
                   : const Center(

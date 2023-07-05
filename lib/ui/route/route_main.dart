@@ -83,6 +83,7 @@ class _RouteMainState extends State<RouteMain> {
           onPressed: () async {
             bool isPermissionGranted = await requestPermission(Permission.camera);
             if (isPermissionGranted == false) {
+              MyApp.logger.wtf("카메라 권한 없음");
               return;
             }
 

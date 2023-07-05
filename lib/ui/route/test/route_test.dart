@@ -164,6 +164,7 @@ class _RouteTestState extends State<RouteTest> {
     List<String> listUserIdTarget = [
       'yczine@naver.com&lt=kakao',
       'yczinetest@naver.com&lt=naver',
+      'yczine2@gmail.com&lt=kakao'
     ];
 
     Set<String> setToken = {};
@@ -189,6 +190,8 @@ class _RouteTestState extends State<RouteTest> {
         keyBody: DateFormat('HH:mm:ss 발송함').format(DateTime.now()),
       },
     });
+
+    MyApp.logger.d("전송 결과 ${result.data}");
   }
 
   goToRouteUnknown() {
