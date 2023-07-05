@@ -132,7 +132,7 @@ class _RouteQrCodeDetailState extends State<RouteQrCodeDetail> {
                                     ),
                                   ),
                                   const SizedBox(
-                                    height: 30,
+                                    height: 20,
                                   ),
 
                                   ///근무지 이름
