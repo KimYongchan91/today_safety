@@ -162,7 +162,11 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                               onTap: () {
                                 Get.to(() => RouteQrCodeDetail(modelCheckList!));
                               },
-                              child: SizedBox(
+                              child: const Icon(
+                                Icons.qr_code,
+                                size: 36,
+                              )
+                              /*SizedBox(
                                 width: 50,
                                 height: 50,
                                 child: SfBarcodeGenerator(
@@ -171,7 +175,11 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                                   symbology: QRCode(),
                                   showValue: false,
                                 ),
-                              ),
+                              )*/
+                              ,
+                            ),
+                            const SizedBox(
+                              width: 10,
                             ),
                           ],
                         ),
@@ -193,8 +201,7 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                               alignment: Alignment.topLeft,
                               child: Text(
                                 '인증 현황',
-                                style:
-                                    TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
+                                style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
                               ),
                             ),
                             const SizedBox(
@@ -215,9 +222,7 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                                         '달력',
                                         style: btnTxtStyle.copyWith(
                                             fontSize: value == ViewAnalyticsType.calendar ? 17 : 15,
-                                            color: value == ViewAnalyticsType.calendar
-                                                ? Colors.black
-                                                : Colors.black45),
+                                            color: value == ViewAnalyticsType.calendar ? Colors.black : Colors.black45),
                                       )),
                                   const SizedBox(
                                     width: 20,
@@ -227,19 +232,15 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                                       valueNotifierViewAnalyticsType.value = ViewAnalyticsType.chart;
 
                                       Future.delayed(const Duration(milliseconds: 100)).then((value) {
-                                        scrollControllerChart.animateTo(
-                                            scrollControllerChart.position.maxScrollExtent,
-                                            duration: const Duration(milliseconds: 200),
-                                            curve: Curves.linear);
+                                        scrollControllerChart.animateTo(scrollControllerChart.position.maxScrollExtent,
+                                            duration: const Duration(milliseconds: 200), curve: Curves.linear);
                                       });
                                     },
                                     child: Text(
                                       '그래프',
                                       style: btnTxtStyle.copyWith(
                                           fontSize: value == ViewAnalyticsType.chart ? 17 : 15,
-                                          color: value == ViewAnalyticsType.chart
-                                              ? Colors.black
-                                              : Colors.black45),
+                                          color: value == ViewAnalyticsType.chart ? Colors.black : Colors.black45),
                                     ),
                                   ),
                                 ],
@@ -359,7 +360,7 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                                             child: AspectRatio(
                                               aspectRatio: 10 / 2,
                                               child: Padding(
-                                                padding: EdgeInsets.symmetric(vertical: 10),
+                                                padding: const EdgeInsets.symmetric(vertical: 10),
                                                 child: BarChart(
                                                   getLineChartData(value.listModelDailyCheckHistory),
                                                 ),
@@ -448,16 +449,14 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                                 ),
 
                                 Visibility(
-                                  visible:
-                                      MyApp.providerUser.modelUser?.id == modelCheckList!.modelSite.master,
+                                  visible: MyApp.providerUser.modelUser?.id == modelCheckList!.modelSite.master,
                                   child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
                                       primary: Colors.orange, // Background color
                                     ),
                                     onPressed: () {
                                       Get.to(() => RouteNoticeNew(
-                                          modelSite: modelCheckList!.modelSite,
-                                          modelCheckList: modelCheckList));
+                                          modelSite: modelCheckList!.modelSite, modelCheckList: modelCheckList));
                                     },
                                     child: const Text(
                                       '작성하기',
@@ -514,8 +513,7 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                       ///근무지 삭제
                       InkWell(
                         onTap: () async {
-                          var result =
-                              await Get.dialog(const DialogDeleteSiteOrTeam(DialogDeleteSiteOrTeamType.team));
+                          var result = await Get.dialog(const DialogDeleteSiteOrTeam(DialogDeleteSiteOrTeamType.team));
                           if (result == true) {
                             await FirebaseFirestore.instance
                                 .collection(keyCheckListS)
