@@ -78,6 +78,7 @@ dependencies:
   share_plus: ^7.0.2
   badges: ^3.1.1
   webview_flutter:
+  sign_in_with_apple: ^5.0.0
 
   kakao_flutter_sdk: ^1.4.3
   kakao_map_plugin: ^0.1.4

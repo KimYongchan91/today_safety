@@ -490,7 +490,7 @@ class _RouteCheckListDetailState extends State<RouteCheckListDetail> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Text(
-                              '인증항목',
+                              '인증 항목',
                               style: CustomTextStyle.bigBlackBold(),
                             ),
                             const SizedBox(

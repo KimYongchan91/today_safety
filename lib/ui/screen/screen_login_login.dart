@@ -154,7 +154,7 @@ class _ScreenLoginLoginState extends State<ScreenLoginLogin> {
                         builder: (context, value, child) => value
 
                             ///로딩 중 아이콘
-                            ? LoadingAnimationWidget.inkDrop(color: Colors.brown, size: 24)
+                            ? LoadingAnimationWidget.inkDrop(color: Colors.white, size: 24)
 
                             ///로딩 중 아님
                             :  SizedBox(
@@ -230,7 +230,7 @@ class _ScreenLoginLoginState extends State<ScreenLoginLogin> {
                         builder: (context, value, child) => value
 
                             ///로딩 중 아이콘
-                            ? LoadingAnimationWidget.inkDrop(color: Colors.brown, size: 24)
+                            ? LoadingAnimationWidget.inkDrop(color: Colors.white, size: 24)
 
                             ///로딩 중 아님
                             : const FaIcon(FontAwesomeIcons.apple, color: Colors.white),

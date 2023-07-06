@@ -47,6 +47,10 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
   //이 인증 확인 결과
   final ValueNotifier<bool?> valueNotifierIsCheckGrant = ValueNotifier(null);
 
+  //인증 처리 (승인, 거절)
+  final ValueNotifier<bool> valueNotifierIsProcessingGrant = ValueNotifier(false);
+  final ValueNotifier<bool> valueNotifierIsProcessingReject = ValueNotifier(false);
+
   @override
   void initState() {
     MyApp.logger.d("keyUserCheckHistoryId : ${Get.parameters[keyUserCheckHistoryId]}");
@@ -182,16 +186,19 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
 
                                     if (value == true) {
                                       text = '승인완료';
-                                      color =colorCheckStateOn;
+                                      color = colorCheckStateOn;
                                     } else if (value == false) {
                                       text = '거절';
-                                      color =colorCheckStateReject;
+                                      color = colorCheckStateReject;
                                     } else {
                                       text = '승인 대기 중';
-                                      color =colorCheckStatePend;
+                                      color = colorCheckStatePend;
                                     }
 
-                                    return Text(text,style: TextStyle(color: color, fontSize: 30,fontWeight: FontWeight.bold),);
+                                    return Text(
+                                      text,
+                                      style: TextStyle(color: color, fontSize: 30, fontWeight: FontWeight.bold),
+                                    );
                                   },
                                 ),
 
@@ -252,7 +259,7 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
                           Get.to(() => RouteUserCheckHistoryDetailImage(modelUserCheckHistory!));
                         },
                         child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: Card(
                             elevation: 2,
                             color: Colors.white,
@@ -260,22 +267,19 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Container(
-                              padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+                              padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
                               width: Get.width,
-                              child: InkWell(
-                                onTap: () {},
-                                child: const Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      '인증내역보기',
-                                      style: TextStyle(fontWeight: FontWeight.w800),
-                                    ),
-                                    FaIcon(
-                                      FontAwesomeIcons.angleRight,
-                                    ),
-                                  ],
-                                ),
+                              child: const Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    '인증내역보기',
+                                    style: TextStyle(fontWeight: FontWeight.w800),
+                                  ),
+                                  FaIcon(
+                                    FontAwesomeIcons.angleRight,
+                                  ),
+                                ],
                               ),
                             ),
                           ),
@@ -297,38 +301,58 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
                               ? Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Container(
-                                      padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(10),
-                                          border: Border.all(width: 1, color: Colors.orange),
-                                          color: Colors.white),
-                                      child: InkWell(
-                                        onTap: () {
-                                          setCheckResult(false);
-                                        },
-                                        child: Text(
-                                          '거절하기',
-                                          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orange),
+                                    InkWell(
+                                      onTap: () {
+                                        setCheckResult(false);
+                                      },
+                                      child: Container(
+                                        width: Get.width * 0.35,
+                                        height: 60,
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(10),
+                                            border: Border.all(width: 1, color: Colors.orange),
+                                            color: Colors.white),
+                                        child: Center(
+                                          child: ValueListenableBuilder(
+                                            valueListenable: valueNotifierIsProcessingReject,
+                                            builder: (context, value, child) => value
+                                                ? LoadingAnimationWidget.inkDrop(color: Colors.orange, size: 24)
+                                                : const Text(
+                                                    '거절하기',
+                                                    style: TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                        color: Colors.orange,
+                                                        fontSize: 18),
+                                                  ),
+                                          ),
                                         ),
                                       ),
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       width: 30,
                                     ),
-                                    Container(
-                                      padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(10),
-                                          border: Border.all(width: 1, color: Colors.orange),
-                                          color: Colors.orange),
-                                      child: InkWell(
-                                        onTap: () {
-                                          setCheckResult(true);
-                                        },
-                                        child: Text(
-                                          '승인처리',
-                                          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                                    InkWell(
+                                      onTap: () {
+                                        setCheckResult(true);
+                                      },
+                                      child: Container(
+                                        width: Get.width * 0.35,
+                                        height: 60,
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(10),
+                                            border: Border.all(width: 1, color: Colors.orange),
+                                            color: Colors.orange),
+                                        child: Center(
+                                          child: ValueListenableBuilder(
+                                            valueListenable: valueNotifierIsProcessingGrant,
+                                            builder: (context, value, child) => value
+                                                ? LoadingAnimationWidget.inkDrop(color: Colors.white, size: 24)
+                                                : const Text(
+                                                    '승인처리',
+                                                    style: TextStyle(
+                                                        fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
+                                                  ),
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -338,7 +362,7 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
                         },
                       ),
 
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       )
                     ],
@@ -357,6 +381,16 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
   }
 
   setCheckResult(bool isGrant) async {
+    if (valueNotifierIsProcessingGrant.value || valueNotifierIsProcessingReject.value) {
+      return;
+    }
+
+    if (isGrant) {
+      valueNotifierIsProcessingGrant.value = true;
+    } else {
+      valueNotifierIsProcessingReject.value = true;
+    }
+
     try {
       MyApp.logger.d("modelUserCheckHistory!.docId : ${modelUserCheckHistory!.docId}");
 
@@ -371,6 +405,12 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
       sendFcm(isGrant);
     } catch (e) {
       MyApp.logger.wtf("setCheckResult 실패 : ${e.toString()}");
+    }
+
+    if (isGrant) {
+      valueNotifierIsProcessingGrant.value = false;
+    } else {
+      valueNotifierIsProcessingReject.value = false;
     }
   }
 

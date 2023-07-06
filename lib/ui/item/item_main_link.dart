@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:today_safety/ui/screen/screen_web_view.dart';
 
+import '../route/route_webview.dart';
+
 class ItemMainLink extends StatefulWidget {
   const ItemMainLink({Key? key}) : super(key: key);
 
@@ -54,7 +56,7 @@ class _ItemMainLinkState extends State<ItemMainLink> {
                       padding: const EdgeInsets.symmetric(horizontal: 5),
                       child: InkWell(
                         onTap: () {
-                          Get.to(ScreenWebView(url: url[index]));
+                          Get.to(() => RouteWebView(url[index]));
                         },
                         child: Column(
                           children: [

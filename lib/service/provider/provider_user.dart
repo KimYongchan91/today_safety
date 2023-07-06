@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart' as ks;
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:today_safety/const/model/model_notice.dart';
 import 'package:today_safety/const/model/model_site.dart';
 import 'package:today_safety/const/model/model_user.dart';
@@ -377,6 +378,22 @@ class ProviderUser extends ChangeNotifier {
 
   ///애플로부터 정보 받아오기
   Future<ModelUserEasyLogin?> getUserDataFromApple() async {
+
+    try {
+      AuthorizationCredentialAppleID  credential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
+
+      MyApp.logger.d("credential 결과 : ${credential.email.toString()}");
+
+    }  catch (e) {
+     MyApp.logger.wtf("애플 로그인 실패 : ${e.toString()}");
+    }
+
+
     return null;
   }
 
