@@ -52,8 +52,8 @@ class ProviderUser extends ChangeNotifier {
 
       if (querySnapshot.docs.isNotEmpty) {
         //유저 문서가 존재함
-        ModelUser modelUser = ModelUser.fromJson(
-            querySnapshot.docs.first.data() as Map<dynamic, dynamic>, querySnapshot.docs.first.id);
+        ModelUser modelUser =
+            ModelUser.fromJson(querySnapshot.docs.first.data() as Map<dynamic, dynamic>, querySnapshot.docs.first.id);
         if (modelUser.state == keyOn) {
           //MyApp.logger.d("유저 문서가 존재함");
           this.modelUser = modelUser;
@@ -150,8 +150,7 @@ class ProviderUser extends ChangeNotifier {
           //회원가입 성공
 
           //FirebaseAuth 로그인 적용
-          await loginWithToken(
-              resultJoin[keyToken], ModelUser.fromJson(modelUserNew.toJson(), resultJoin[keyDocId]));
+          await loginWithToken(resultJoin[keyToken], ModelUser.fromJson(modelUserNew.toJson(), resultJoin[keyDocId]));
         } on Exception catch (e) {
           MyApp.logger.wtf("회원 가입 중에 에러 발생 : ${e.toString()}");
           showSnackBarOnRoute(messageJoinFail);
@@ -340,7 +339,7 @@ class ProviderUser extends ChangeNotifier {
       MyApp.logger.d("네이버 로그인 결과\n"
           "이름 : ${naverLoginResult.account.name}");
 
-      if(naverLoginResult.account.name.isEmpty || naverLoginResult.account.email.isEmpty){
+      if (naverLoginResult.account.name.isEmpty || naverLoginResult.account.email.isEmpty) {
         throw Exception("naverLoginResult.account.name.isEmpty || naverLoginResult.account.email.isEmpty");
       }
 
@@ -378,21 +377,47 @@ class ProviderUser extends ChangeNotifier {
 
   ///애플로부터 정보 받아오기
   Future<ModelUserEasyLogin?> getUserDataFromApple() async {
-
     try {
-      AuthorizationCredentialAppleID  credential = await SignInWithApple.getAppleIDCredential(
+      AuthorizationCredentialAppleID authorizationCredentialAppleID = await SignInWithApple.getAppleIDCredential(
         scopes: [
           AppleIDAuthorizationScopes.email,
           AppleIDAuthorizationScopes.fullName,
         ],
       );
 
-      MyApp.logger.d("credential 결과 : ${credential.email.toString()}");
+      MyApp.logger.d("authorizationCredentialAppleID 결과 : ${authorizationCredentialAppleID.email}");
 
-    }  catch (e) {
-     MyApp.logger.wtf("애플 로그인 실패 : ${e.toString()}");
+
+      // Create an `OAuthCredential` from the credential returned by Apple.
+      OAuthCredential oauthCredential = OAuthProvider("apple.com").credential(
+        idToken: authorizationCredentialAppleID.identityToken,
+        accessToken: authorizationCredentialAppleID.authorizationCode,
+      );
+
+      MyApp.logger.d("oauthCredential 결과 : ${oauthCredential.idToken}");
+
+
+      // Sign in the user with Firebase. If the nonce we generated earlier does
+      // not match the nonce in `appleCredential.identityToken`, sign in will fail.
+      UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(oauthCredential);
+
+      MyApp.logger.d("userCredential 결과 : ${userCredential.user?.email}, ${userCredential.user?.displayName}");
+
+      if (userCredential.user == null || userCredential.user?.email == null || userCredential.user!.email!.isEmpty) {
+        throw Exception("userCredential.user == null");
+      }
+
+      //firebase auth 로그아웃
+      await FirebaseAuth.instance.signOut();
+
+      return ModelUserEasyLogin(
+        loginType: keyApple,
+        email: userCredential.user!.email!,
+        name: userCredential.user?.displayName,
+      );
+    } catch (e) {
+      MyApp.logger.wtf("애플 로그인 실패 : ${e.toString()}");
     }
-
 
     return null;
   }
@@ -513,9 +538,7 @@ class ProviderUser extends ChangeNotifier {
     }
 
     //토큰이 없다면 추가
-    if (modelUser != null &&
-        MyApp.tokenFcm != null &&
-        modelUser!.listToken.contains(MyApp.tokenFcm) == false) {
+    if (modelUser != null && MyApp.tokenFcm != null && modelUser!.listToken.contains(MyApp.tokenFcm) == false) {
       await FirebaseFirestore.instance.collection(keyUserS).doc(modelUser!.docId).update({
         keyToken: FieldValue.arrayUnion([MyApp.tokenFcm]),
       });

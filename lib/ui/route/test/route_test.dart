@@ -86,8 +86,8 @@ class _RouteTestState extends State<RouteTest> {
 
     for (int i = 1; i < countTargetDay; i++) {
       Map<String, dynamic> json = {...jsonOld};
-      DateTime datetimeNew = DateTime.fromMillisecondsSinceEpoch(
-          jsonOld[keyDate].toDate().millisecondsSinceEpoch - i * millisecondDay);
+      DateTime datetimeNew =
+          DateTime.fromMillisecondsSinceEpoch(jsonOld[keyDate].toDate().millisecondsSinceEpoch - i * millisecondDay);
       final String displayDateToday = DateFormat('yyyy-MM-dd').format(datetimeNew);
 
       json[keyDate] = Timestamp.fromDate(datetimeNew);
@@ -133,8 +133,7 @@ class _RouteTestState extends State<RouteTest> {
       try {
         String? href = element.href;
         String? date = regExpDate.stringMatch(innerHtmlFormatted)?.replaceAll('[', '').replaceAll(',', '');
-        String? region =
-            regExpRegion.stringMatch(innerHtmlFormatted)?.replaceAll(']', '').replaceAll(',', '').trim();
+        String? region = regExpRegion.stringMatch(innerHtmlFormatted)?.replaceAll(']', '').replaceAll(',', '').trim();
         String? title = innerHtmlFormatted.substring(innerHtmlFormatted.indexOf(']') + 1).trim();
 
         if (href == null || date == null || region == null) {
@@ -164,34 +163,43 @@ class _RouteTestState extends State<RouteTest> {
     List<String> listUserIdTarget = [
       'yczine@naver.com&lt=kakao',
       'yczinetest@naver.com&lt=naver',
-      'yczine2@gmail.com&lt=kakao'
+      'yczine2@gmail.com&lt=kakao',
+      'yczine@gmail.com&lt=apple'
     ];
 
     Set<String> setToken = {};
 
-    await FirebaseFirestore.instance
-        .collection(keyUserS)
-        .where(keyId, whereIn: listUserIdTarget)
-        .get()
-        .then((value) {
+    await FirebaseFirestore.instance.collection(keyUserS).where(keyId, whereIn: listUserIdTarget).get().then((value) {
       value.docs.forEach((element) {
         ModelUser modelUser = ModelUser.fromJson(element.data(), element.id);
         setToken.addAll([...modelUser.listToken]);
       });
     });
-
     //전송 시작
-    HttpsCallableResult<dynamic> result = await FirebaseFunctions.instanceFor(region: "asia-northeast3")
-        .httpsCallable('sendFcmTest')
-        .call(<String, dynamic>{
+    FirebaseFunctions.instanceFor(region: "asia-northeast3").httpsCallable('sendFcmTest').call(<String, dynamic>{
       'tokens': setToken.toList(),
       'test': {
-        keyTitle: '테스트다',
-        keyBody: DateFormat('HH:mm:ss 발송함').format(DateTime.now()),
+        keyTitle: '오늘안전 날씨 알림',
+//        keyBody: DateFormat('HH:mm:ss 발송함').format(DateTime.now()),
+        keyBody: '오늘 비 소식이 있어요. 안전에 유의해 주세요.',
+
       },
+    }).then((result) {
+      MyApp.logger.d("전송 결과 ${result.data}");
     });
 
-    MyApp.logger.d("전송 결과 ${result.data}");
+/*    setToken.toList().forEach((element) {
+      //전송 시작
+      FirebaseFunctions.instanceFor(region: "asia-northeast3").httpsCallable('sendFcmTest').call(<String, dynamic>{
+        'token': element,
+        'test': {
+        keyTitle: '',
+        keyBody: DateFormat('HH:mm:ss 발송함').format(DateTime.now()),
+      },
+      }).then((result) {
+        MyApp.logger.d("전송 결과 ${result.data}");
+      });
+    });*/
   }
 
   goToRouteUnknown() {

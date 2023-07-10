@@ -21,7 +21,17 @@ const AndroidNotificationChannel channelCheckResult = AndroidNotificationChannel
   importance: Importance.max,
 );
 
+const AndroidNotificationChannel channelWeather = AndroidNotificationChannel(
+  'weather', // id
+  '날씨 경보', // title
+  description: '근무지의 날씨 경보를 알려줘요.', // description
+  importance: Importance.max,
+);
+
 //로컬 노티 세팅값
 const InitializationSettings initializationSettings = InitializationSettings(
   android: AndroidInitializationSettings("app_logo_transparent_big_128"),
+  iOS: DarwinInitializationSettings(
+
+  )
 );
