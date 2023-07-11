@@ -404,6 +404,10 @@ class _ScreenMainInfoState extends State<ScreenMainInfo> with SingleTickerProvid
 
 */
 
+          const SizedBox(
+            height: 20,
+          ),
+
           //const ItemMainBanner(),
           const ItemMainLink(),
 
