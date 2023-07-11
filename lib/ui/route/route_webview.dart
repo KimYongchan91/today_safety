@@ -34,10 +34,10 @@ class _RouteWebViewState extends State<RouteWebView> {
             children: [
               Row(
                 children: [
-                  Text(
+                 /* Text(
                     '여긴 웹뷰임',
                     style: CustomTextStyle.normalRedBold(),
-                  ),
+                  ),*/
                   Spacer(),
                   InkWell(
                     onTap: () {

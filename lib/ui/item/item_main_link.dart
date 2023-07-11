@@ -45,39 +45,40 @@ class _ItemMainLinkState extends State<ItemMainLink> {
             const SizedBox(
               height: 30,
             ),
-            SizedBox(
-              height: 100,
-              child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  shrinkWrap: true,
-                  itemCount: name.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5),
-                      child: InkWell(
-                        onTap: () {
-                          Get.to(() => RouteWebView(url[index]));
-                        },
-                        child: Column(
-                          children: [
-                            SizedBox(
-                              width: 50,
-                              height: 50,
-                              child: Image.asset('assets/images/logo/${logoName[index]}'),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Text(
-                              name[index],
-                              style: const TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
+            GridView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: name.length,
+
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4,
+                childAspectRatio: 2/3
+                ),
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    child: InkWell(
+                      onTap: () {
+                        Get.to(() => RouteWebView(url[index]));
+                      },
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            width: 50,
+                            height: 50,
+                            child: Image.asset('assets/images/logo/${logoName[index]}'),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Text(
+                            name[index],
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
                       ),
-                    );
-                  }),
-            )
+                    ),
+                  );
+                })
           ],
         ));
   }
