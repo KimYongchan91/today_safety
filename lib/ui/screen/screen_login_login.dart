@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -82,9 +84,7 @@ class _ScreenLoginLoginState extends State<ScreenLoginLogin> {
               ///카카오 로그인
               InkWell(
                 onTap: () async {
-                  if (listValueNotifierIsProcessingLogin
-                      .where((element) => element.value == true)
-                      .isNotEmpty) {
+                  if (listValueNotifierIsProcessingLogin.where((element) => element.value == true).isNotEmpty) {
                     return;
                   }
 
@@ -129,9 +129,7 @@ class _ScreenLoginLoginState extends State<ScreenLoginLogin> {
               ///네이버 로그인
               InkWell(
                 onTap: () async {
-                  if (listValueNotifierIsProcessingLogin
-                      .where((element) => element.value == true)
-                      .isNotEmpty) {
+                  if (listValueNotifierIsProcessingLogin.where((element) => element.value == true).isNotEmpty) {
                     return;
                   }
 
@@ -141,7 +139,7 @@ class _ScreenLoginLoginState extends State<ScreenLoginLogin> {
                 },
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 30),
-                  decoration: boxDecoration.copyWith(color:const Color(0xff00C73C)),
+                  decoration: boxDecoration.copyWith(color: const Color(0xff00C73C)),
                   alignment: Alignment.center,
                   margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                   width: double.infinity,
@@ -157,15 +155,13 @@ class _ScreenLoginLoginState extends State<ScreenLoginLogin> {
                             ? LoadingAnimationWidget.inkDrop(color: Colors.white, size: 24)
 
                             ///로딩 중 아님
-                            :  SizedBox(
-                            width: 20,
-                            child: Image.asset('assets/images/logo/naver.png')),
+                            : SizedBox(width: 20, child: Image.asset('assets/images/logo/naver.png')),
                       ),
                       const Expanded(
                         child: Center(
                           child: Text(
                             '네이버 로그인',
-                            style: TextStyle(color: Colors.white,fontWeight: FontWeight.w800),
+                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800),
                           ),
                         ),
                       )
@@ -203,47 +199,48 @@ class _ScreenLoginLoginState extends State<ScreenLoginLogin> {
               ),
 
               ///애플 로그인
-              InkWell(
-                onTap: () async {
-                  if (listValueNotifierIsProcessingLogin
-                      .where((element) => element.value == true)
-                      .isNotEmpty) {
-                    return;
-                  }
+              Visibility(
+                visible: Platform.isIOS,
+                child: InkWell(
+                  onTap: () async {
+                    if (listValueNotifierIsProcessingLogin.where((element) => element.value == true).isNotEmpty) {
+                      return;
+                    }
 
-                  valueNotifierIsProcessingLoginWithApple.value = true;
-                  await MyApp.providerUser.loginEasy(LoginType.apple);
-                  valueNotifierIsProcessingLoginWithApple.value = false;
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 30),
-                  decoration: boxDecoration.copyWith(color: Colors.black),
-                  alignment: Alignment.center,
-                  margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                  width: double.infinity,
-                  height: 50,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ValueListenableBuilder(
-                        valueListenable: valueNotifierIsProcessingLoginWithApple,
-                        builder: (context, value, child) => value
+                    valueNotifierIsProcessingLoginWithApple.value = true;
+                    await MyApp.providerUser.loginEasy(LoginType.apple);
+                    valueNotifierIsProcessingLoginWithApple.value = false;
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 30),
+                    decoration: boxDecoration.copyWith(color: Colors.black),
+                    alignment: Alignment.center,
+                    margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                    width: double.infinity,
+                    height: 50,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ValueListenableBuilder(
+                          valueListenable: valueNotifierIsProcessingLoginWithApple,
+                          builder: (context, value, child) => value
 
-                            ///로딩 중 아이콘
-                            ? LoadingAnimationWidget.inkDrop(color: Colors.white, size: 24)
+                              ///로딩 중 아이콘
+                              ? LoadingAnimationWidget.inkDrop(color: Colors.white, size: 24)
 
-                            ///로딩 중 아님
-                            : const FaIcon(FontAwesomeIcons.apple, color: Colors.white),
-                      ),
-                      const Expanded(
-                        child: Center(
-                          child: Text(
-                            '애플 로그인',
-                            style: TextStyle(fontWeight: FontWeight.w800,color: Colors.white),
-                          ),
+                              ///로딩 중 아님
+                              : const FaIcon(FontAwesomeIcons.apple, color: Colors.white),
                         ),
-                      )
-                    ],
+                        const Expanded(
+                          child: Center(
+                            child: Text(
+                              '애플 로그인',
+                              style: TextStyle(fontWeight: FontWeight.w800, color: Colors.white),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),

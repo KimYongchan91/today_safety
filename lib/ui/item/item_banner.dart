@@ -8,9 +8,9 @@ class ItemMainBanner extends StatelessWidget {
     return Container(
       width: MediaQuery.of(context).size.width,
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
+        //borderRadius: BorderRadius.circular(20),
         color: Colors.white,
       ),
 

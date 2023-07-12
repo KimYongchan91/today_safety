@@ -52,10 +52,8 @@ class _ScreenMainInfoState extends State<ScreenMainInfo> with SingleTickerProvid
   ValueNotifier<List<ModelArticle>?> valueNotifierListModelArticle = ValueNotifier(null);
 
   //재난 문자
-  ValueNotifier<List<ModelEmergencySms>?> valueNotifierListModelEmergencySmsDisaster =
-      ValueNotifier(null); //재난
-  ValueNotifier<List<ModelEmergencySms>?> valueNotifierListModelEmergencySmsMissing =
-      ValueNotifier(null); //실종
+  ValueNotifier<List<ModelEmergencySms>?> valueNotifierListModelEmergencySmsDisaster = ValueNotifier(null); //재난
+  ValueNotifier<List<ModelEmergencySms>?> valueNotifierListModelEmergencySmsMissing = ValueNotifier(null); //실종
 
   //기사, 재난문자 page 관련
   Timer? timer;
@@ -88,16 +86,14 @@ class _ScreenMainInfoState extends State<ScreenMainInfo> with SingleTickerProvid
         int currentPage = controllerArticle.page!.toInt();
         int nextPage = currentPage + 1;
         if (nextPage <= valueNotifierListModelArticle.value!.length - 1) {
-          controllerArticle.animateToPage(nextPage,
-              duration: const Duration(seconds: 2), curve: Curves.decelerate);
+          controllerArticle.animateToPage(nextPage, duration: const Duration(seconds: 2), curve: Curves.decelerate);
         } else {
           controllerArticle.animateToPage(0, duration: const Duration(seconds: 2), curve: Curves.decelerate);
         }
       }
 
       //재난 문자(재난)
-      if (valueNotifierListModelEmergencySmsDisaster.value != null &&
-          controllerEmergencySmsDisaster.page != null) {
+      if (valueNotifierListModelEmergencySmsDisaster.value != null && controllerEmergencySmsDisaster.page != null) {
         int currentPage = controllerEmergencySmsDisaster.page!.toInt();
         int nextPage = currentPage + 1;
         if (nextPage <= valueNotifierListModelEmergencySmsDisaster.value!.length - 1) {
@@ -141,7 +137,6 @@ class _ScreenMainInfoState extends State<ScreenMainInfo> with SingleTickerProvid
           ///앱바 영역
           WidgetAppBar(),
 
-
           Consumer<ProviderUser>(builder: (context, value, child) => ItemNoticeBig(value.modelNotice)),
 
           ///날씨 정보 영역
@@ -157,16 +152,11 @@ class _ScreenMainInfoState extends State<ScreenMainInfo> with SingleTickerProvid
             ),
           ),
 
-
-
           const SizedBox(
             height: 10,
           ),
 
-         // UtilCampaignList(),
-
-
-
+          // UtilCampaignList(),
 
           Container(
             color: Colors.white,
@@ -203,8 +193,7 @@ class _ScreenMainInfoState extends State<ScreenMainInfo> with SingleTickerProvid
                       CustomValueListenableBuilder2(
                         a: valueNotifierListModelArticle,
                         b: valueNotifierPageArticle,
-                        builder: (context, a, b, child) =>
-                            a != null ? Text('${b + 1}/${a.length}') : Container(),
+                        builder: (context, a, b, child) => a != null ? Text('${b + 1}/${a.length}') : Container(),
                       ),
                     ],
                   ),
@@ -415,8 +404,16 @@ class _ScreenMainInfoState extends State<ScreenMainInfo> with SingleTickerProvid
 
 */
 
-          const ItemMainBanner(),
+          const SizedBox(
+            height: 20,
+          ),
+
+          //const ItemMainBanner(),
           const ItemMainLink(),
+
+          SizedBox(
+            height: 20,
+          ),
         ],
       ),
     );
@@ -511,8 +508,7 @@ class _ScreenMainInfoState extends State<ScreenMainInfo> with SingleTickerProvid
       try {
         String? href = element.href;
         String? date = regExpDate.stringMatch(innerHtmlFormatted)?.replaceAll('[', '').replaceAll(',', '');
-        String? region =
-            regExpRegion.stringMatch(innerHtmlFormatted)?.replaceAll(']', '').replaceAll(',', '').trim();
+        String? region = regExpRegion.stringMatch(innerHtmlFormatted)?.replaceAll(']', '').replaceAll(',', '').trim();
         String? title = innerHtmlFormatted.substring(innerHtmlFormatted.indexOf(']') + 1).trim();
 
         //https://www.kosha.or.kr/kosha/report/kosha_news.do?mode=view&articleNo=442620
