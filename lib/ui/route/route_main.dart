@@ -13,6 +13,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:today_safety/const/value/router.dart';
 import 'package:today_safety/custom/custom_text_style.dart';
+import 'package:today_safety/service/util/util_snackbar.dart';
 import 'package:today_safety/ui/route/route_qr_code_scan.dart';
 import 'package:today_safety/ui/route/test/route_test.dart';
 import 'package:flutter/services.dart' show SystemNavigator, rootBundle;
@@ -81,6 +82,11 @@ class _RouteMainState extends State<RouteMain> {
           backgroundColor: Colors.orange,
           child: const Icon(Icons.qr_code),
           onPressed: () async {
+            if (MyApp.providerUser.modelUser == null) {
+              showSnackBarOnRoute(messageNeedLogin);
+              return;
+            }
+
             bool isPermissionGranted = await requestPermission(Permission.camera);
             if (isPermissionGranted == false) {
               MyApp.logger.wtf("카메라 권한 없음");
