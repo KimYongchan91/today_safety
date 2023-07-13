@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:today_safety/my_app.dart';
 import 'package:today_safety/service/util/util_snackbar.dart';
+import 'package:today_safety/ui/route/route_permission_denied_location.dart';
 
 ///권한을 확인하고, 필요할 경우 요청함
 ///정상적인 경우 true를 반환함
@@ -15,7 +16,7 @@ Future<bool> requestPermission(Permission permission) async {
     MyApp.logger.wtf("권한 완전히 거부된 상태임");
 
     if (permission == Permission.locationWhenInUse) {
-      //et.to(()=>);
+      Get.to(() => const RoutePermissionDeniedLocation());
     } else {
       showSnackBarOnRoute(
         messagePermissionImageDeniedPermanently,
@@ -39,6 +40,11 @@ Future<bool> requestPermission(Permission permission) async {
       return true;
     } else {
       //권한 거부
+
+      if (permission == Permission.locationWhenInUse) {
+        Get.to(() => const RoutePermissionDeniedLocation());
+      }
+
       return false;
     }
   } catch (e) {
