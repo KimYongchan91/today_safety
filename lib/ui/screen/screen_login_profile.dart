@@ -308,17 +308,18 @@ class _ScreenLoginProfileState extends State<ScreenLoginProfile> {
           SizedBox(height: 20,),
 
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               ///로그아웃
               InkWell(
                 onTap: () async {
                   MyApp.providerUser.clearProvider();
                 },
-                child: Padding(
+                child: const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
-                  child: const Text(
+                  child: Text(
                     '로그아웃',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: TextStyle(fontWeight: FontWeight.bold,color: Colors.grey),
                   ),
                 ),
               ),
@@ -331,11 +332,11 @@ class _ScreenLoginProfileState extends State<ScreenLoginProfile> {
                     MyApp.providerUser.outUser();
                   }
                 },
-                child: Padding(
+                child: const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
-                  child: const Text(
+                  child: Text(
                     '회원 탈퇴',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: TextStyle(fontWeight: FontWeight.bold,color: Colors.grey),
                   ),
                 ),
               ),
