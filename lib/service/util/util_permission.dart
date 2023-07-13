@@ -1,4 +1,5 @@
 import 'package:app_settings/app_settings.dart';
+import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:today_safety/my_app.dart';
 import 'package:today_safety/service/util/util_snackbar.dart';
@@ -12,13 +13,18 @@ Future<bool> requestPermission(Permission permission) async {
 
   if (permissionStatusOld == PermissionStatus.permanentlyDenied) {
     MyApp.logger.wtf("권한 완전히 거부된 상태임");
-    showSnackBarOnRoute(
-      messagePermissionImageDeniedPermanently,
-      labelSnackBarButton: '이동',
-      functionSnackBarActionCallBack: () {
-        AppSettings.openAppSettings();
-      },
-    );
+
+    if (permission == Permission.locationWhenInUse) {
+      //et.to(()=>);
+    } else {
+      showSnackBarOnRoute(
+        messagePermissionImageDeniedPermanently,
+        labelSnackBarButton: '이동',
+        functionSnackBarActionCallBack: () {
+          AppSettings.openAppSettings();
+        },
+      );
+    }
 
     return false;
   }

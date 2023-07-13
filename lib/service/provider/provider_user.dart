@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -375,27 +378,46 @@ class ProviderUser extends ChangeNotifier {
     return null;
   }
 
+  /// Generates a cryptographically secure random nonce, to be included in a
+  /// credential request.
+  String generateNonce([int length = 32]) {
+    String charset = 'kr.co.kayple.today_safety@${DateTime.now().millisecondsSinceEpoch}';
+    final random = Random.secure();
+    return List.generate(length, (_) => charset[random.nextInt(charset.length)]).join();
+  }
+
+  /// Returns the sha256 hash of [input] in hex notation.
+  String sha256ofString(String input) {
+    final bytes = utf8.encode(input);
+    final digest = sha256.convert(bytes);
+    return digest.toString();
+  }
+
   ///애플로부터 정보 받아오기
   Future<ModelUserEasyLogin?> getUserDataFromApple() async {
+    final rawNonce = generateNonce();
+    final nonce = sha256ofString(rawNonce);
+
     try {
       AuthorizationCredentialAppleID authorizationCredentialAppleID = await SignInWithApple.getAppleIDCredential(
         scopes: [
           AppleIDAuthorizationScopes.email,
           AppleIDAuthorizationScopes.fullName,
         ],
+        nonce: nonce,
       );
 
-      MyApp.logger.d("authorizationCredentialAppleID 결과 : ${authorizationCredentialAppleID.email}");
-
+      MyApp.logger.d(
+          "authorizationCredentialAppleID 결과 : ${authorizationCredentialAppleID.email}, ${authorizationCredentialAppleID.givenName}");
 
       // Create an `OAuthCredential` from the credential returned by Apple.
       OAuthCredential oauthCredential = OAuthProvider("apple.com").credential(
         idToken: authorizationCredentialAppleID.identityToken,
         accessToken: authorizationCredentialAppleID.authorizationCode,
+        rawNonce: rawNonce,
       );
 
       MyApp.logger.d("oauthCredential 결과 : ${oauthCredential.idToken}");
-
 
       // Sign in the user with Firebase. If the nonce we generated earlier does
       // not match the nonce in `appleCredential.identityToken`, sign in will fail.
@@ -597,5 +619,54 @@ class ProviderUser extends ChangeNotifier {
       }
     }));
     await Future.wait(listFutureLogOut);*/
+  }
+
+  ///회원 탈퇴
+  outUser() async {
+    if (modelUser == null) {
+      return;
+    }
+
+    ///유저, 근무지, 인증 삭제
+
+    List<Future> listFuture = [];
+    //유저 삭제
+    listFuture.add(FirebaseFirestore.instance.collection(keyUserS).where(keyId, isEqualTo: modelUser!.id).get().then(
+      (value) {
+        for (var element in value.docs) {
+          element.reference.delete();
+        }
+      },
+    ));
+
+    //근무지 삭제
+    listFuture.add(FirebaseFirestore.instance.collection(keySites).where(keyMaster, isEqualTo: modelUser!.id).get().then(
+      (value) {
+        for (var element in value.docs) {
+          element.reference.delete();
+        }
+      },
+    ));
+
+    //인증 삭제
+    listFuture.add( FirebaseFirestore.instance
+        .collection(keyUserCheckHistories)
+        .where('$keyUser.$keyId', isEqualTo: modelUser!.id)
+        .get()
+        .then(
+      (value) {
+        for (var element in value.docs) {
+          element.reference.delete();
+        }
+      },
+    ));
+
+    await Future.wait(listFuture);
+
+    if (modelUser!.loginType == keyApple) {
+      //토큰 삭제
+    }
+
+    clearProvider();
   }
 }

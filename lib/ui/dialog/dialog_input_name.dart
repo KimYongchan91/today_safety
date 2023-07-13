@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:today_safety/const/value/color.dart';
 import 'package:today_safety/custom/custom_text_field.dart';
 
 import '../../custom/custom_text_style.dart';
@@ -51,12 +52,13 @@ class _DialogInputNameState extends State<DialogInputName> {
             const SizedBox(
               height: 32,
             ),
-            const Text('이름을 입력해주세요.', textAlign: TextAlign.center, style: CustomTextStyle.normalBlack()),
+            const Text('관리자가 확인할 수 있는 이름이나 상호를 입력해주세요.',
+                textAlign: TextAlign.center, style: CustomTextStyle.normalBlack()),
             const SizedBox(
               height: 20,
             ),
             CustomTextField(
-              hintText: '홍길동',
+              hintText: '예시) 홍길동, 오늘 설비',
               controller: textEditingController,
             ),
             const SizedBox(
@@ -70,7 +72,7 @@ class _DialogInputNameState extends State<DialogInputName> {
                 width: Get.width,
                 height: 50,
                 decoration: BoxDecoration(
-                  color: const Color(0xfff84343),
+                  color: colorAppPrimary,
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: const Center(
@@ -94,23 +96,24 @@ class _DialogInputNameState extends State<DialogInputName> {
   }
 
   complete() {
-    if (textEditingController.text.contains(' ')) {
-      showSnackBarOnRoute('이름에는 공백이 들어갈 수 없어요.');
+    if (textEditingController.text.substring(0, 1) == " " ||
+        textEditingController.text.substring(textEditingController.text.length - 1, textEditingController.text.length) == " ") {
+      showSnackBarOnRoute('이름이나 상호는 공백으로 시작하거나 끝날 수 없어요.');
       return;
     }
 
     if (textEditingController.text.isEmpty) {
-      showSnackBarOnRoute('이름을 입력해 주세요.');
+      showSnackBarOnRoute('이름이나 상호를 입력해 주세요.');
       return;
     }
 
     if (textEditingController.text.length < lengthNameMin) {
-      showSnackBarOnRoute('이름은 최소 $lengthNameMin글자예요.');
+      showSnackBarOnRoute('이름이나 상호는 최소 $lengthNameMin글자예요.');
       return;
     }
 
     if (textEditingController.text.length > lengthNameMax) {
-      showSnackBarOnRoute('이름은 최대 $lengthNameMax글자예요.');
+      showSnackBarOnRoute('이름이나 상호는 최대 $lengthNameMax글자예요.');
       return;
     }
 

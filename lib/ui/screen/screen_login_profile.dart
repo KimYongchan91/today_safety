@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:today_safety/service/provider/provider_user.dart';
 import 'package:today_safety/service/provider/provider_user_check_history_on_me.dart';
+import 'package:today_safety/ui/dialog/dialog_out_user.dart';
 import 'package:today_safety/ui/item/item_banner.dart';
 import 'package:today_safety/ui/route/route_user_check_history_list.dart';
 
@@ -78,13 +79,11 @@ class _ScreenLoginProfileState extends State<ScreenLoginProfile> {
             ),
           ),
 
-
-
           ///내 인증 내역
           Consumer<ProviderUserCheckHistoryOnMe>(
             builder: (context, value, child) => InkWell(
               onTap: () {
-                Get.to(()=>RouteUserCheckHistoryList(value.listModelUserCheckHistory));
+                Get.to(() => RouteUserCheckHistoryList(value.listModelUserCheckHistory));
               },
               child: Container(
                 width: Get.width,
@@ -101,9 +100,12 @@ class _ScreenLoginProfileState extends State<ScreenLoginProfile> {
                       Spacer(),
                       Text(
                         '${value.listModelUserCheckHistory.length}개 ',
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20,color: Colors.orange),
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.orange),
                       ),
-                      FaIcon(FontAwesomeIcons.angleRight,color: Colors.black45 ,),
+                      FaIcon(
+                        FontAwesomeIcons.angleRight,
+                        color: Colors.black45,
+                      ),
                     ],
                   ),
                 ),
@@ -120,10 +122,10 @@ class _ScreenLoginProfileState extends State<ScreenLoginProfile> {
 
               ///관리하는 근무지가 없을 때
               ? Container(
-            width: Get.width,
-                color: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
-                child: Column(
+                  width: Get.width,
+                  color: Colors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -174,15 +176,13 @@ class _ScreenLoginProfileState extends State<ScreenLoginProfile> {
                             width: Get.width,
                             padding: const EdgeInsets.all(10),
                             height: MediaQuery.of(context).size.height / 4,
-
-                            child:  const Column(
+                            child: const Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 FaIcon(
                                   FontAwesomeIcons.add,
                                   size: 35,
                                   color: Colors.white,
-
                                 ),
                                 SizedBox(
                                   height: 10,
@@ -196,12 +196,9 @@ class _ScreenLoginProfileState extends State<ScreenLoginProfile> {
                           ),
                         ),
                       ),
-
-
-
                     ],
                   ),
-              )
+                )
 
               ///내가 관리하는 근무지가 있을 때
               : InkWell(
@@ -308,22 +305,44 @@ class _ScreenLoginProfileState extends State<ScreenLoginProfile> {
 
           const ItemMainBanner(),
 
-          ///로그아웃
-          InkWell(
-            onTap: () async {
-              MyApp.providerUser.clearProvider();
-            },
-            child: Container(
-              alignment: Alignment.center,
-              margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-              width: double.infinity,
-              height: 50,
-              child: const Text(
-                '로그아웃',
-                style: TextStyle(fontWeight: FontWeight.bold),
+          SizedBox(height: 20,),
+
+          Row(
+            children: [
+              ///로그아웃
+              InkWell(
+                onTap: () async {
+                  MyApp.providerUser.clearProvider();
+                },
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
+                  child: const Text(
+                    '로그아웃',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
               ),
-            ),
+
+              ///로그아웃
+              InkWell(
+                onTap: () async {
+                  var result = await Get.dialog(DialogOutUser());
+                  if(result == true){
+                    MyApp.providerUser.outUser();
+                  }
+                },
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
+                  child: const Text(
+                    '회원 탈퇴',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ],
           ),
+
+          SizedBox(height: 20,),
         ],
       ),
     );

@@ -89,8 +89,7 @@ class _RouteUserCheckHistoryDetailImageState extends State<RouteUserCheckHistory
       () => RouteCheckImageDetail(
         widget.modelUserCheckHistory.listModelCheckImage,
         index: index,
-        modelUser: widget.modelUserCheckHistory.modelUser,
-        modelDevice: widget.modelUserCheckHistory.modelDevice,
+        modelUserCheckHistory: widget.modelUserCheckHistory,
       ),
     );
   }
