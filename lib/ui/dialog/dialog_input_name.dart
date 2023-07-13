@@ -52,13 +52,14 @@ class _DialogInputNameState extends State<DialogInputName> {
             const SizedBox(
               height: 32,
             ),
-            const Text('관리자가 확인할 수 있는 이름이나 상호를 입력해주세요.',
+            const Text('관리자가 확인할 수 있는 이름을 입력해 주세요.\n'
+                '특히 상주하는 직원이 아니라면, 소속된 업체명과 이름을 입력해 주세요.',
                 textAlign: TextAlign.center, style: CustomTextStyle.normalBlack()),
             const SizedBox(
               height: 20,
             ),
             CustomTextField(
-              hintText: '예시) 홍길동, 오늘 설비',
+              hintText: '예시) 홍길동, 오늘 설비-홍길동',
               controller: textEditingController,
             ),
             const SizedBox(
