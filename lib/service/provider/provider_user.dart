@@ -487,6 +487,11 @@ class ProviderUser extends ChangeNotifier {
       subscriptionNoticeRecent?.cancel();
       clearProviderNotice();
 
+      if (modelUser == null) {
+        MyApp.logger.wtf("modelUser==null");
+        return;
+      }
+
       //최근에 내가 인증한 site를 조회
       try {
         QuerySnapshot querySnapshot = await FirebaseFirestore.instance
@@ -624,44 +629,48 @@ class ProviderUser extends ChangeNotifier {
   ///회원 탈퇴
   outUser() async {
     if (modelUser == null) {
+      MyApp.logger.wtf("modelUser ==null");
       return;
     }
 
     ///유저, 근무지, 인증 삭제
-
     List<Future> listFuture = [];
+    List<DocumentReference> listDocumentReference = [];
     //유저 삭제
     listFuture.add(FirebaseFirestore.instance.collection(keyUserS).where(keyId, isEqualTo: modelUser!.id).get().then(
       (value) {
         for (var element in value.docs) {
-          element.reference.delete();
+          listDocumentReference.add(element.reference);
         }
       },
     ));
 
     //근무지 삭제
-    listFuture.add(FirebaseFirestore.instance.collection(keySites).where(keyMaster, isEqualTo: modelUser!.id).get().then(
+    listFuture
+        .add(FirebaseFirestore.instance.collection(keySites).where(keyMaster, isEqualTo: modelUser!.id).get().then(
       (value) {
         for (var element in value.docs) {
-          element.reference.delete();
+          listDocumentReference.add(element.reference);
         }
       },
     ));
 
     //인증 삭제
-    listFuture.add( FirebaseFirestore.instance
+    listFuture.add(FirebaseFirestore.instance
         .collection(keyUserCheckHistories)
         .where('$keyUser.$keyId', isEqualTo: modelUser!.id)
         .get()
         .then(
       (value) {
         for (var element in value.docs) {
-          element.reference.delete();
+          listDocumentReference.add(element.reference);
         }
       },
     ));
 
     await Future.wait(listFuture);
+
+    await Future.wait([...listDocumentReference.map((e) => e.delete())]);
 
     if (modelUser!.loginType == keyApple) {
       //토큰 삭제

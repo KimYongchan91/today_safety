@@ -324,7 +324,7 @@ class _ScreenLoginProfileState extends State<ScreenLoginProfile> {
                 ),
               ),
 
-              ///로그아웃
+              ///회원탈퇴
               InkWell(
                 onTap: () async {
                   var result = await Get.dialog(DialogOutUser());

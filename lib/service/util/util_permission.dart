@@ -41,9 +41,9 @@ Future<bool> requestPermission(Permission permission) async {
     } else {
       //권한 거부
 
-      if (permission == Permission.locationWhenInUse) {
+      /*if (permission == Permission.locationWhenInUse) {
         Get.to(() => const RoutePermissionDeniedLocation());
-      }
+      }*/
 
       return false;
     }
