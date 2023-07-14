@@ -628,7 +628,7 @@ PODS:
     - abseil/base/base_internal
     - abseil/base/config
     - abseil/meta/type_traits
-  - "app_settings (3.0.0+1)":
+  - app_settings (4.3.0):
     - Flutter
   - AppAuth (1.6.2):
     - AppAuth/Core (= 1.6.2)
@@ -967,7 +967,7 @@ PODS:
     - TOCropViewController (~> 2.6.1)
   - image_picker_ios (0.0.1):
     - Flutter
-  - kakao_flutter_sdk_common (1.4.3):
+  - kakao_flutter_sdk_common (1.5.0):
     - Flutter
   - kakao_map_plugin (0.0.1):
     - Flutter
@@ -1178,7 +1178,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   abseil: 926fb7a82dc6d2b8e1f2ed7f3a718bce691d1e46
-  app_settings: d103828c9f5d515c4df9ee754dabd443f7cedcf3
+  app_settings: ee4ae4d1c9a907a23b81c40e5c56a5ca8a20a62b
   AppAuth: 3bb1d1cd9340bd09f5ed189fb00b1cc28e1e8570
   BoringSSL-GRPC: 3175b25143e648463a56daeaaa499c6cb86dad33
   camera_avfoundation: 3125e8cd1a4387f6f31c6c63abb8a55892a9eeeb
@@ -1234,7 +1234,7 @@ SPEC CHECKSUMS:
   GTMSessionFetcher: 3a63d75eecd6aa32c2fc79f578064e1214dfdec2
   image_cropper: a3291c624a953049bc6a02e1f8c8ceb162a24b25
   image_picker_ios: 4a8aadfbb6dc30ad5141a2ce3832af9214a705b5
-  kakao_flutter_sdk_common: 31d55af8ed73538126d26d42bf9e8049a2f76da4
+  kakao_flutter_sdk_common: ceb36a134b53ae973da184f67f39993142377af4
   kakao_map_plugin: 232bc2486ea3ffb5d44c49eac1bcc6dde1a7f0ee
   leveldb-library: f03246171cce0484482ec291f88b6d563699ee06
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
