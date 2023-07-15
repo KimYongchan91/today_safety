@@ -8,10 +8,6 @@
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
-	<key>CFBundleLocalizations</key>
-	<array>
-		<string>ko</string>
-	</array>
 	<key>CFBundleDisplayName</key>
 	<string>오늘안전</string>
 	<key>CFBundleExecutable</key>
@@ -20,6 +16,10 @@
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>ko</string>
+	</array>
 	<key>CFBundleName</key>
 	<string>today_safety</string>
 	<key>CFBundlePackageType</key>
@@ -28,8 +28,24 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>todaysafety</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>naversearchapp</string>
+		<string>naversearchthirdlogin</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -38,14 +54,29 @@
 		<true/>
 		<key>NSAllowsArbitraryLoadsInWebContent</key>
 		<true/>
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>naver.com</key>
+			<dict>
+				<key>NSExceptionRequiresForwardSecrecy</key>
+				<false/>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+			</dict>
+			<key>naver.net</key>
+			<dict>
+				<key>NSExceptionRequiresForwardSecrecy</key>
+				<false/>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+			</dict>
+		</dict>
 	</dict>
-	<key>io.flutter.embedded_views_preview</key>
-	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>인증에 필요한 사진을 촬영하기 위해, 이용자의 카메라를 사용하는 권한을 요청합니다.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>근무지의 관리자가 지정한 위치에서 인증하는지 확인하기 위해 이용자의 위치를 조회하는 권한을 요청합니다.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>근무지의 관리자가 지정한 위치에서 인증하는지 확인하기 위해 이용자의 위치를 조회하는 권한을 요청합니다.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>근무지의 관리자가 지정한 위치에서 인증하는지 확인하기 위해 이용자의 위치를 조회하는 권한을 요청합니다.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>인증에 필요한 사진을 불러오기 위해, 이용자의 사진 데이터에 접근하는 권한을 요청합니다.</string>
@@ -65,5 +96,15 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>io.flutter.embedded_views_preview</key>
+	<true/>
+	<key>naverConsumerKey</key>
+	<string>dWq1HI2MwQuitnGCspnL</string>
+	<key>naverConsumerSecret</key>
+	<string>smkVFuPMp6</string>
+	<key>naverServiceAppName</key>
+	<string>오늘안전</string>
+	<key>naverServiceAppUrlScheme</key>
+	<string>todaysafety</string>
 </dict>
 </plist>
