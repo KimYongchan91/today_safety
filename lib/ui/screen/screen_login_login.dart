@@ -129,7 +129,7 @@ class _ScreenLoginLoginState extends State<ScreenLoginLogin> {
 
                 ///네이버 로그인
                 Visibility(
-                  visible: false,
+                  visible: Platform.isAndroid,
                   child: InkWell(
                     onTap: () async {
                       if (listValueNotifierIsProcessingLogin.where((element) => element.value == true).isNotEmpty) {

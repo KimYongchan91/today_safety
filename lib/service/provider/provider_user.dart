@@ -55,8 +55,8 @@ class ProviderUser extends ChangeNotifier {
 
       if (querySnapshot.docs.isNotEmpty) {
         //유저 문서가 존재함
-        ModelUser modelUser =
-            ModelUser.fromJson(querySnapshot.docs.first.data() as Map<dynamic, dynamic>, querySnapshot.docs.first.id);
+        ModelUser modelUser = ModelUser.fromJson(
+            querySnapshot.docs.first.data() as Map<dynamic, dynamic>, querySnapshot.docs.first.id);
         if (modelUser.state == keyOn) {
           //MyApp.logger.d("유저 문서가 존재함");
           this.modelUser = modelUser;
@@ -153,7 +153,8 @@ class ProviderUser extends ChangeNotifier {
           //회원가입 성공
 
           //FirebaseAuth 로그인 적용
-          await loginWithToken(resultJoin[keyToken], ModelUser.fromJson(modelUserNew.toJson(), resultJoin[keyDocId]));
+          await loginWithToken(
+              resultJoin[keyToken], ModelUser.fromJson(modelUserNew.toJson(), resultJoin[keyDocId]));
         } on Exception catch (e) {
           MyApp.logger.wtf("회원 가입 중에 에러 발생 : ${e.toString()}");
           showSnackBarOnRoute(messageJoinFail);
@@ -399,7 +400,8 @@ class ProviderUser extends ChangeNotifier {
     final nonce = sha256ofString(rawNonce);
 
     try {
-      AuthorizationCredentialAppleID authorizationCredentialAppleID = await SignInWithApple.getAppleIDCredential(
+      AuthorizationCredentialAppleID authorizationCredentialAppleID =
+          await SignInWithApple.getAppleIDCredential(
         scopes: [
           AppleIDAuthorizationScopes.email,
           AppleIDAuthorizationScopes.fullName,
@@ -423,9 +425,12 @@ class ProviderUser extends ChangeNotifier {
       // not match the nonce in `appleCredential.identityToken`, sign in will fail.
       UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(oauthCredential);
 
-      MyApp.logger.d("userCredential 결과 : ${userCredential.user?.email}, ${userCredential.user?.displayName}");
+      MyApp.logger
+          .d("userCredential 결과 : ${userCredential.user?.email}, ${userCredential.user?.displayName}");
 
-      if (userCredential.user == null || userCredential.user?.email == null || userCredential.user!.email!.isEmpty) {
+      if (userCredential.user == null ||
+          userCredential.user?.email == null ||
+          userCredential.user!.email!.isEmpty) {
         throw Exception("userCredential.user == null");
       }
 
@@ -565,7 +570,9 @@ class ProviderUser extends ChangeNotifier {
     }
 
     //토큰이 없다면 추가
-    if (modelUser != null && MyApp.tokenFcm != null && modelUser!.listToken.contains(MyApp.tokenFcm) == false) {
+    if (modelUser != null &&
+        MyApp.tokenFcm != null &&
+        modelUser!.listToken.contains(MyApp.tokenFcm) == false) {
       await FirebaseFirestore.instance.collection(keyUserS).doc(modelUser!.docId).update({
         keyToken: FieldValue.arrayUnion([MyApp.tokenFcm]),
       });
@@ -598,9 +605,6 @@ class ProviderUser extends ChangeNotifier {
     } on Exception catch (e) {
       MyApp.logger.wtf("네이버 로그아웃 실패 : ${e.toString()}");
     }
-
-    subscriptionSiteMy?.cancel();
-    clearProviderNotice();
   }
 
   clearProviderNotice() {
@@ -611,10 +615,20 @@ class ProviderUser extends ChangeNotifier {
 
   clearProvider({bool isNotify = true}) async {
     modelUser = null;
-    if (isNotify) notifyListeners();
     MyApp.providerUserCheckHistoryOnMe.clearProvider();
 
+    //내 근무지 제거
+    modelSiteMy = null;
+
+    //내 근무지 리스너 취소
+    subscriptionSiteMy?.cancel();
+
+    //공지사항 리스너 취소
+    clearProviderNotice();
+
     logoutFromAll();
+
+    if (isNotify) notifyListeners();
 
     /*List<Future> listFutureLogOut = [];
     listFutureLogOut.add(FirebaseAuth.instance.signOut());
@@ -637,7 +651,8 @@ class ProviderUser extends ChangeNotifier {
     List<Future> listFuture = [];
     List<DocumentReference> listDocumentReference = [];
     //유저 삭제
-    listFuture.add(FirebaseFirestore.instance.collection(keyUserS).where(keyId, isEqualTo: modelUser!.id).get().then(
+    listFuture.add(
+        FirebaseFirestore.instance.collection(keyUserS).where(keyId, isEqualTo: modelUser!.id).get().then(
       (value) {
         for (var element in value.docs) {
           listDocumentReference.add(element.reference);
@@ -646,8 +661,8 @@ class ProviderUser extends ChangeNotifier {
     ));
 
     //근무지 삭제
-    listFuture
-        .add(FirebaseFirestore.instance.collection(keySites).where(keyMaster, isEqualTo: modelUser!.id).get().then(
+    listFuture.add(
+        FirebaseFirestore.instance.collection(keySites).where(keyMaster, isEqualTo: modelUser!.id).get().then(
       (value) {
         for (var element in value.docs) {
           listDocumentReference.add(element.reference);
