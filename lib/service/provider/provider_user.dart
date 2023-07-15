@@ -463,16 +463,19 @@ class ProviderUser extends ChangeNotifier {
         .snapshots()
         .listen((event) {
       for (var element in event.docChanges) {
+        ModelSite modelSite = ModelSite.fromJson(element.doc.data() as Map, element.doc.id);
+
         switch (element.type) {
           case DocumentChangeType.added:
           case DocumentChangeType.modified:
-            ModelSite modelSite = ModelSite.fromJson(element.doc.data() as Map, element.doc.id);
             modelSiteMy = modelSite;
             notifyListeners();
             break;
           case DocumentChangeType.removed:
-            modelSiteMy = null;
-            notifyListeners();
+            if (modelSiteMy == modelSite) {
+              modelSiteMy = null;
+              notifyListeners();
+            }
             break;
         }
       }

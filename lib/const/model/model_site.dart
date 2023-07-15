@@ -58,8 +58,10 @@ class ModelSite {
   }
 
   @override
-  operator ==(other) => other is ModelSite && docId == other.docId && date == other.date;
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ModelSite && runtimeType == other.runtimeType && docId == other.docId;
 
   @override
-  int get hashCode => hash2(docId, date);
+  int get hashCode => docId.hashCode;
 }
