@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
+import 'package:today_safety/const/value/key.dart';
 import 'package:today_safety/const/value/router.dart';
 import 'package:today_safety/service/util/util_snackbar.dart';
 
@@ -23,8 +24,29 @@ void handlerOnMessageOpenedApp(RemoteMessage message) async {
 
 ///앱이 포그라운드일 때 메세지 수신
 Future<void> handlerFirebaseMessagingForeground(RemoteMessage message) async {
-  MyApp.logger.d("handlerFirebaseMessagingForeground");
-  _showLocalNotification(message);
+  MyApp.logger.d("handlerFirebaseMessagingForeground : ${message.data}");
+
+  //현재 인증 보고 결과를 보고있다면 관리자의 승인 여부 즉시 반영
+  if (message.data['fcm_type'] == 'CHECK_RESULT') {
+    //CHECK_RESULT
+    String? checkId = message.data['check_id'];
+    if (checkId == null) {
+      MyApp.logger.wtf('checkId == null');
+    } else {
+      if (MyApp.docIdValueNotifierIsCheckGrant == checkId) {
+        MyApp.valueNotifierIsCheckGrant.value = message.data['result'] == keyOn;
+      } else {
+        MyApp.logger.wtf('MyApp.docIdValueNotifierIsCheckGrant != checkId ==> '
+            'MyApp.docIdValueNotifierIsCheckGrant : ${MyApp.docIdValueNotifierIsCheckGrant}, checkId : $checkId');
+      }
+    }
+  }
+
+  //노티 알림
+  //단, 만약 내가 보고한 인증결과가 도착했다면 노티 울리지 않음
+  if (message.data['fcm_type'] != 'NEW_CHECK' && (MyApp.providerUser.modelUser?.id ?? 'user_id') != (message.data['user_id'] ?? "fcm_user_id")) {
+    _showLocalNotification(message);
+  }
 }
 
 ///앱이 백그라운드일 때 메세지 수신
@@ -92,7 +114,6 @@ void handlerRemoteMessage(dynamic data) {
       throw Exception("data == null");
     }
 
-
     /* 예시
   json >>>
     "data": {
@@ -129,7 +150,6 @@ void handlerRemoteMessage(dynamic data) {
         Get.toNamed('$keyRouteUserCheckHistoryDetail/$checkId');
       }
     }
-
   } catch (e) {
     MyApp.logger.d("_handlerRemoteMessage 에러 : ${e.toString()}");
     return;

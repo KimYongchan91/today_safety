@@ -19,6 +19,7 @@ import 'package:today_safety/const/value/fuc.dart';
 import 'package:today_safety/const/value/key.dart';
 import 'package:today_safety/const/value/value.dart';
 import 'package:today_safety/custom/custom_text_style.dart';
+import 'package:today_safety/service/util/util_snackbar.dart';
 import 'package:today_safety/ui/route/route_check_image_detail.dart';
 import 'package:today_safety/ui/route/route_user_check_history_detail_image.dart';
 import 'package:today_safety/ui/widget/icon_error.dart';
@@ -43,9 +44,6 @@ class RouteUserCheckHistoryDetail extends StatefulWidget {
 class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetail> {
   late Completer<bool> completerModelUserCheckHistory;
   ModelUserCheckHistory? modelUserCheckHistory;
-
-  //이 인증 확인 결과
-  final ValueNotifier<bool?> valueNotifierIsCheckGrant = ValueNotifier(null);
 
   //인증 처리 (승인, 거절)
   final ValueNotifier<bool> valueNotifierIsProcessingGrant = ValueNotifier(false);
@@ -77,20 +75,30 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
       });
     }
 
-    //이미 승인했는지 아닌지
+    //이미 승인했는지 아닌지 확인
+    MyApp.valueNotifierIsCheckGrant.value = null;
+    MyApp.docIdValueNotifierIsCheckGrant = Get.parameters[keyUserCheckHistoryId];
+
     completerModelUserCheckHistory.future.then((value) {
       if (value) {
         if (modelUserCheckHistory?.state == keyOn) {
-          valueNotifierIsCheckGrant.value = true;
+          MyApp.valueNotifierIsCheckGrant.value = true;
         } else if (modelUserCheckHistory?.state == keyPend) {
           //
         } else if (modelUserCheckHistory?.state == keyReject) {
-          valueNotifierIsCheckGrant.value = false;
+          MyApp.valueNotifierIsCheckGrant.value = false;
         }
       }
     });
 
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    MyApp.valueNotifierIsCheckGrant.value = null;
+    MyApp.docIdValueNotifierIsCheckGrant = null;
+    super.dispose();
   }
 
   @override
@@ -179,7 +187,7 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
 
                                 ///승인 상태
                                 ValueListenableBuilder(
-                                  valueListenable: valueNotifierIsCheckGrant,
+                                  valueListenable: MyApp.valueNotifierIsCheckGrant,
                                   builder: (context, value, child) {
                                     String text;
                                     Color color;
@@ -197,7 +205,8 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
 
                                     return Text(
                                       text,
-                                      style: TextStyle(color: color, fontSize: 30, fontWeight: FontWeight.bold),
+                                      style:
+                                          TextStyle(color: color, fontSize: 30, fontWeight: FontWeight.bold),
                                     );
                                   },
                                 ),
@@ -220,7 +229,8 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
                                 Align(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
-                                    DateFormat('yyyy-MM-dd hh:mm:ss').format(modelUserCheckHistory!.date.toDate()),
+                                    DateFormat('yyyy-MM-dd hh:mm:ss')
+                                        .format(modelUserCheckHistory!.date.toDate()),
                                     style: const CustomTextStyle.normalBlackBold(),
                                   ),
                                 ),
@@ -255,8 +265,22 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
 
                       ///인증내역보기 버튼
                       InkWell(
-                        onTap: () {
-                          Get.to(() => RouteUserCheckHistoryDetailImage(modelUserCheckHistory!));
+                        onTap: () async {
+                          //최신 내역으로 보여주기
+                          if (modelUserCheckHistory?.docId == null) {
+                            showSnackBarOnRoute("인증 내역이 존재하지 않아요.");
+                            return;
+                          }
+
+                          ModelUserCheckHistory? modelUserCheckHistoryNew =
+                              await getModelUserCheckHistoryFromServerByDocId(modelUserCheckHistory!.docId!);
+
+                          if (modelUserCheckHistoryNew == null) {
+                            showSnackBarOnRoute("인증 내역이 존재하지 않아요.");
+                            return;
+                          }
+
+                          Get.to(() => RouteUserCheckHistoryDetailImage(modelUserCheckHistoryNew));
                         },
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -316,7 +340,8 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
                                           child: ValueListenableBuilder(
                                             valueListenable: valueNotifierIsProcessingReject,
                                             builder: (context, value, child) => value
-                                                ? LoadingAnimationWidget.inkDrop(color: Colors.orange, size: 24)
+                                                ? LoadingAnimationWidget.inkDrop(
+                                                    color: Colors.orange, size: 24)
                                                 : const Text(
                                                     '거절하기',
                                                     style: TextStyle(
@@ -346,11 +371,14 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
                                           child: ValueListenableBuilder(
                                             valueListenable: valueNotifierIsProcessingGrant,
                                             builder: (context, value, child) => value
-                                                ? LoadingAnimationWidget.inkDrop(color: Colors.white, size: 24)
+                                                ? LoadingAnimationWidget.inkDrop(
+                                                    color: Colors.white, size: 24)
                                                 : const Text(
                                                     '승인처리',
                                                     style: TextStyle(
-                                                        fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
+                                                        fontWeight: FontWeight.bold,
+                                                        color: Colors.white,
+                                                        fontSize: 18),
                                                   ),
                                           ),
                                         ),
@@ -399,7 +427,7 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
           .doc(modelUserCheckHistory!.docId)
           .update({keyState: isGrant ? keyOn : keyReject});
 
-      valueNotifierIsCheckGrant.value = isGrant;
+      MyApp.valueNotifierIsCheckGrant.value = isGrant;
 
       //fcm 전송
       sendFcm(isGrant);
@@ -427,7 +455,8 @@ class _RouteUserCheckHistoryDetailState extends State<RouteUserCheckHistoryDetai
         throw Exception("문서 없음");
       }
 
-      ModelUser modelUser = ModelUser.fromJson(querySnapshot.docs.first.data() as Map, querySnapshot.docs.first.id);
+      ModelUser modelUser =
+          ModelUser.fromJson(querySnapshot.docs.first.data() as Map, querySnapshot.docs.first.id);
 
       ///fcm 전송
       /*data = {

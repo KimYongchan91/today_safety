@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:algolia/algolia.dart';
+import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:today_safety/service/provider/provider_user.dart';
 import 'package:today_safety/service/provider/provider_user_check_history_on_me.dart';
@@ -20,4 +21,10 @@ class MyApp {
 
   //내 인증서
   static ProviderUserCheckHistoryOnMe providerUserCheckHistoryOnMe = ProviderUserCheckHistoryOnMe();
+
+  //내 인증서를 관리자가 승인해줬는지 여부
+  static ValueNotifier<bool?> valueNotifierIsCheckGrant = ValueNotifier(null);
+
+  //위의 벨류노티파이어의 수신 대상 문서 id
+  static String? docIdValueNotifierIsCheckGrant;
 }

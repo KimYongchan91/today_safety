@@ -51,6 +51,10 @@ class _RouteTestState extends State<RouteTest> {
               onPressed: sendTestFcm,
               child: const Text('test fcm 발송'),
             ),
+            ElevatedButton(
+              onPressed: cloneCheckList,
+              child: const Text('체크리스트 복사'),
+            ),
           ],
         ),
       ),
@@ -86,8 +90,8 @@ class _RouteTestState extends State<RouteTest> {
 
     for (int i = 1; i < countTargetDay; i++) {
       Map<String, dynamic> json = {...jsonOld};
-      DateTime datetimeNew =
-          DateTime.fromMillisecondsSinceEpoch(jsonOld[keyDate].toDate().millisecondsSinceEpoch - i * millisecondDay);
+      DateTime datetimeNew = DateTime.fromMillisecondsSinceEpoch(
+          jsonOld[keyDate].toDate().millisecondsSinceEpoch - i * millisecondDay);
       final String displayDateToday = DateFormat('yyyy-MM-dd').format(datetimeNew);
 
       json[keyDate] = Timestamp.fromDate(datetimeNew);
@@ -133,7 +137,8 @@ class _RouteTestState extends State<RouteTest> {
       try {
         String? href = element.href;
         String? date = regExpDate.stringMatch(innerHtmlFormatted)?.replaceAll('[', '').replaceAll(',', '');
-        String? region = regExpRegion.stringMatch(innerHtmlFormatted)?.replaceAll(']', '').replaceAll(',', '').trim();
+        String? region =
+            regExpRegion.stringMatch(innerHtmlFormatted)?.replaceAll(']', '').replaceAll(',', '').trim();
         String? title = innerHtmlFormatted.substring(innerHtmlFormatted.indexOf(']') + 1).trim();
 
         if (href == null || date == null || region == null) {
@@ -169,20 +174,25 @@ class _RouteTestState extends State<RouteTest> {
 
     Set<String> setToken = {};
 
-    await FirebaseFirestore.instance.collection(keyUserS).where(keyId, whereIn: listUserIdTarget).get().then((value) {
+    await FirebaseFirestore.instance
+        .collection(keyUserS)
+        .where(keyId, whereIn: listUserIdTarget)
+        .get()
+        .then((value) {
       value.docs.forEach((element) {
         ModelUser modelUser = ModelUser.fromJson(element.data(), element.id);
         setToken.addAll([...modelUser.listToken]);
       });
     });
     //전송 시작
-    FirebaseFunctions.instanceFor(region: "asia-northeast3").httpsCallable('sendFcmTest').call(<String, dynamic>{
+    FirebaseFunctions.instanceFor(region: "asia-northeast3")
+        .httpsCallable('sendFcmTest')
+        .call(<String, dynamic>{
       'tokens': setToken.toList(),
       'test': {
         keyTitle: '오늘안전 날씨 알림',
 //        keyBody: DateFormat('HH:mm:ss 발송함').format(DateTime.now()),
         keyBody: '오늘 비 소식이 있어요. 안전에 유의해 주세요.',
-
       },
     }).then((result) {
       MyApp.logger.d("전송 결과 ${result.data}");
@@ -204,5 +214,37 @@ class _RouteTestState extends State<RouteTest> {
 
   goToRouteUnknown() {
     Get.toNamed('sfdfds');
+  }
+
+  cloneCheckList() {
+    //https://kayple.com/today_safety/check_list/5gF7PXFa3TIXeQU5GtzC/check
+    //gi7oWfHowKPIvN5T7Sqg
+
+    //복사할 현재 문서 id
+    String docIdOrigin = "gi7oWfHowKPIvN5T7Sqg";
+
+    //복사가 저장될 문서 id
+    String docIdTarget = "5gF7PXFa3TIXeQU5GtzC";
+
+    FirebaseFirestore.instance.collection(keyCheckListS).doc(docIdOrigin).get().then((value) {
+      FirebaseFirestore.instance.collection(keyCheckListS).doc(docIdTarget).set(value.data()!);
+
+      //서브 컬랙션 복사
+      FirebaseFirestore.instance
+          .collection(keyCheckListS)
+          .doc(docIdOrigin)
+          .collection(keyDailyCheckHistories)
+          .get()
+          .then((value2) {
+        for (var element in value2.docs) {
+          FirebaseFirestore.instance
+              .collection(keyCheckListS)
+              .doc(docIdTarget)
+              .collection(keyDailyCheckHistories)
+              .doc(element.id)
+              .set(element.data());
+        }
+      });
+    });
   }
 }

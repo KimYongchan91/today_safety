@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:today_safety/const/model/model_user_check_history.dart';
 import 'package:today_safety/const/value/color.dart';
 import 'package:today_safety/custom/custom_text_style.dart';
@@ -156,6 +157,9 @@ class _ItemCheckImage extends StatelessWidget {
               child: CachedNetworkImage(
                 imageUrl: modelCheckImage.urlImage,
                 fit: BoxFit.cover,
+                placeholder: (context, url) => Center(
+                  child: LoadingAnimationWidget.inkDrop(color: colorAppPrimary, size: 24),
+                ),
               ),
             ),
             const SizedBox(
