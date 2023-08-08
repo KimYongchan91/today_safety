@@ -282,7 +282,7 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
                                 children: [
                                   ///근무지 텍스트
                                   Text(
-                                    '현장 이미지',
+                                    '근무지 현장 이미지',
                                     style: titleStyle,
                                   ),
 
