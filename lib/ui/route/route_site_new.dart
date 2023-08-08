@@ -143,7 +143,7 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
                                 children: [
                                   ///근무지 텍스트
                                   Text(
-                                    '이름',
+                                    '근무지 제목',
                                     style: titleStyle,
                                   ),
                                   const SizedBox(
@@ -176,7 +176,7 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
                                   Align(
                                     alignment: Alignment.centerLeft,
                                     child: Text(
-                                      '업체 로고',
+                                      '업체 로고 이미지',
                                       style: titleStyle,
                                     ),
                                   ),
@@ -282,7 +282,7 @@ class _RouteSiteNewState extends State<RouteSiteNew> {
                                 children: [
                                   ///근무지 텍스트
                                   Text(
-                                    '현장이미지',
+                                    '현장 이미지',
                                     style: titleStyle,
                                   ),
 

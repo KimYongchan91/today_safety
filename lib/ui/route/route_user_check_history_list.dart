@@ -29,34 +29,50 @@ class _RouteUserCheckHistoryListState extends State<RouteUserCheckHistoryList> {
                 child: Row(
                   children: [
                     InkWell(
-                      onTap: (){
+                      onTap: () {
                         Get.back();
                       },
                       child: Padding(
                           padding: EdgeInsets.all(10),
-                          child: const FaIcon(FontAwesomeIcons.angleLeft,)),
+                          child: const FaIcon(
+                            FontAwesomeIcons.angleLeft,
+                          )),
                     ),
-                    const Text('받은 인증서',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20,),),
+                    const Text(
+                      '받은 인증서',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
+                    ),
                     const Spacer(),
-
                     Text(
                       '${widget.listModelUserCheckHistory.length}개',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20,color: Colors.orange),
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.orange),
                     ),
                   ],
                 ),
               ),
-              Container(width: Get.width,
-              height: 1,
-              color: Colors.black45,),
-
-              const SizedBox(height: 20,),
-
+              Container(
+                width: Get.width,
+                height: 1,
+                color: Colors.black45,
+              ),
+              const SizedBox(
+                height: 20,
+              ),
               ListView.builder(
                 itemCount: widget.listModelUserCheckHistory.length,
-                itemBuilder: (context, index) => ItemUserCheckHistoryBig(widget.listModelUserCheckHistory[index]),
+                itemBuilder: (context, index) => ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxHeight: Get.width * 1.3,
+                    ),
+                    child: ItemUserCheckHistoryBig(widget.listModelUserCheckHistory[index],padding: 10,),),
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
+              ),
+              const SizedBox(
+                height: 10,
               ),
             ],
           ),

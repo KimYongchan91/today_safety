@@ -44,131 +44,120 @@ class ItemUserCheckHistoryBig extends StatelessWidget {
 
     return Padding(
       padding: EdgeInsets.all(padding),
-      child: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ///인증서 영역
-            Card(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-              child: InkWell(
-                onTap: onTap,
-                child: AspectRatio(
-                  aspectRatio: aspectRatioMainItemUserCheckHistoryBig1,
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: Stack(
-                          children: [
-                            ///회사 현장 이미지
-                            Positioned.fill(
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(20),
-                                  topRight: Radius.circular(20),
-                                ),
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: InkWell(
+          onTap: onTap,
+          child: Column(
+            children: [
+              Expanded(
+                child: Stack(
+                  children: [
+                    ///회사 현장 이미지
+                    Positioned.fill(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20),
+                        ),
+                        child: CachedNetworkImage(
+                          imageUrl: modelUserCheckHistory.modelCheckList.modelSite.urlSiteImage,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+
+                    ///회사 로고 + 회사명 + 안전 점검 인증
+                    Positioned(
+                      bottom: 0,
+                      child: Container(
+                        width: Get.width,
+                        decoration: BoxDecoration(color: Colors.black.withOpacity(0.5)),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
                                 child: CachedNetworkImage(
-                                  imageUrl: modelUserCheckHistory.modelCheckList.modelSite.urlSiteImage,
+                                  imageUrl: modelUserCheckHistory.modelCheckList.modelSite.urlLogoImage,
+                                  width: 50,
+                                  height: 50,
                                   fit: BoxFit.cover,
                                 ),
                               ),
-                            ),
-
-                            ///회사 로고 + 회사명 + 안전 점검 인증
-                            Positioned(
-                              bottom: 0,
-                              child: Container(
-                                width: Get.width,
-                                decoration: BoxDecoration(color: Colors.black.withOpacity(0.5)),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(12),
-                                        child: CachedNetworkImage(
-                                          imageUrl: modelUserCheckHistory.modelCheckList.modelSite.urlLogoImage,
-                                          width: 50,
-                                          height: 50,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: 20,
-                                      ),
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            '${modelUserCheckHistory.modelCheckList.modelSite.name}',
-                                            style: const CustomTextStyle.normalWhiteBold().copyWith(fontSize: 20),
-                                          ),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          const Text(
-                                            '안전 점검 인증',
-                                            style: CustomTextStyle.normalWhiteBold(),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                              const SizedBox(
+                                width: 20,
                               ),
-                            ),
-                          ],
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${modelUserCheckHistory.modelCheckList.modelSite.name}',
+                                    style: const CustomTextStyle.normalWhiteBold().copyWith(fontSize: 20),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  const Text(
+                                    '안전 점검 인증',
+                                    style: CustomTextStyle.normalWhiteBold(),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                      SizedBox(
-                        height: 60,
-                        child: Row(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 10),
-                              child: InkWell(
-                                onTap: () {
-                                  Get.dialog(const DialogHelpUserCheckHistoryState());
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.all(10),
-                                  child: Container(
-                                    width: 20,
-                                    height: 20,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: modelUserCheckHistory.state == keyOn
-                                          ? colorCheckStateOn
-                                          : modelUserCheckHistory.state == keyPend
-                                              ? colorCheckStatePend
-                                              : colorCheckStateReject,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Text(
-                              modelUserCheckHistory.modelCheckList.name,
-                              style: const CustomTextStyle.bigBlackBold(),
-                            ),
-                            const Spacer(),
-                            Text(
-                              DateFormat('yyyy-MM-dd').format(modelUserCheckHistory.date.toDate()),
-                              style: const TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(
-                              width: 20,
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-            ),
-          ],
+              SizedBox(
+                height: 60,
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: InkWell(
+                        onTap: () {
+                          Get.dialog(const DialogHelpUserCheckHistoryState());
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Container(
+                            width: 20,
+                            height: 20,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: modelUserCheckHistory.state == keyOn
+                                  ? colorCheckStateOn
+                                  : modelUserCheckHistory.state == keyPend
+                                      ? colorCheckStatePend
+                                      : colorCheckStateReject,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Text(
+                      modelUserCheckHistory.modelCheckList.name,
+                      style: const CustomTextStyle.bigBlackBold(),
+                    ),
+                    const Spacer(),
+                    Text(
+                      DateFormat('yyyy-MM-dd').format(modelUserCheckHistory.date.toDate()),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
