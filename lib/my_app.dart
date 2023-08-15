@@ -23,8 +23,6 @@ class MyApp {
   static ProviderUserCheckHistoryOnMe providerUserCheckHistoryOnMe = ProviderUserCheckHistoryOnMe();
 
   //내 인증서를 관리자가 승인해줬는지 여부
-  static ValueNotifier<bool?> valueNotifierIsCheckGrant = ValueNotifier(null);
+  static Map<String, ValueNotifier<bool?>> mapValueNotifierIsCheckGrant = {};
 
-  //위의 벨류노티파이어의 수신 대상 문서 id
-  static String? docIdValueNotifierIsCheckGrant;
 }

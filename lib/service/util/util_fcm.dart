@@ -33,18 +33,19 @@ Future<void> handlerFirebaseMessagingForeground(RemoteMessage message) async {
     if (checkId == null) {
       MyApp.logger.wtf('checkId == null');
     } else {
-      if (MyApp.docIdValueNotifierIsCheckGrant == checkId) {
-        MyApp.valueNotifierIsCheckGrant.value = message.data['result'] == keyOn;
+      if (MyApp.mapValueNotifierIsCheckGrant[checkId] != null) {
+        MyApp.mapValueNotifierIsCheckGrant[checkId]!.value = message.data['result'] == keyOn;
       } else {
         MyApp.logger.wtf('MyApp.docIdValueNotifierIsCheckGrant != checkId ==> '
-            'MyApp.docIdValueNotifierIsCheckGrant : ${MyApp.docIdValueNotifierIsCheckGrant}, checkId : $checkId');
+            ' checkId : $checkId');
       }
     }
   }
 
   //노티 알림
   //단, 만약 내가 보고한 인증결과가 도착했다면 노티 울리지 않음
-  if (message.data['fcm_type'] != 'NEW_CHECK' && (MyApp.providerUser.modelUser?.id ?? 'user_id') != (message.data['user_id'] ?? "fcm_user_id")) {
+  if (message.data['fcm_type'] != 'NEW_CHECK' &&
+      (MyApp.providerUser.modelUser?.id ?? 'user_id') != (message.data['user_id'] ?? "fcm_user_id")) {
     _showLocalNotification(message);
   }
 }
@@ -142,12 +143,15 @@ void handlerRemoteMessage(dynamic data) {
       } else {
         Get.toNamed('$keyRouteNoticeDetail/$noticeId');
       }
-    } else if (dataParsed['fcm_type'] == 'NEW_CHECK') {
+    } else if (dataParsed['fcm_type'] == 'NEW_CHECK' || dataParsed['fcm_type'] == 'CHECK_RESULT') {
       String? checkId = dataParsed['check_id'];
       if (checkId == null) {
         throw Exception('checkId == null');
       } else {
-        Get.toNamed('$keyRouteUserCheckHistoryDetail/$checkId');
+        Get.toNamed(
+          '$keyRouteUserCheckHistoryDetail/$checkId',
+          preventDuplicates: false,
+        );
       }
     }
   } catch (e) {
